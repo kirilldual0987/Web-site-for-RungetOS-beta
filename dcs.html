@@ -253,6 +253,18 @@
         body.glitch-frozen #taskbar { filter:hue-rotate(200deg) brightness(0.3); transform:translateX(15px) skewX(-8deg); animation:none !important; }
         body.glitch-frozen #oneshotGlitch::before, body.glitch-frozen #oneshotGlitch::after { animation:none !important; }
 
+        /* GPU Crash Effect */
+        #gpuCrashOverlay { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; }
+        #gpuCrashOverlay.active { display:block; background:repeating-linear-gradient(0deg,rgba(255,0,255,0.3) 0px,rgba(0,255,255,0.3) 2px,rgba(255,255,0,0.3) 4px,rgba(255,0,0,0.3) 6px,rgba(0,255,0,0.3) 8px,rgba(0,0,255,0.3) 10px); animation:gpuCrashBg 0.05s infinite; }
+        @keyframes gpuCrashBg { 0%{filter:hue-rotate(0deg);} 25%{filter:hue-rotate(90deg);} 50%{filter:hue-rotate(180deg);} 75%{filter:hue-rotate(270deg);} 100%{filter:hue-rotate(360deg);} }
+        body.gpu-crash #desktop { animation:gpuDesktopCrash 0.03s infinite; }
+        @keyframes gpuDesktopCrash { 0%{filter:hue-rotate(0deg) saturate(5) brightness(1.5) contrast(2);transform:scale(1) skewX(0deg);} 14%{filter:hue-rotate(51deg) saturate(8) brightness(0.5) contrast(3);transform:scale(1.02) skewX(5deg) translateX(-10px);} 28%{filter:hue-rotate(102deg) saturate(3) brightness(2) contrast(1);transform:scale(0.98) skewX(-8deg) translateY(5px);} 42%{filter:hue-rotate(153deg) saturate(10) brightness(0.3) contrast(4);transform:scale(1.05) skewX(10deg) translateX(15px);} 56%{filter:hue-rotate(204deg) saturate(6) brightness(1.8) contrast(2.5);transform:scale(0.95) skewX(-5deg) translateY(-10px);} 70%{filter:hue-rotate(255deg) saturate(12) brightness(0.7) contrast(3.5);transform:scale(1.03) skewX(15deg) translateX(-20px);} 84%{filter:hue-rotate(306deg) saturate(4) brightness(1.2) contrast(2);transform:scale(0.97) skewX(-12deg) translateY(8px);} 100%{filter:hue-rotate(357deg) saturate(7) brightness(0.9) contrast(2.8);transform:scale(1.01) skewX(8deg) translateX(5px);} }
+        body.gpu-crash #taskbar { animation:gpuTaskbarCrash 0.04s infinite; }
+        @keyframes gpuTaskbarCrash { 0%{filter:hue-rotate(180deg) brightness(2);} 33%{filter:hue-rotate(60deg) brightness(0.5);} 66%{filter:hue-rotate(300deg) brightness(1.5);} 100%{filter:hue-rotate(120deg) brightness(0.8);} }
+        body.gpu-frozen #desktop { filter:hue-rotate(270deg) saturate(0.3) brightness(0.6) contrast(0.8); transform:scale(1.02) skewX(-3deg); animation:none !important; }
+        body.gpu-frozen #taskbar { filter:hue-rotate(180deg) brightness(0.4) saturate(0.2); animation:none !important; }
+        body.gpu-frozen #gpuCrashOverlay { background:repeating-linear-gradient(45deg,rgba(50,50,50,0.8) 0px,rgba(80,80,80,0.6) 3px,rgba(30,30,30,0.9) 6px); animation:none !important; }
+
         /* OneShot "One" Dialog */
         #oneshotOneDialog { position:fixed; inset:0; background:rgba(0,0,0,0.3); display:none; align-items:center; justify-content:center; z-index:99999; }
         .oneshot-dialog-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:380px; }
@@ -315,6 +327,8 @@
     <div id="kernelPanic"></div>
 
     <div id="oneshotGlitch"></div>
+
+    <div id="gpuCrashOverlay"></div>
 
     <div id="oneshotOneDialog">
         <div class="oneshot-dialog-box">
@@ -381,6 +395,30 @@
                                 'game_save':{type:'folder',children:{
                                     'oneshot-save.sun':{type:'file',content:'',special:'save_file'}
                                 }}
+                            }},
+                            'gta3':{type:'folder',children:{
+                                'gta3.exe':{type:'file',content:'',special:'gta3_exe'},
+                                'playgtaiii.exe':{type:'file',content:'',special:'gta3_exe'},
+                                'd3d9.dll':{type:'file',content:'[Binary DLL — d3d9.dll]\nDirect3D 9 Runtime\nVersion: 9.29.952.3111\nSize: 1.9 MB'},
+                                'mss32.dll':{type:'file',content:'[Binary DLL — mss32.dll]\nMiles Sound System\nVersion: 6.1a\nSize: 368 KB'},
+                                'eax.dll':{type:'file',content:'[Binary DLL — eax.dll]\nCreative EAX Audio\nVersion: 4.0\nSize: 92 KB'},
+                                'vorbisFile.dll':{type:'file',content:'[Binary DLL — vorbisFile.dll]\nOgg Vorbis Decoder\nVersion: 1.3.2\nSize: 472 KB'},
+                                'models':{type:'folder',children:{
+                                    'gta3.img':{type:'file',content:'[Archive — gta3.img]\nGame Models Archive\nSize: 156 MB'},
+                                    'gta3.dir':{type:'file',content:'[Index — gta3.dir]\nModels Directory Index\nSize: 324 KB'},
+                                    'txd.img':{type:'file',content:'[Archive — txd.img]\nTextures Archive\nSize: 89 MB'}
+                                }},
+                                'audio':{type:'folder',children:{
+                                    'audio.log':{type:'file',content:'GTA3 Audio System Log\nInitialized: OK\nChannels: 32\nFormat: MP3/WAV'},
+                                    'SFX.SDT':{type:'file',content:'[Binary — SFX.SDT]\nSound Effects Data\nSize: 78 MB'},
+                                    'SFX.RAW':{type:'file',content:'[Binary — SFX.RAW]\nSound Effects Raw Audio\nSize: 156 MB'}
+                                }},
+                                'data':{type:'folder',children:{
+                                    'gta3.dat':{type:'file',content:'# GTA3 Data File\nLEVEL  data/maps/\nIMG    models/gta3.img\nCDIMAGE models/txd.img'},
+                                    'handling.cfg':{type:'file',content:'# Vehicle Handling Configuration\n# Format: name mass drag...\nLANDSTAL 1700.0 5000.0 2.5 0.0'},
+                                    'vehicles.ide':{type:'file',content:'# Vehicle Definitions\n# id,modelname,txdname,type\n90, landstal, landstal, car'}
+                                }},
+                                'ReadMe.txt':{type:'file',content:'Grand Theft Auto III\nVersion 1.1 HD Remaster\n\n© 2001-2024 Rockstar Games\n\nSystem Requirements:\n- Windows 98/ME/2000/XP or compatible\n- 128 MB RAM\n- 32 MB Video Card\n- DirectX 9.0c'}
                             }}
                         }}
                     }}
@@ -1107,6 +1145,7 @@
                 cwd=cwd==='/'?'/'+n:cwd+'/'+n;ce.innerHTML=render();
             }else{
                 if(item.special==='exe_crash'){var sf;try{sf=DCS.fileSystem['/'].children.home.children.user.children.games.children.oneshot.children.game_save;}catch(e){sf={children:{}};}if(sf.children&&sf.children['oneshot-save.sun']){triggerKernelPanic(n);}else{launchOneShotNoSave();}return;}
+                if(item.special==='gta3_exe'){launchGTA3(n);return;}
                 if(item.special==='save_file'){showDcsMessage('Информация о файле','<b>'+n+'</b><br><br><i class="fas fa-sun" style="color:#ffaa00;font-size:18px"></i><br><br>Файл сохранения игры OneShot.<br><br><span style="color:#ff5555;font-weight:bold">НЕ удаляйте, если не хотите потерять свой прогресс.</span><br><br><span style="color:var(--text-secondary);font-size:10px">Тип: OneShot Save Data (.sun)<br>Размер: 4.2 KB<br>Изменён: '+new Date().toLocaleDateString('ru-RU')+'</span>','info');return;}
                 openApp('editor',{file:{name:n,content:item.content}});
             }
@@ -1626,6 +1665,111 @@
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorFlood[j].delay||50);});
         }
         // Phase 3: final lines
+        for(var j=0;j<finalLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(finalLines[j].cls||'kp-white');div.textContent=finalLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,finalLines[j].delay||50);});
+        }
+        await new Promise(function(r){setTimeout(r,5000);});
+        stopKpSounds();
+        document.body.style.pointerEvents='none';
+        kp.style.pointerEvents='auto';kp.style.cursor='not-allowed';
+        await new Promise(function(r){setTimeout(r,8000);});
+        window.location.href='404.html';
+    }
+
+    // ==================== GTA 3 ====================
+    function launchGTA3(filename){
+        const winId=createWindow({title:'Grand Theft Auto III',icon:'fa-car',width:800,height:500,x:Math.floor((window.innerWidth-800)/2),y:Math.floor((window.innerHeight-532)/2),content:'<div id="gta3Screen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading GTA III...</div></div>'});
+        setTimeout(function(){
+            var screen=document.getElementById('gta3Screen');
+            if(!screen)return;
+            screen.innerHTML='<video id="gta3Video" style="width:100%;height:100%;object-fit:contain" autoplay><source src="auto.mp4" type="video/mp4"></video>';
+            var video=document.getElementById('gta3Video');
+            video.onerror=function(){screen.innerHTML='<div style="color:#ff3333;font-size:14px;font-family:Consolas;text-align:center">ERROR: auto.mp4 not found<br><br><span style="color:#888;font-size:12px">Video file missing from root directory</span></div>';};
+            video.onended=function(){triggerGPUCrash(winId);};
+        },1500);
+    }
+
+    function triggerGPUCrash(winId){
+        document.body.classList.add('gpu-crash');
+        var overlay=document.getElementById('gpuCrashOverlay');
+        overlay.classList.add('active');overlay.style.display='block';
+        startKpSounds();
+        setTimeout(function(){
+            document.body.classList.remove('gpu-crash');
+            document.body.classList.add('gpu-frozen');
+            stopKpSounds();
+        },4000);
+        setTimeout(function(){
+            DCS.windows.forEach(function(w,id){closeWindow(id);});
+            triggerGPUKernelPanic();
+        },5000);
+    }
+
+    async function triggerGPUKernelPanic(){
+        document.body.classList.remove('gpu-crash','gpu-frozen');
+        document.getElementById('gpuCrashOverlay').classList.remove('active');
+        document.getElementById('gpuCrashOverlay').style.display='none';
+        var kp=document.getElementById('kernelPanic');
+        kp.style.display='block';kp.innerHTML='';
+        var preLines=[
+            {text:'',delay:200},
+            {text:'[D3D9] Initializing Direct3D 9 runtime...',cls:'kp-white',delay:400},
+            {text:'[D3D9] Enumerating display adapters...',cls:'kp-white',delay:300},
+            {text:'[D3D9] ERROR: No display adapters found',cls:'kp-red',delay:500},
+            {text:'[D3D9] Retrying adapter enumeration...',cls:'kp-yellow',delay:400},
+            {text:'[D3D9] ERROR: IDirect3D9::GetAdapterCount returned 0',cls:'kp-red',delay:300},
+            {text:'',delay:200},
+            {text:'[GPU] FATAL: Video output adapter not detected',cls:'kp-bright-red',delay:500},
+            {text:'[GPU] FATAL: Display driver has stopped responding',cls:'kp-bright-red',delay:400},
+            {text:'[GPU] FATAL: VRAM access violation at 0xDEAD_BEEF',cls:'kp-red',delay:300},
+            {text:'',delay:150},
+            {text:'[KERNEL] Attempting GPU reset...',cls:'kp-yellow',delay:600},
+            {text:'[KERNEL] ERROR: GPU reset failed - device not responding',cls:'kp-red',delay:400},
+            {text:'[KERNEL] ERROR: PCIe link training failed',cls:'kp-red',delay:300},
+            {text:'[KERNEL] ERROR: MMIO registers inaccessible',cls:'kp-red',delay:250},
+            {text:'',delay:200},
+        ];
+        var errorLines=[];
+        var gpuErrors=['NO_ADAPTER','VRAM_FAULT','DRIVER_CRASH','DISPLAY_LOST','RENDER_FAIL','SHADER_ERR','TEXTURE_CORRUPT','FRAMEBUFFER_DEAD','VSYNC_TIMEOUT','DMA_ERROR','PCI_FAULT','POWER_FAIL'];
+        for(var i=0;i<50;i++)errorLines.push({text:'[GPU] '+gpuErrors[Math.floor(Math.random()*gpuErrors.length)]+': Video output adapter not detected',cls:'kp-red',delay:15+Math.floor(Math.random()*25)});
+        errorLines.push({text:'',delay:50});
+        for(var i=0;i<30;i++)errorLines.push({text:'NO_DISPLAY NO_DISPLAY NO_DISPLAY NO_DISPLAY',cls:'kp-bright-red',delay:10+Math.floor(Math.random()*15)});
+        errorLines.push({text:'',delay:80});
+        var finalLines=[
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80},
+            {text:'',delay:30},
+            {text:'   ██████╗ ██████╗ ██╗   ██╗    ███████╗ █████╗ ██╗██╗     ',cls:'kp-bright-red',delay:25},
+            {text:'  ██╔════╝ ██╔══██╗██║   ██║    ██╔════╝██╔══██╗██║██║     ',cls:'kp-bright-red',delay:25},
+            {text:'  ██║  ███╗██████╔╝██║   ██║    █████╗  ███████║██║██║     ',cls:'kp-bright-red',delay:25},
+            {text:'  ██║   ██║██╔═══╝ ██║   ██║    ██╔══╝  ██╔══██║██║██║     ',cls:'kp-bright-red',delay:25},
+            {text:'  ╚██████╔╝██║     ╚██████╔╝    ██║     ██║  ██║██║███████╗',cls:'kp-bright-red',delay:25},
+            {text:'   ╚═════╝ ╚═╝      ╚═════╝     ╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝',cls:'kp-bright-red',delay:25},
+            {text:'',delay:50},
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80},
+            {text:'',delay:150},
+            {text:'  DCS FATAL ERROR — KERNEL PANIC — GPU FAILURE',cls:'kp-bright-red',delay:300},
+            {text:'',delay:100},
+            {text:'  Reason: Video output adapter not detected',cls:'kp-red',delay:200},
+            {text:'  The graphics subsystem has completely failed.',cls:'kp-red',delay:200},
+            {text:'  Error code: 0xDEAD_GPU:NO_ADAPTER:FATAL',cls:'kp-red',delay:200},
+            {text:'',delay:200},
+            {text:'  Display output has been lost.',cls:'kp-white',delay:300},
+            {text:'  System cannot continue without video adapter.',cls:'kp-white',delay:200},
+            {text:'',delay:300},
+            {text:'  Reload the page to restart Dual Computers Systems.',cls:'kp-yellow',delay:400},
+            {text:'',delay:150},
+            {text:'  --- end Kernel panic - not syncing: GPU_FAILURE ---',cls:'kp-dim',delay:500},
+        ];
+        for(var j=0;j<preLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(preLines[j].cls||'kp-white');div.textContent=preLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,preLines[j].delay||50);});
+        }
+        startKpSounds();
+        for(var j=0;j<errorLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(errorLines[j].cls||'kp-white');div.textContent=errorLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorLines[j].delay||50);});
+        }
         for(var j=0;j<finalLines.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(finalLines[j].cls||'kp-white');div.textContent=finalLines[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,finalLines[j].delay||50);});
