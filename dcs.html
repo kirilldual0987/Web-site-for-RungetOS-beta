@@ -238,6 +238,25 @@
         #kernelPanic .kp-yellow { color:#ffaa00; }
         #kernelPanic .kp-bright-red { color:#ff5555; font-weight:bold; }
 
+        /* OneShot Glitch Effect */
+        #oneshotGlitch { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; background:repeating-linear-gradient(0deg,rgba(255,0,0,0.06) 0px,transparent 2px,rgba(0,255,0,0.04) 4px,transparent 6px); }
+        #oneshotGlitch.active { display:block; animation:glitchOverlay 0.1s infinite; }
+        @keyframes glitchOverlay { 0%{transform:translate(0,0) skewX(0deg);opacity:0.8;} 20%{transform:translate(-5px,3px) skewX(2deg);opacity:1;} 40%{transform:translate(3px,-2px) skewX(-1deg);opacity:0.6;} 60%{transform:translate(-2px,5px) skewX(3deg);opacity:0.9;} 80%{transform:translate(4px,-3px) skewX(-2deg);opacity:0.7;} 100%{transform:translate(-3px,2px) skewX(1deg);opacity:0.8;} }
+        body.glitch-active #desktop { animation:glitchDesktop 0.15s infinite; }
+        @keyframes glitchDesktop { 0%{filter:hue-rotate(0deg) saturate(1);transform:skewX(0deg);} 25%{filter:hue-rotate(90deg) saturate(3);transform:skewX(-3deg) translateX(5px);} 50%{filter:hue-rotate(180deg) saturate(5);transform:skewX(2deg) translateX(-3px);} 75%{filter:hue-rotate(270deg) saturate(2);transform:skewX(-1deg) translateY(3px);} 100%{filter:hue-rotate(360deg) saturate(4);transform:skewX(3deg) translateY(-2px);} }
+        body.glitch-active #taskbar { animation:glitchTaskbar 0.2s infinite; }
+        @keyframes glitchTaskbar { 0%,100%{filter:hue-rotate(0deg);transform:translateX(0);} 50%{filter:hue-rotate(180deg);transform:translateX(3px);} }
+
+        /* OneShot "One" Dialog */
+        #oneshotOneDialog { position:fixed; inset:0; background:rgba(0,0,0,0.3); display:none; align-items:center; justify-content:center; z-index:99999; }
+        .oneshot-dialog-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:380px; }
+        .oneshot-dialog-header { background:linear-gradient(180deg,#4a0000 0%,#2a0000 100%); padding:5px 10px; color:#ff3333; font-weight:bold; font-size:12px; }
+        .oneshot-dialog-body { padding:25px 20px; text-align:center; }
+        .oneshot-dialog-text { color:#ff3333; font-size:14px; font-weight:bold; margin-bottom:20px; letter-spacing:1px; line-height:1.8; }
+        .oneshot-dialog-btn { padding:8px 35px; background:linear-gradient(180deg,#333 0%,#111 100%); border:2px outset #444; color:#ff3333; font-size:16px; font-weight:bold; cursor:pointer; letter-spacing:5px; }
+        .oneshot-dialog-btn:hover { background:#2a0000; }
+        .oneshot-dialog-btn:active { border-style:inset; }
+
         /* DCS Message Dialog */
         #dcsMessageDialog { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:8000; }
         .dcs-msg-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:320px; max-width:450px; }
@@ -288,6 +307,18 @@
     <canvas id="pixelTransition"></canvas>
 
     <div id="kernelPanic"></div>
+
+    <div id="oneshotGlitch"></div>
+
+    <div id="oneshotOneDialog">
+        <div class="oneshot-dialog-box">
+            <div class="oneshot-dialog-header">One</div>
+            <div class="oneshot-dialog-body">
+                <div class="oneshot-dialog-text">Oneshot means you have only ONE try</div>
+                <button class="oneshot-dialog-btn" onclick="onOneShotDialogClick()">...</button>
+            </div>
+        </div>
+    </div>
 
     <div id="dcsMessageDialog">
         <div class="dcs-msg-box">
@@ -1053,7 +1084,8 @@
             if(name.endsWith('.sun'))return'fa-sun" style="color:#ffaa00';
             return'fa-file-alt';
         }
-        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/games')"><i class="fas fa-gamepad"></i> Игры</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${getFileIcon(name,item)}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
+        var selectedFile=null;
+        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly><button class="app-btn" onclick="this.closest('.window-content').__del()" title="Удалить выбранный файл"><i class="fas fa-trash"></i> Удалить</button></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/games')"><i class="fas fa-gamepad"></i> Игры</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" onclick="this.closest('.window-content').__sel('${name}',this)" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${getFileIcon(name,item)}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
         const winId=createWindow({title:'Файлы - '+cwd,icon:'fa-folder',width:700,height:450,content:render()});
         const ce=document.querySelector(`#window-${winId} .window-content`);
         ce.__nav=(d)=>{if(d==='..'){const p=cwd.split('/').filter(Boolean);p.pop();cwd='/'+p.join('/');}else cwd=d;ce.innerHTML=render();document.querySelector(`#window-${winId} .window-title`).textContent='Файлы - '+cwd;};
@@ -1068,11 +1100,13 @@
                 }
                 cwd=cwd==='/'?'/'+n:cwd+'/'+n;ce.innerHTML=render();
             }else{
-                if(item.special==='exe_crash'){triggerKernelPanic(n);return;}
+                if(item.special==='exe_crash'){var sf;try{sf=DCS.fileSystem['/'].children.home.children.user.children.games.children.oneshot.children.game_save;}catch(e){sf={children:{}};}if(sf.children&&sf.children['oneshot-save.sun']){triggerKernelPanic(n);}else{launchOneShotNoSave();}return;}
                 if(item.special==='save_file'){showDcsMessage('Информация о файле','<b>'+n+'</b><br><br><i class="fas fa-sun" style="color:#ffaa00;font-size:18px"></i><br><br>Файл сохранения игры OneShot.<br><br><span style="color:#ff5555;font-weight:bold">НЕ удаляйте, если не хотите потерять свой прогресс.</span><br><br><span style="color:var(--text-secondary);font-size:10px">Тип: OneShot Save Data (.sun)<br>Размер: 4.2 KB<br>Изменён: '+new Date().toLocaleDateString('ru-RU')+'</span>','info');return;}
                 openApp('editor',{file:{name:n,content:item.content}});
             }
         };
+        ce.__sel=(n,el)=>{selectedFile=n;ce.querySelectorAll('.fm-file').forEach(f=>f.classList.remove('selected'));el.classList.add('selected');};
+        ce.__del=()=>{if(!selectedFile){showDcsMessage('Удаление','Выберите файл для удаления.','warning');return;}var f=getFolder(cwd);if(f.children&&f.children[selectedFile]){delete f.children[selectedFile];selectedFile=null;ce.innerHTML=render();}else{showDcsMessage('Ошибка','Файл не найден.','error');}};
     }
 
     function openTerminal(){
@@ -1391,6 +1425,112 @@
         document.body.style.pointerEvents='none';
         kp.style.pointerEvents='auto';
         kp.style.cursor='not-allowed';
+    }
+
+    // ==================== ONESHOT NO-SAVE SEQUENCE ====================
+    let machineSound=null;
+
+    function launchOneShotNoSave(){
+        const imgs=['load (1).png','load (2).png','load (3).png','load (4).png','load (5).png','load (6).png','load (7).png','load (8).png'];
+        const winId=createWindow({title:'OneShotWME',icon:'fa-sun',width:640,height:480,x:Math.floor((window.innerWidth-640)/2),y:Math.floor((window.innerHeight-512)/2),content:'<div id="oneshotScreen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading...</div></div>'});
+        let imgIndex=0;
+        function showNextImage(){
+            const screen=document.getElementById('oneshotScreen');
+            if(!screen)return;
+            if(imgIndex>=imgs.length){triggerOneShotGlitch(winId);return;}
+            const imgSrc=imgs[imgIndex];
+            screen.innerHTML='<img src="'+imgSrc+'" style="max-width:100%;max-height:100%;object-fit:contain" onerror="this.parentElement.innerHTML=\'<div style=color:#ffaa00;font-size:16px;font-family:Consolas;text-align:center>'+imgSrc.replace(/'/g,"\\'")+'</div>\'">';
+            imgIndex++;
+            setTimeout(showNextImage,5000);
+        }
+        setTimeout(showNextImage,1000);
+    }
+
+    function triggerOneShotGlitch(winId){
+        document.body.classList.add('glitch-active');
+        var gl=document.getElementById('oneshotGlitch');
+        gl.classList.add('active');gl.style.display='block';
+        machineSound=new Audio('Machine.ogg');
+        machineSound.volume=0.7;machineSound.loop=true;
+        machineSound.play().catch(function(){});
+        setTimeout(function(){
+            document.getElementById('oneshotOneDialog').style.display='flex';
+        },2000);
+    }
+
+    function onOneShotDialogClick(){
+        if(machineSound){machineSound.pause();machineSound.currentTime=0;machineSound=null;}
+        document.getElementById('oneshotOneDialog').style.display='none';
+        document.getElementById('oneshotGlitch').classList.remove('active');
+        document.getElementById('oneshotGlitch').style.display='none';
+        document.body.classList.remove('glitch-active');
+        DCS.windows.forEach(function(w,id){closeWindow(id);});
+        triggerOneShotKernelPanic();
+    }
+
+    async function triggerOneShotKernelPanic(){
+        var kp=document.getElementById('kernelPanic');
+        kp.style.display='block';kp.innerHTML='';
+        var subsystems=['KERNEL','MEMORY','DISK','GPU','NET','USB','ACPI','SERVICES','INIT','PROC','FS','SCHED','IRQ','DMA','PCI','IOMMU','BIOS','EFI','CMOS','RTC'];
+        var preLines=[
+            {text:'',delay:200},
+            {text:'[oneshot] FATAL: Save file not found',cls:'kp-red',delay:400},
+            {text:'[oneshot] FATAL: You had only ONE shot',cls:'kp-red',delay:400},
+            {text:'[oneshot] FATAL: There are no second chances',cls:'kp-red',delay:400},
+            {text:'',delay:200},
+        ];
+        var errorLines=[];
+        for(var i=0;i<35;i++)errorLines.push({text:'['+subsystems[Math.floor(Math.random()*subsystems.length)]+'] only1try',cls:'kp-red',delay:25+Math.floor(Math.random()*35)});
+        errorLines.push({text:'',delay:80});
+        for(var i=0;i<20;i++)errorLines.push({text:'only1try only1try only1try only1try only1try',cls:'kp-bright-red',delay:12+Math.floor(Math.random()*20)});
+        errorLines.push({text:'',delay:60});
+        errorLines.push({text:'[ONESHOT] You cannot undo what has been done',cls:'kp-bright-red',delay:200});
+        errorLines.push({text:'[ONESHOT] The sun has been shattered',cls:'kp-bright-red',delay:200});
+        errorLines.push({text:'[ONESHOT] Niko is gone',cls:'kp-bright-red',delay:300});
+        errorLines.push({text:'',delay:80});
+        for(var i=0;i<40;i++)errorLines.push({text:'['+subsystems[Math.floor(Math.random()*subsystems.length)]+'] only1try',cls:'kp-red',delay:10+Math.floor(Math.random()*18)});
+        errorLines.push({text:'',delay:50});
+        for(var i=0;i<30;i++)errorLines.push({text:'only1try',cls:'kp-red',delay:8+Math.floor(Math.random()*12)});
+        errorLines.push({text:'',delay:100});
+        errorLines.push({text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80});
+        errorLines.push({text:'',delay:30});
+        errorLines.push({text:'   ██████╗ ███╗   ██╗██╗  ██╗   ██╗ ██╗████████╗██████╗ ██╗   ██╗',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██╔═══██╗████╗  ██║██║  ╚██╗ ██╔╝███║╚══██╔══╝██╔══██╗╚██╗ ██╔╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██║   ██║██╔██╗ ██║██║   ╚████╔╝ ╚██║   ██║   ██████╔╝ ╚████╔╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██║   ██║██║╚██╗██║██║    ╚██╔╝   ██║   ██║   ██╔══██╗  ╚██╔╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ╚██████╔╝██║ ╚████║███████╗██║    ██║   ██║   ██║  ██║   ██║',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'   ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝    ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'',delay:30});
+        errorLines.push({text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80});
+        errorLines.push({text:'',delay:100});
+        for(var i=0;i<50;i++)errorLines.push({text:'only1try',cls:'kp-red',delay:6+Math.floor(Math.random()*10)});
+        errorLines.push({text:'',delay:150});
+        errorLines.push({text:'  DCS FATAL ERROR — KERNEL PANIC — only1try',cls:'kp-bright-red',delay:300});
+        errorLines.push({text:'',delay:80});
+        errorLines.push({text:'  Oneshot means you have only ONE try.',cls:'kp-red',delay:200});
+        errorLines.push({text:'  You deleted the save. There is no going back.',cls:'kp-red',delay:200});
+        errorLines.push({text:'  Error code: 0xONLY1TRY:ONESHOT:NIKO:GONE',cls:'kp-red',delay:200});
+        errorLines.push({text:'',delay:150});
+        errorLines.push({text:'  The system has been halted.',cls:'kp-white',delay:300});
+        errorLines.push({text:'  All unsaved data has been lost.',cls:'kp-white',delay:200});
+        errorLines.push({text:'',delay:250});
+        errorLines.push({text:'  Reload the page to restart Dual Computers Systems.',cls:'kp-yellow',delay:400});
+        errorLines.push({text:'',delay:150});
+        errorLines.push({text:'  --- end Kernel panic - not syncing: only1try ---',cls:'kp-dim',delay:500});
+
+        for(var j=0;j<preLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(preLines[j].cls||'kp-white');div.textContent=preLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,preLines[j].delay||50);});
+        }
+        startKpSounds();
+        for(var j=0;j<errorLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(errorLines[j].cls||'kp-white');div.textContent=errorLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorLines[j].delay||50);});
+        }
+        await new Promise(function(r){setTimeout(r,5000);});
+        stopKpSounds();
+        document.body.style.pointerEvents='none';
+        kp.style.pointerEvents='auto';kp.style.cursor='not-allowed';
     }
 
     // ==================== START ====================
