@@ -625,7 +625,7 @@
 
     // ==================== DESKTOP ====================
     function initDesktop(){
-        renderDesktopIcons();updateClock();setInterval(updateClock,1000);applyWallpaper();
+        renderDesktopIcons();updateClock();setInterval(updateClock,1000);applyWallpaper();setTimeout(doGlitch,5000);
         document.addEventListener('click',()=>{document.getElementById('contextMenu').style.display='none';});
         document.getElementById('desktop').addEventListener('contextmenu',(e)=>{
             if(!e.target.closest('.window')){e.preventDefault();showContextMenu(e.clientX,e.clientY);}
@@ -1780,6 +1780,34 @@
         kp.style.pointerEvents='auto';kp.style.cursor='not-allowed';
         await new Promise(function(r){setTimeout(r,8000);});
         window.location.href='404.html';
+    }
+
+    // ==================== AMBIENT GLITCHES ====================
+    function doGlitch(){
+        var targets=document.querySelectorAll('.desktop-icon,.window,.taskbar-item');
+        var extras=[document.getElementById('taskbar'),document.getElementById('clockArea'),document.getElementById('desktopIcons')];
+        var all=[];
+        targets.forEach(function(t){if(t)all.push(t);});
+        extras.forEach(function(t){if(t)all.push(t);});
+        if(all.length===0){setTimeout(doGlitch,8000);return;}
+        var el=all[Math.floor(Math.random()*all.length)];
+        var effects=[
+            ['transform','skewX(8deg)',200],
+            ['transform','skewX(-6deg) translateX(4px)',150],
+            ['transform','translateX(-5px) skewY(3deg)',250],
+            ['transform','scaleY(1.1) skewX(4deg)',180],
+            ['filter','hue-rotate(90deg) saturate(3)',200],
+            ['filter','brightness(2) contrast(2)',120],
+            ['filter','hue-rotate(180deg)',300],
+            ['opacity','0.3',150],
+            ['opacity','0',100],
+            ['transform','translateY(-3px) skewX(-4deg)',200]
+        ];
+        var fx=effects[Math.floor(Math.random()*effects.length)];
+        var oldVal=el.style[fx[0]]||'';
+        el.style[fx[0]]=fx[1];
+        setTimeout(function(){el.style[fx[0]]=oldVal;},fx[2]);
+        setTimeout(doGlitch,5000+Math.floor(Math.random()*15000));
     }
 
     // ==================== START ====================
