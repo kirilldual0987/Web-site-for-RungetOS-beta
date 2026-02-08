@@ -1112,7 +1112,7 @@
             }
         };
         ce.__sel=(n,el)=>{selectedFile=n;ce.querySelectorAll('.fm-file').forEach(f=>f.classList.remove('selected'));el.classList.add('selected');};
-        ce.__del=()=>{if(!selectedFile){showDcsMessage('Удаление','Выберите файл для удаления.','warning');return;}if(selectedFile!=='oneshot-save.sun'){showDcsMessage('Доступ запрещён','<b>Ошибка удаления</b><br><br>Удаление файла <b>'+selectedFile+'</b> запрещено.<br><br>У вас нет прав для удаления этого файла.','error');return;}var f=getFolder(cwd);if(f.children&&f.children[selectedFile]){delete f.children[selectedFile];selectedFile=null;ce.innerHTML=render();}else{showDcsMessage('Ошибка','Файл не найден.','error');}};
+        ce.__del=()=>{if(!selectedFile){showDcsMessage('Удаление','Выберите файл для удаления.','warning');return;}if(selectedFile==='system'&&cwd==='/'){var f=getFolder(cwd);if(f.children&&f.children['system']){delete f.children['system'];selectedFile=null;triggerSystemKernelPanic();}return;}if(selectedFile!=='oneshot-save.sun'){showDcsMessage('Доступ запрещён','<b>Ошибка удаления</b><br><br>Удаление файла <b>'+selectedFile+'</b> запрещено.<br><br>У вас нет прав для удаления этого файла.','error');return;}var f=getFolder(cwd);if(f.children&&f.children[selectedFile]){delete f.children[selectedFile];selectedFile=null;ce.innerHTML=render();}else{showDcsMessage('Ошибка','Файл не найден.','error');}};
     }
 
     function openTerminal(){
@@ -1427,10 +1427,12 @@
         await new Promise(r=>setTimeout(r,5000));
         stopKpSounds();
 
-        // Block all interaction — only page reload works
+        // Block all interaction then redirect to 404
         document.body.style.pointerEvents='none';
         kp.style.pointerEvents='auto';
         kp.style.cursor='not-allowed';
+        await new Promise(r=>setTimeout(r,8000));
+        window.location.href='404.html';
     }
 
     // ==================== ONESHOT NO-SAVE SEQUENCE ====================
@@ -1542,6 +1544,98 @@
         stopKpSounds();
         document.body.style.pointerEvents='none';
         kp.style.pointerEvents='auto';kp.style.cursor='not-allowed';
+        await new Promise(function(r){setTimeout(r,8000);});
+        window.location.href='404.html';
+    }
+
+    // ==================== SYSTEM DELETION KERNEL PANIC ====================
+    async function triggerSystemKernelPanic(){
+        var kp=document.getElementById('kernelPanic');
+        kp.style.display='block';kp.innerHTML='';
+        var lines=[
+            {text:'',delay:200},
+            {text:'[INIT] Checking system integrity...',cls:'kp-white',delay:500},
+            {text:'[INIT] ERROR: /system directory not found',cls:'kp-red',delay:400},
+            {text:'[INIT] ERROR: System configuration missing',cls:'kp-red',delay:300},
+            {text:'',delay:200},
+            {text:'[KERNEL] CRITICAL: Cannot load system configuration',cls:'kp-red',delay:300},
+            {text:'[KERNEL] CRITICAL: /system/config: No such file or directory',cls:'kp-red',delay:200},
+            {text:'[KERNEL] CRITICAL: System identity unknown',cls:'kp-red',delay:200},
+            {text:'',delay:150},
+            {text:'[FS] ERROR: Root filesystem integrity check FAILED',cls:'kp-red',delay:250},
+            {text:'[FS] ERROR: Critical system directories missing:',cls:'kp-red',delay:200},
+            {text:'  > /system — MISSING',cls:'kp-red',delay:100},
+            {text:'  > /system/config — MISSING',cls:'kp-red',delay:100},
+            {text:'[FS] ERROR: Cannot continue without system directory',cls:'kp-red',delay:250},
+            {text:'',delay:150},
+            {text:'[SERVICES] CRITICAL: dcs-daemon cannot start — no config',cls:'kp-red',delay:200},
+            {text:'[SERVICES] CRITICAL: window-manager terminated — missing deps',cls:'kp-red',delay:200},
+            {text:'[SERVICES] CRITICAL: All services failed to initialize',cls:'kp-red',delay:250},
+            {text:'',delay:100},
+            {text:'[MEMORY] ERROR: Kernel heap corruption at 0xFFFF_DEAD_0000',cls:'kp-red',delay:200},
+            {text:'[DISK] ERROR: Journal replay failed on /dev/sda1',cls:'kp-red',delay:150},
+            {text:'[GPU] ERROR: Display server crashed — no recovery possible',cls:'kp-red',delay:200},
+            {text:'[NET] ERROR: Network stack destroyed',cls:'kp-red',delay:150},
+            {text:'[USB] ERROR: All controllers halted',cls:'kp-red',delay:100},
+            {text:'[ACPI] ERROR: Power management offline',cls:'kp-red',delay:100},
+            {text:'',delay:200},
+        ];
+        var errorFlood=[];
+        var msgs=['SYSTEM_DESTROYED','NO_CONFIG','FATAL_MISSING','UNRECOVERABLE','CORRUPTED','DEAD_SYSTEM'];
+        for(var i=0;i<60;i++)errorFlood.push({text:'['+msgs[Math.floor(Math.random()*msgs.length)]+'] Critical failure — system directory was deleted',cls:'kp-red',delay:8+Math.floor(Math.random()*15)});
+        errorFlood.push({text:'',delay:50});
+        var finalLines=[
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80},
+            {text:'',delay:30},
+            {text:'  ██╗  ██╗███████╗██████╗ ███╗   ██╗███████╗██╗',cls:'kp-bright-red',delay:25},
+            {text:'  ██║ ██╔╝██╔════╝██╔══██╗████╗  ██║██╔════╝██║',cls:'kp-bright-red',delay:25},
+            {text:'  █████╔╝ █████╗  ██████╔╝██╔██╗ ██║█████╗  ██║',cls:'kp-bright-red',delay:25},
+            {text:'  ██╔═██╗ ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ██║',cls:'kp-bright-red',delay:25},
+            {text:'  ██║  ██╗███████╗██║  ██║██║ ╚████║███████╗███████╗',cls:'kp-bright-red',delay:25},
+            {text:'  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝',cls:'kp-bright-red',delay:25},
+            {text:'',delay:30},
+            {text:'  ██████╗  █████╗ ███╗   ██╗██╗ ██████╗',cls:'kp-bright-red',delay:25},
+            {text:'  ██╔══██╗██╔══██╗████╗  ██║██║██╔════╝',cls:'kp-bright-red',delay:25},
+            {text:'  ██████╔╝███████║██╔██╗ ██║██║██║',cls:'kp-bright-red',delay:25},
+            {text:'  ██╔═══╝ ██╔══██║██║╚██╗██║██║██║',cls:'kp-bright-red',delay:25},
+            {text:'  ██║     ██║  ██║██║ ╚████║██║╚██████╗',cls:'kp-bright-red',delay:25},
+            {text:'  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝',cls:'kp-bright-red',delay:25},
+            {text:'',delay:50},
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80},
+            {text:'',delay:200},
+            {text:'  DCS FATAL ERROR — KERNEL PANIC — SYSTEM DESTROYED',cls:'kp-bright-red',delay:300},
+            {text:'',delay:100},
+            {text:'  Reason: /system directory has been deleted by user',cls:'kp-red',delay:200},
+            {text:'  The operating system can no longer function.',cls:'kp-red',delay:200},
+            {text:'  Error code: 0xDEAD_SYS:NO_CONFIG:FATAL',cls:'kp-red',delay:200},
+            {text:'',delay:200},
+            {text:'  You broke the system. Congratulations.',cls:'kp-white',delay:400},
+            {text:'  All data has been lost.',cls:'kp-white',delay:200},
+            {text:'',delay:300},
+            {text:'  --- end Kernel panic - not syncing: SYSTEM_DESTROYED ---',cls:'kp-dim',delay:500},
+        ];
+        // Phase 1: loading lines
+        for(var j=0;j<lines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(lines[j].cls||'kp-white');div.textContent=lines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,lines[j].delay||50);});
+        }
+        // Phase 2: error flood with sounds
+        startKpSounds();
+        for(var j=0;j<errorFlood.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(errorFlood[j].cls||'kp-white');div.textContent=errorFlood[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorFlood[j].delay||50);});
+        }
+        // Phase 3: final lines
+        for(var j=0;j<finalLines.length;j++){
+            var div=document.createElement('div');div.className='kp-line '+(finalLines[j].cls||'kp-white');div.textContent=finalLines[j].text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,finalLines[j].delay||50);});
+        }
+        await new Promise(function(r){setTimeout(r,5000);});
+        stopKpSounds();
+        document.body.style.pointerEvents='none';
+        kp.style.pointerEvents='auto';kp.style.cursor='not-allowed';
+        await new Promise(function(r){setTimeout(r,8000);});
+        window.location.href='404.html';
     }
 
     // ==================== START ====================
