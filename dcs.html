@@ -589,9 +589,15 @@
         await new Promise(r=>setTimeout(r,500));
         con.style.display='none';
         playStartupSound();
-        const splash=document.getElementById('splashScreen');splash.style.display='flex';
-        await new Promise(r=>setTimeout(r,2000));
-        await pixelDissolveTransition();
+        const splash=document.getElementById('splashScreen');
+        const desktop=document.getElementById('desktop');
+        const taskbar=document.getElementById('taskbar');
+        const pixelCanvas=document.getElementById('pixelTransition');
+        if (splash) splash.style.display = 'none';
+        if (pixelCanvas) pixelCanvas.style.display = 'none';
+        if (desktop) { desktop.style.display = 'block'; desktop.style.opacity = '1'; }
+        if (taskbar) { taskbar.style.display = 'flex'; taskbar.style.opacity = '1'; }
+        if (typeof initDesktop === 'function') initDesktop();
     }
 
     async function pixelDissolveTransition(){
