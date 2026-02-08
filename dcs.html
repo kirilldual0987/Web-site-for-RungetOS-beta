@@ -239,13 +239,19 @@
         #kernelPanic .kp-bright-red { color:#ff5555; font-weight:bold; }
 
         /* OneShot Glitch Effect */
-        #oneshotGlitch { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; background:repeating-linear-gradient(0deg,rgba(255,0,0,0.06) 0px,transparent 2px,rgba(0,255,0,0.04) 4px,transparent 6px); }
-        #oneshotGlitch.active { display:block; animation:glitchOverlay 0.1s infinite; }
-        @keyframes glitchOverlay { 0%{transform:translate(0,0) skewX(0deg);opacity:0.8;} 20%{transform:translate(-5px,3px) skewX(2deg);opacity:1;} 40%{transform:translate(3px,-2px) skewX(-1deg);opacity:0.6;} 60%{transform:translate(-2px,5px) skewX(3deg);opacity:0.9;} 80%{transform:translate(4px,-3px) skewX(-2deg);opacity:0.7;} 100%{transform:translate(-3px,2px) skewX(1deg);opacity:0.8;} }
-        body.glitch-active #desktop { animation:glitchDesktop 0.15s infinite; }
-        @keyframes glitchDesktop { 0%{filter:hue-rotate(0deg) saturate(1);transform:skewX(0deg);} 25%{filter:hue-rotate(90deg) saturate(3);transform:skewX(-3deg) translateX(5px);} 50%{filter:hue-rotate(180deg) saturate(5);transform:skewX(2deg) translateX(-3px);} 75%{filter:hue-rotate(270deg) saturate(2);transform:skewX(-1deg) translateY(3px);} 100%{filter:hue-rotate(360deg) saturate(4);transform:skewX(3deg) translateY(-2px);} }
-        body.glitch-active #taskbar { animation:glitchTaskbar 0.2s infinite; }
-        @keyframes glitchTaskbar { 0%,100%{filter:hue-rotate(0deg);transform:translateX(0);} 50%{filter:hue-rotate(180deg);transform:translateX(3px);} }
+        #oneshotGlitch { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; }
+        #oneshotGlitch.active { display:block; }
+        #oneshotGlitch.active::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,rgba(255,0,0,0.15) 0px,transparent 1px,rgba(0,255,0,0.1) 2px,transparent 3px,rgba(0,0,255,0.08) 4px,transparent 5px); animation:glitchOverlay 0.05s infinite; }
+        #oneshotGlitch.active::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(90deg,transparent 0px,rgba(255,0,0,0.3) 1px,transparent 2px); mix-blend-mode:screen; animation:glitchOverlay2 0.03s infinite; }
+        @keyframes glitchOverlay { 0%{transform:translate(0,0) skewX(0deg) scaleY(1);opacity:1;} 10%{transform:translate(-20px,8px) skewX(15deg) scaleY(1.02);opacity:0.9;} 20%{transform:translate(15px,-12px) skewX(-20deg) scaleY(0.98);opacity:1;} 30%{transform:translate(-8px,15px) skewX(25deg) scaleY(1.05);opacity:0.7;} 40%{transform:translate(25px,-5px) skewX(-10deg) scaleY(0.95);opacity:1;} 50%{transform:translate(-30px,20px) skewX(30deg) scaleY(1.08);opacity:0.6;} 60%{transform:translate(10px,-25px) skewX(-25deg) scaleY(0.92);opacity:1;} 70%{transform:translate(-15px,10px) skewX(20deg) scaleY(1.1);opacity:0.8;} 80%{transform:translate(20px,-15px) skewX(-15deg) scaleY(0.9);opacity:1;} 90%{transform:translate(-25px,5px) skewX(35deg) scaleY(1.03);opacity:0.5;} 100%{transform:translate(5px,-8px) skewX(-5deg) scaleY(1);opacity:0.9;} }
+        @keyframes glitchOverlay2 { 0%{transform:translateX(0);} 25%{transform:translateX(-100px);} 50%{transform:translateX(80px);} 75%{transform:translateX(-50px);} 100%{transform:translateX(30px);} }
+        body.glitch-active #desktop { animation:glitchDesktop 0.06s infinite; }
+        @keyframes glitchDesktop { 0%{filter:hue-rotate(0deg) saturate(1) brightness(1) contrast(1);transform:skewX(0deg) skewY(0deg) scale(1);} 8%{filter:hue-rotate(90deg) saturate(8) brightness(1.5) contrast(2);transform:skewX(-15deg) skewY(3deg) scale(1.02) translateX(20px);} 16%{filter:hue-rotate(200deg) saturate(12) brightness(0.5) contrast(3);transform:skewX(20deg) skewY(-5deg) scale(0.98) translateX(-30px) translateY(10px);} 24%{filter:hue-rotate(45deg) saturate(5) brightness(2) contrast(0.5);transform:skewX(-25deg) skewY(8deg) scale(1.05) translateY(-20px);} 32%{filter:hue-rotate(300deg) saturate(15) brightness(0.3) contrast(4);transform:skewX(30deg) skewY(-3deg) scale(0.95) translateX(40px);} 40%{filter:hue-rotate(150deg) saturate(10) brightness(1.8) contrast(2.5);transform:skewX(-10deg) skewY(6deg) scale(1.08) translateX(-15px) translateY(25px);} 48%{filter:hue-rotate(270deg) saturate(20) brightness(0.7) contrast(1.5);transform:skewX(35deg) skewY(-8deg) scale(0.92) translateX(25px);} 56%{filter:hue-rotate(60deg) saturate(3) brightness(2.5) contrast(3);transform:skewX(-20deg) skewY(4deg) scale(1.1) translateY(-30px);} 64%{filter:hue-rotate(180deg) saturate(8) brightness(0.4) contrast(5);transform:skewX(15deg) skewY(-6deg) scale(0.9) translateX(-40px);} 72%{filter:hue-rotate(330deg) saturate(14) brightness(1.3) contrast(2);transform:skewX(-30deg) skewY(10deg) scale(1.03) translateX(10px) translateY(15px);} 80%{filter:hue-rotate(120deg) saturate(6) brightness(0.6) contrast(4);transform:skewX(25deg) skewY(-4deg) scale(0.97) translateX(-20px);} 88%{filter:hue-rotate(240deg) saturate(18) brightness(1.9) contrast(1.8);transform:skewX(-35deg) skewY(7deg) scale(1.06) translateY(-10px);} 100%{filter:hue-rotate(360deg) saturate(10) brightness(1) contrast(3);transform:skewX(20deg) skewY(-2deg) scale(1) translateX(30px);} }
+        body.glitch-active #taskbar { animation:glitchTaskbar 0.08s infinite; }
+        @keyframes glitchTaskbar { 0%{filter:hue-rotate(0deg) brightness(1);transform:translateX(0) skewX(0deg);} 20%{filter:hue-rotate(120deg) brightness(2);transform:translateX(-15px) skewX(10deg);} 40%{filter:hue-rotate(240deg) brightness(0.3);transform:translateX(20px) skewX(-15deg);} 60%{filter:hue-rotate(60deg) brightness(1.5);transform:translateX(-10px) skewX(20deg);} 80%{filter:hue-rotate(300deg) brightness(0.5);transform:translateX(25px) skewX(-10deg);} 100%{filter:hue-rotate(180deg) brightness(1.8);transform:translateX(-5px) skewX(5deg);} }
+        body.glitch-frozen #desktop { filter:hue-rotate(270deg) saturate(15) brightness(0.4) contrast(4); transform:skewX(-12deg) skewY(5deg) scale(1.03) translateX(-20px); animation:none !important; }
+        body.glitch-frozen #taskbar { filter:hue-rotate(200deg) brightness(0.3); transform:translateX(15px) skewX(-8deg); animation:none !important; }
+        body.glitch-frozen #oneshotGlitch::before, body.glitch-frozen #oneshotGlitch::after { animation:none !important; }
 
         /* OneShot "One" Dialog */
         #oneshotOneDialog { position:fixed; inset:0; background:rgba(0,0,0,0.3); display:none; align-items:center; justify-content:center; z-index:99999; }
@@ -1106,7 +1112,7 @@
             }
         };
         ce.__sel=(n,el)=>{selectedFile=n;ce.querySelectorAll('.fm-file').forEach(f=>f.classList.remove('selected'));el.classList.add('selected');};
-        ce.__del=()=>{if(!selectedFile){showDcsMessage('Удаление','Выберите файл для удаления.','warning');return;}var f=getFolder(cwd);if(f.children&&f.children[selectedFile]){delete f.children[selectedFile];selectedFile=null;ce.innerHTML=render();}else{showDcsMessage('Ошибка','Файл не найден.','error');}};
+        ce.__del=()=>{if(!selectedFile){showDcsMessage('Удаление','Выберите файл для удаления.','warning');return;}if(selectedFile!=='oneshot-save.sun'){showDcsMessage('Доступ запрещён','<b>Ошибка удаления</b><br><br>Удаление файла <b>'+selectedFile+'</b> запрещено.<br><br>У вас нет прав для удаления этого файла.','error');return;}var f=getFolder(cwd);if(f.children&&f.children[selectedFile]){delete f.children[selectedFile];selectedFile=null;ce.innerHTML=render();}else{showDcsMessage('Ошибка','Файл не найден.','error');}};
     }
 
     function openTerminal(){
@@ -1454,8 +1460,12 @@
         machineSound.volume=0.7;machineSound.loop=true;
         machineSound.play().catch(function(){});
         setTimeout(function(){
+            document.body.classList.remove('glitch-active');
+            document.body.classList.add('glitch-frozen');
+        },5000);
+        setTimeout(function(){
             document.getElementById('oneshotOneDialog').style.display='flex';
-        },2000);
+        },6000);
     }
 
     function onOneShotDialogClick(){
@@ -1464,6 +1474,7 @@
         document.getElementById('oneshotGlitch').classList.remove('active');
         document.getElementById('oneshotGlitch').style.display='none';
         document.body.classList.remove('glitch-active');
+        document.body.classList.remove('glitch-frozen');
         DCS.windows.forEach(function(w,id){closeWindow(id);});
         triggerOneShotKernelPanic();
     }
