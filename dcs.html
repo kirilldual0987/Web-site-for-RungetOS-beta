@@ -228,6 +228,31 @@
         .rg-gallery-item:hover { border-color:var(--purple-bright); }
         .rg-highlight { background:rgba(139,92,246,0.15); border-color:var(--purple-medium) !important; }
         .rg-warning { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; background:rgba(218,68,83,0.15); border:1px solid rgba(218,68,83,0.4); color:#da4453; font-size:10px; font-weight:bold; margin-bottom:8px; }
+
+        /* Kernel Panic */
+        #kernelPanic { position:fixed; inset:0; background:#000; z-index:99999; display:none; padding:20px; font-family:'Consolas','Courier New',monospace; font-size:13px; overflow:hidden; cursor:default; }
+        #kernelPanic .kp-line { margin-bottom:1px; opacity:0; animation:fadeIn 0.05s forwards; }
+        #kernelPanic .kp-red { color:#ff3333; }
+        #kernelPanic .kp-white { color:#ccc; }
+        #kernelPanic .kp-dim { color:#666; }
+        #kernelPanic .kp-yellow { color:#ffaa00; }
+        #kernelPanic .kp-bright-red { color:#ff5555; font-weight:bold; }
+
+        /* DCS Message Dialog */
+        #dcsMessageDialog { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:8000; }
+        .dcs-msg-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:320px; max-width:450px; }
+        .dcs-msg-header { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); padding:4px 8px; color:var(--text-primary); font-weight:bold; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
+        .dcs-msg-header .window-btn { width:16px; height:16px; }
+        .dcs-msg-body { padding:15px 20px; display:flex; gap:15px; align-items:flex-start; }
+        .dcs-msg-icon { font-size:32px; flex-shrink:0; }
+        .dcs-msg-icon.error { color:#ff3333; }
+        .dcs-msg-icon.info { color:var(--purple-bright); }
+        .dcs-msg-icon.warning { color:#ffaa00; }
+        .dcs-msg-text { color:var(--text-primary); font-size:11px; line-height:1.6; }
+        .dcs-msg-footer { padding:8px 15px; display:flex; justify-content:center; gap:8px; border-top:2px groove var(--border-light); }
+        .dcs-msg-btn { padding:5px 25px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:11px; cursor:pointer; }
+        .dcs-msg-btn:active { border-style:inset; }
+        .dcs-msg-btn:hover { background:var(--purple-dark); }
     </style>
 </head>
 <body>
@@ -262,6 +287,16 @@
 
     <canvas id="pixelTransition"></canvas>
 
+    <div id="kernelPanic"></div>
+
+    <div id="dcsMessageDialog">
+        <div class="dcs-msg-box">
+            <div class="dcs-msg-header"><span id="dcsMessageTitle">DCS</span><button class="window-btn" onclick="closeDcsMessage()">×</button></div>
+            <div class="dcs-msg-body"><div class="dcs-msg-icon" id="dcsMessageIcon"><i class="fas fa-info-circle"></i></div><div class="dcs-msg-text" id="dcsMessageText"></div></div>
+            <div class="dcs-msg-footer"><button class="dcs-msg-btn" onclick="closeDcsMessage()">OK</button></div>
+        </div>
+    </div>
+
     <div id="shutdownDialog">
         <div class="shutdown-dialog-box">
             <div class="shutdown-dialog-header">Dual Computers Systems</div>
@@ -295,7 +330,22 @@
                             'runget-info.txt':{type:'file',content:'Runget OS — Debian-based операционная система\nСайт: https://github.com/Kolyadual/Runget-next_generating_operating_system'}
                         }},
                         'Downloads':{type:'folder',children:{}},
-                        'Pictures':{type:'folder',children:{}}
+                        'Pictures':{type:'folder',children:{}},
+                        'games':{type:'folder',children:{
+                            'oneshot':{type:'folder',children:{
+                                'Oneshot.exe':{type:'file',content:'',special:'exe_crash'},
+                                'steam_api.dll':{type:'file',content:'[Binary DLL — steam_api.dll]\nSteam API library\nVersion: 1.57.0\nSize: 248 KB'},
+                                'oneshot.dll':{type:'file',content:'[Binary DLL — oneshot.dll]\nOneShot Game Engine Module\nVersion: 2.0.1\nSize: 1.2 MB'},
+                                'SDL2.dll':{type:'file',content:'[Binary DLL — SDL2.dll]\nSimple DirectMedia Layer\nVersion: 2.28.5\nSize: 1.8 MB'},
+                                'libvorbisfile.dll':{type:'file',content:'[Binary DLL — libvorbisfile.dll]\nVorbis Audio Decoder\nVersion: 1.3.7\nSize: 52 KB'},
+                                'zlib1.dll':{type:'file',content:'[Binary DLL — zlib1.dll]\nCompression Library\nVersion: 1.2.13\nSize: 96 KB'},
+                                'msvcrt120.dll':{type:'file',content:'[Binary DLL — msvcrt120.dll]\nMicrosoft Visual C++ Runtime\nVersion: 12.0.40660\nSize: 948 KB'},
+                                'game_data':{type:'folder',children:{},special:'access_denied'},
+                                'game_save':{type:'folder',children:{
+                                    'oneshot-save.sun':{type:'file',content:'',special:'save_file'}
+                                }}
+                            }}
+                        }}
                     }}
                 }},
                 'system':{type:'folder',children:{
@@ -991,12 +1041,38 @@
     function openFileManager(path='/home/user'){
         let cwd=path;
         function getFolder(p){const parts=p.split('/').filter(Boolean);let cur=DCS.fileSystem['/'];for(const part of parts){if(cur.children?.[part])cur=cur.children[part];}return cur;}
-        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${item.type==='folder'?'fa-folder':'fa-file-alt'}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
+        function getFileIcon(name,item){
+            if(item.type==='folder'){
+                if(item.special==='access_denied')return'fa-folder" style="color:#ff3333';
+                if(name==='games')return'fa-gamepad" style="color:var(--purple-glow)';
+                if(name==='oneshot')return'fa-sun" style="color:#ffaa00';
+                return'fa-folder';
+            }
+            if(name.endsWith('.exe'))return'fa-cog" style="color:#ff5555';
+            if(name.endsWith('.dll'))return'fa-puzzle-piece" style="color:#888';
+            if(name.endsWith('.sun'))return'fa-sun" style="color:#ffaa00';
+            return'fa-file-alt';
+        }
+        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/games')"><i class="fas fa-gamepad"></i> Игры</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${getFileIcon(name,item)}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
         const winId=createWindow({title:'Файлы - '+cwd,icon:'fa-folder',width:700,height:450,content:render()});
         const ce=document.querySelector(`#window-${winId} .window-content`);
         ce.__nav=(d)=>{if(d==='..'){const p=cwd.split('/').filter(Boolean);p.pop();cwd='/'+p.join('/');}else cwd=d;ce.innerHTML=render();document.querySelector(`#window-${winId} .window-title`).textContent='Файлы - '+cwd;};
         ce.__go=(p)=>{cwd=p;ce.innerHTML=render();};
-        ce.__open=(n,t)=>{if(t==='folder'){cwd=cwd==='/'?'/'+n:cwd+'/'+n;ce.innerHTML=render();}else{const f=getFolder(cwd);openApp('editor',{file:{name:n,content:f.children[n].content}});}};
+        ce.__open=(n,t)=>{
+            const f=getFolder(cwd);
+            const item=f.children[n];
+            if(t==='folder'){
+                if(item.special==='access_denied'){
+                    showDcsMessage('Доступ запрещён','<b>Ошибка доступа</b><br><br>Доступ к папке <b>'+n+'</b> запрещён.<br><br>У вас нет прав для просмотра содержимого этой папки. Обратитесь к администратору системы.','error');
+                    return;
+                }
+                cwd=cwd==='/'?'/'+n:cwd+'/'+n;ce.innerHTML=render();
+            }else{
+                if(item.special==='exe_crash'){triggerKernelPanic(n);return;}
+                if(item.special==='save_file'){showDcsMessage('Информация о файле','<b>'+n+'</b><br><br><i class="fas fa-sun" style="color:#ffaa00;font-size:18px"></i><br><br>Файл сохранения игры OneShot.<br><br><span style="color:#ff5555;font-weight:bold">НЕ удаляйте, если не хотите потерять свой прогресс.</span><br><br><span style="color:var(--text-secondary);font-size:10px">Тип: OneShot Save Data (.sun)<br>Размер: 4.2 KB<br>Изменён: '+new Date().toLocaleDateString('ru-RU')+'</span>','info');return;}
+                openApp('editor',{file:{name:n,content:item.content}});
+            }
+        };
     }
 
     function openTerminal(){
@@ -1136,6 +1212,185 @@
         function move(dir){let moved=false;const rotate=(g)=>g[0].map((_,i)=>g.map(r=>r[i]).reverse());for(let i=0;i<dir;i++)grid=rotate(grid);for(let y=0;y<4;y++){let row=grid[y].filter(v=>v);for(let i=0;i<row.length-1;i++)if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}while(row.length<4)row.push(0);if(row.join(',')!==grid[y].join(','))moved=true;grid[y]=row;}for(let i=0;i<(4-dir)%4;i++)grid=rotate(grid);if(moved)addTile();render();}
         document.addEventListener('keydown',(e)=>{const d={ArrowLeft:0,ArrowUp:1,ArrowRight:2,ArrowDown:3};if(d[e.key]!==undefined){e.preventDefault();move(d[e.key]);}});
         window.__start2048=()=>{init();render();};init();render();
+    }
+
+    // ==================== DCS MESSAGE DIALOG ====================
+    function showDcsMessage(title,text,type){
+        document.getElementById('dcsMessageTitle').textContent=title;
+        document.getElementById('dcsMessageText').innerHTML=text;
+        const iconEl=document.getElementById('dcsMessageIcon');
+        iconEl.className='dcs-msg-icon '+(type||'info');
+        if(type==='error')iconEl.innerHTML='<i class="fas fa-times-circle"></i>';
+        else if(type==='warning')iconEl.innerHTML='<i class="fas fa-exclamation-triangle"></i>';
+        else iconEl.innerHTML='<i class="fas fa-info-circle"></i>';
+        document.getElementById('dcsMessageDialog').style.display='flex';
+    }
+    function closeDcsMessage(){document.getElementById('dcsMessageDialog').style.display='none';}
+
+    // ==================== KERNEL PANIC ====================
+    let kpSoundInterval=null;
+    let kpActiveSounds=[];
+
+    function playRandomKpSound(){
+        const num=Math.floor(Math.random()*8)+1;
+        const snd=new Audio(num+'.mp3');
+        snd.volume=0.4+Math.random()*0.4;
+        kpActiveSounds.push(snd);
+        snd.play().catch(()=>{});
+        snd.onended=()=>{const i=kpActiveSounds.indexOf(snd);if(i>-1)kpActiveSounds.splice(i,1);};
+    }
+
+    function startKpSounds(){
+        if(kpSoundInterval)return;
+        playRandomKpSound();
+        kpSoundInterval=setInterval(()=>{
+            playRandomKpSound();
+        },80+Math.floor(Math.random()*150));
+    }
+
+    function stopKpSounds(){
+        if(kpSoundInterval){clearInterval(kpSoundInterval);kpSoundInterval=null;}
+        kpActiveSounds.forEach(s=>{try{s.pause();s.currentTime=0;}catch(e){}});
+        kpActiveSounds=[];
+    }
+
+    async function triggerKernelPanic(filename){
+        const kp=document.getElementById('kernelPanic');
+        kp.style.display='block';kp.innerHTML='';
+
+        // Phase 1: loading lines (no sounds yet)
+        const loadingLines=[
+            {text:'',delay:200},
+            {text:'Initializing '+filename+'...',cls:'kp-white',delay:400},
+            {text:'Loading Windows compatibility layer...',cls:'kp-white',delay:300},
+            {text:'[wine] Loading PE image: '+filename,cls:'kp-dim',delay:200},
+            {text:'[wine] Mapping sections... 0x00400000-0x0048C000',cls:'kp-dim',delay:150},
+            {text:'[wine] Loading dependency: steam_api.dll',cls:'kp-dim',delay:100},
+            {text:'[wine] Loading dependency: oneshot.dll',cls:'kp-dim',delay:100},
+            {text:'[wine] Loading dependency: SDL2.dll',cls:'kp-dim',delay:100},
+            {text:'[wine] Loading dependency: msvcrt120.dll',cls:'kp-dim',delay:100},
+            {text:'[wine] All dependencies loaded',cls:'kp-dim',delay:200},
+            {text:'',delay:100},
+            {text:'[gpu] Initializing OpenGL context...',cls:'kp-white',delay:300},
+            {text:'[gpu] GL_VENDOR: DCS Virtual Graphics',cls:'kp-dim',delay:100},
+            {text:'[gpu] GL_RENDERER: DCS GPU Adapter',cls:'kp-dim',delay:100},
+            {text:'[gpu] Requesting framebuffer... OK',cls:'kp-dim',delay:200},
+            {text:'[gpu] Allocating VRAM: 256MB... OK',cls:'kp-dim',delay:150},
+            {text:'',delay:100},
+            {text:'[audio] Initializing PulseAudio bridge...',cls:'kp-white',delay:200},
+            {text:'[audio] Stream opened: 44100Hz 16bit stereo',cls:'kp-dim',delay:100},
+            {text:'',delay:200},
+            {text:'[oneshot] Loading game engine v2.0.1...',cls:'kp-white',delay:300},
+            {text:'[oneshot] Parsing game scripts...',cls:'kp-dim',delay:200},
+            {text:'[oneshot] Loading assets from game_data/...',cls:'kp-dim',delay:200},
+            {text:'[oneshot] Reading save file: game_save/oneshot-save.sun',cls:'kp-dim',delay:300},
+            {text:'',delay:150},
+        ];
+
+        // Phase 2: error lines (sounds play here)
+        const errorLines=[
+            {text:'[oneshot] WARNING: Save file contains anomalous data',cls:'kp-yellow',delay:400},
+            {text:'[oneshot] WARNING: Entity "Niko" state: UNSTABLE',cls:'kp-yellow',delay:300},
+            {text:'[oneshot] WARNING: World integrity check FAILED',cls:'kp-yellow',delay:300},
+            {text:'',delay:200},
+            {text:'[KERNEL] WARNING: Unexpected memory access at 0xDEAD_C0DE',cls:'kp-yellow',delay:200},
+            {text:'[KERNEL] Page fault in non-paged area',cls:'kp-red',delay:200},
+            {text:'[KERNEL] Stack trace:',cls:'kp-red',delay:100},
+            {text:'  #0  0xffffffff8108a3c2 in __do_page_fault+0x1a2',cls:'kp-dim',delay:50},
+            {text:'  #1  0xffffffff81089f10 in do_page_fault+0x30',cls:'kp-dim',delay:50},
+            {text:'  #2  0xffffffff8164e3a8 in page_fault+0x28',cls:'kp-dim',delay:50},
+            {text:'  #3  0xffffffff810b2e45 in oneshot_entity_load+0x55',cls:'kp-dim',delay:50},
+            {text:'  #4  0xffffffff810b31a0 in world_integrity_verify+0x120',cls:'kp-dim',delay:50},
+            {text:'  #5  0xffffffff810b3400 in game_engine_init+0x300',cls:'kp-dim',delay:50},
+            {text:'  #6  0xffffffff810b4000 in wine_pe_execute+0x200',cls:'kp-dim',delay:50},
+            {text:'  #7  0xffffffff81060000 in sys_execve+0x50',cls:'kp-dim',delay:50},
+            {text:'',delay:150},
+            {text:'[KERNEL] ERROR: Unable to handle kernel NULL pointer dereference',cls:'kp-red',delay:200},
+            {text:'[KERNEL] ERROR: Corrupted memory descriptor at 0x0000_FFFF_DEAD_BEEF',cls:'kp-red',delay:200},
+            {text:'[KERNEL] ERROR: IRQ handler returned bad value',cls:'kp-red',delay:150},
+            {text:'[KERNEL] ERROR: GPU hung — resetting adapter...',cls:'kp-red',delay:200},
+            {text:'[KERNEL] ERROR: GPU reset FAILED',cls:'kp-red',delay:300},
+            {text:'',delay:100},
+            {text:'[MEMORY] CRITICAL: Heap corruption detected in kmalloc-256',cls:'kp-red',delay:200},
+            {text:'[MEMORY] CRITICAL: Slab cache poisoned',cls:'kp-red',delay:150},
+            {text:'[MEMORY] CRITICAL: Free list integrity check FAILED',cls:'kp-red',delay:150},
+            {text:'',delay:100},
+            {text:'[DISK] ERROR: I/O error on /dev/sda1 sector 0x7A3F2B10',cls:'kp-red',delay:200},
+            {text:'[DISK] ERROR: Filesystem journal aborted',cls:'kp-red',delay:150},
+            {text:'[DISK] Emergency read-only remount',cls:'kp-yellow',delay:200},
+            {text:'',delay:100},
+            {text:'[NET] ERROR: Network stack corruption — dropping all connections',cls:'kp-red',delay:150},
+            {text:'[USB] ERROR: EHCI host controller halted',cls:'kp-red',delay:100},
+            {text:'[ACPI] ERROR: Power management unit unresponsive',cls:'kp-red',delay:100},
+            {text:'',delay:200},
+            {text:'[SERVICES] CRITICAL: dcs-daemon terminated with signal 11 (SIGSEGV)',cls:'kp-red',delay:200},
+            {text:'[SERVICES] CRITICAL: window-manager terminated with signal 6 (SIGABRT)',cls:'kp-red',delay:150},
+            {text:'[SERVICES] CRITICAL: audio-server terminated with signal 11 (SIGSEGV)',cls:'kp-red',delay:150},
+            {text:'[SERVICES] All critical services have failed',cls:'kp-red',delay:200},
+            {text:'',delay:300},
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:100},
+            {text:'',delay:50},
+            {text:'  ██╗  ██╗███████╗██████╗ ███╗   ██╗███████╗██╗',cls:'kp-bright-red',delay:30},
+            {text:'  ██║ ██╔╝██╔════╝██╔══██╗████╗  ██║██╔════╝██║',cls:'kp-bright-red',delay:30},
+            {text:'  █████╔╝ █████╗  ██████╔╝██╔██╗ ██║█████╗  ██║',cls:'kp-bright-red',delay:30},
+            {text:'  ██╔═██╗ ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ██║',cls:'kp-bright-red',delay:30},
+            {text:'  ██║  ██╗███████╗██║  ██║██║ ╚████║███████╗███████╗',cls:'kp-bright-red',delay:30},
+            {text:'  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚══════╝',cls:'kp-bright-red',delay:30},
+            {text:'',delay:30},
+            {text:'  ██████╗  █████╗ ███╗   ██╗██╗ ██████╗',cls:'kp-bright-red',delay:30},
+            {text:'  ██╔══██╗██╔══██╗████╗  ██║██║██╔════╝',cls:'kp-bright-red',delay:30},
+            {text:'  ██████╔╝███████║██╔██╗ ██║██║██║',cls:'kp-bright-red',delay:30},
+            {text:'  ██╔═══╝ ██╔══██║██║╚██╗██║██║██║',cls:'kp-bright-red',delay:30},
+            {text:'  ██║     ██║  ██║██║ ╚████║██║╚██████╗',cls:'kp-bright-red',delay:30},
+            {text:'  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝ ╚═════╝',cls:'kp-bright-red',delay:30},
+            {text:'',delay:50},
+            {text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:100},
+            {text:'',delay:200},
+            {text:'  DCS FATAL ERROR — KERNEL PANIC — NOT SYNCING',cls:'kp-bright-red',delay:300},
+            {text:'',delay:100},
+            {text:'  Attempted to execute: '+filename,cls:'kp-red',delay:200},
+            {text:'  Reason: Unrecoverable system fault during PE binary execution',cls:'kp-red',delay:200},
+            {text:'  Error code: 0xDEADC0DE:ONESHOT:NIKO:FATAL',cls:'kp-red',delay:200},
+            {text:'',delay:200},
+            {text:'  The system has been halted to prevent further damage.',cls:'kp-white',delay:300},
+            {text:'  All unsaved data has been lost.',cls:'kp-white',delay:200},
+            {text:'',delay:300},
+            {text:'  Reload the page to restart Dual Computers Systems.',cls:'kp-yellow',delay:400},
+            {text:'',delay:200},
+            {text:'  --- end Kernel panic - not syncing: Fatal exception ---',cls:'kp-dim',delay:500},
+        ];
+
+        // Render loading lines (no sounds)
+        for(const line of loadingLines){
+            const div=document.createElement('div');
+            div.className='kp-line '+(line.cls||'kp-white');
+            div.textContent=line.text;
+            kp.appendChild(div);
+            kp.scrollTop=kp.scrollHeight;
+            await new Promise(r=>setTimeout(r,line.delay||50));
+        }
+
+        // Start chaotic sounds when errors begin
+        startKpSounds();
+
+        // Render error lines (sounds playing)
+        for(const line of errorLines){
+            const div=document.createElement('div');
+            div.className='kp-line '+(line.cls||'kp-white');
+            div.textContent=line.text;
+            kp.appendChild(div);
+            kp.scrollTop=kp.scrollHeight;
+            await new Promise(r=>setTimeout(r,line.delay||50));
+        }
+
+        // All errors done — wait 5 seconds then stop sounds
+        await new Promise(r=>setTimeout(r,5000));
+        stopKpSounds();
+
+        // Block all interaction — only page reload works
+        document.body.style.pointerEvents='none';
+        kp.style.pointerEvents='auto';
+        kp.style.cursor='not-allowed';
     }
 
     // ==================== START ====================
