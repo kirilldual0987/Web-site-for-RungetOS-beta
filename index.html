@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runget - Легкая, быстрая, простая и красивая Debian-based ОС</title>
+    <meta name="description" content="Runget OS — универсальная операционная система на базе Debian с поддержкой Windows и Android приложений.">
+    <meta name="keywords" content="Runget, Linux, Debian, операционная система, Windows приложения, Android, ARM, Raspberry Pi, Orange Pi">
+    <meta name="author" content="Kolyadual and Runget team">
+    <meta property="og:title" content="Runget OS — универсальная Debian-based операционная система">
+    <meta property="og:description" content="Легкая, быстрая и красивая ОС с поддержкой Windows, Android и Linux приложений">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #232629;
+            --bg-secondary: #2a2e32;
+            --bg-card: #31363b;
+            --bg-hover: #3a3f44;
+            --text-primary: #eff0f1;
+            --text-secondary: #bdc3c7;
+            --accent-primary: #3daee9;
+            --accent-secondary: #16a085;
+            --accent-purple: #9b59b6;
+            --accent-orange: #e67e22;
+            --accent-raspberry: #c51a4a;
+            --success: #2ecc71;
+            --warning: #f67400;
+            --danger: #da4453;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color:var(--bg-primary); color:var(--text-primary); line-height:1.6; overflow-x:hidden; }
+        a { color:var(--accent-primary); text-decoration:none; }
+
+        /* ============ VERSION SELECTOR ============ */
+        .version-selector {
+            position: fixed; inset: 0; z-index: 99999;
+            background: radial-gradient(ellipse at center, #1a1d21 0%, #0d0f11 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 1; transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .version-selector.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .vs-logo { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .vs-logo img { height: 56px; border-radius: 12px; }
+        .vs-logo span { font-size: 2rem; font-weight: bold; color: var(--text-primary); }
+        .vs-subtitle { color: var(--text-secondary); font-size: 1rem; margin-bottom: 2.5rem; text-align: center; }
+        .vs-title { color: var(--accent-primary); font-size: 1.2rem; margin-bottom: 1.5rem; font-weight: 600; }
+        .vs-options { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; padding: 0 1rem; }
+        .vs-card {
+            width: 260px; padding: 2.5rem 2rem; background: var(--bg-card);
+            border-radius: 16px; border: 2px solid var(--bg-hover);
+            text-align: center; cursor: pointer; transition: var(--transition);
+            position: relative; overflow: hidden;
+        }
+        .vs-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(61,174,233,0.08) 0%, transparent 60%);
+            opacity: 0; transition: var(--transition);
+        }
+        .vs-card:hover { border-color: var(--accent-primary); transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(61,174,233,0.2); }
+        .vs-card:hover::before { opacity: 1; }
+        .vs-card:active { transform: translateY(-2px); }
+        .vs-card-icon { font-size: 3.5rem; color: var(--accent-primary); margin-bottom: 1rem; position: relative; z-index: 1; }
+        .vs-card h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 0.5rem; position: relative; z-index: 1; }
+        .vs-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; position: relative; z-index: 1; }
+        .vs-card .vs-rec {
+            display: inline-block; margin-top: 0.8rem; padding: 0.2rem 0.7rem;
+            border-radius: 999px; font-size: 0.7rem; position: relative; z-index: 1;
+        }
+
+        .vs-footer { position: absolute; bottom: 1.5rem; color: var(--text-secondary); font-size: 0.75rem; opacity: 0.5; }
+
+        /* ============ DESKTOP NAVBAR ============ */
+        .navbar {
+            background-color: rgba(42,46,50,0.95); padding: 1rem 2rem;
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        }
+        .navbar-container { display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; }
+        .logo { display:flex; align-items:center; color:var(--text-primary); text-decoration:none; font-size:1.5rem; font-weight:bold; }
+        .logo img { height:40px; margin-right:10px; border-radius:8px; }
+        .nav-links { display:flex; list-style:none; flex-wrap:wrap; justify-content:center; }
+        .nav-links li { margin-left:1.5rem; }
+        .nav-links a { color:var(--text-secondary); text-decoration:none; font-weight:500; transition:var(--transition); padding:0.5rem 0.8rem; border-radius:var(--border-radius); font-size:0.95rem; }
+        .nav-links a:hover { color:var(--text-primary); background-color:var(--bg-hover); }
+        .nav-links a.nav-new { color:var(--accent-purple); border:1px solid var(--accent-purple); }
+        .nav-links a.nav-new:hover { background-color:rgba(155,89,182,0.2); color:#fff; }
+        .nav-links a.nav-arm { color:#666; border:1px solid #555; cursor:default; opacity:0.5; pointer-events:none; }
+
+        /* ============ MOBILE BOTTOM NAV ============ */
+        .mobile-bottom-nav {
+            display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1001;
+            background: rgba(35,38,41,0.97); backdrop-filter: blur(12px);
+            border-top: 1px solid var(--bg-hover); padding: 0.3rem 0 0.5rem;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        }
+        .mobile-bottom-nav ul { display: flex; justify-content: space-around; list-style: none; }
+        .mobile-bottom-nav a {
+            display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+            color: var(--text-secondary); text-decoration: none; font-size: 0.65rem;
+            padding: 0.4rem 0.6rem; border-radius: 8px; transition: var(--transition);
+            min-width: 52px;
+        }
+        .mobile-bottom-nav a i { font-size: 1.2rem; }
+        .mobile-bottom-nav a.active, .mobile-bottom-nav a:active { color: var(--accent-primary); }
+        .mobile-top-bar {
+            display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(35,38,41,0.97); backdrop-filter: blur(12px);
+            padding: 0.7rem 1rem; box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        }
+        .mobile-top-bar .logo { font-size: 1.2rem; }
+        .mobile-top-bar .logo img { height: 32px; }
+        .mobile-top-bar-right { display: flex; align-items: center; gap: 0.8rem; }
+        .mobile-top-bar-container { display: flex; justify-content: space-between; align-items: center; }
+        .btn-switch-mode {
+            background: none; border: 1px solid var(--bg-hover); color: var(--text-secondary);
+            padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-switch-mode:hover, .btn-switch-mode:active { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+        /* ============ HERO ============ */
+        .hero {
+            background: radial-gradient(circle at top left, #3daee9 0%, #232629 45%, #15171a 100%);
+            min-height: 100vh; display: flex; align-items: center; text-align: center;
+            color: var(--text-primary); padding-top: 80px; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: radial-gradient(circle at 10% 20%, rgba(61,174,233,0.18) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(22,160,133,0.2) 0%, transparent 55%);
+            opacity: 0.9; pointer-events: none;
+        }
+        .hero-content { max-width:1200px; margin:0 auto; padding:2rem; position:relative; z-index:2; }
+        .hero-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.3rem 0.9rem; border-radius:999px; background-color:rgba(0,0,0,0.35); border:1px solid rgba(61,174,233,0.5); color:var(--text-secondary); font-size:0.85rem; margin-bottom:1rem; }
+        .hero h1 { font-size:3.2rem; margin-bottom:1rem; color:var(--text-primary); animation:fadeInDown 1s ease; }
+        .hero-subtitle { font-size:1.5rem; margin-bottom:1rem; color:var(--text-secondary); }
+        .hero p { font-size:1.1rem; margin-bottom:2rem; max-width:800px; margin-left:auto; margin-right:auto; color:var(--text-secondary); animation:fadeIn 1.5s ease; }
+        .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-bottom:3rem; }
+        .hero-stats { display:flex; justify-content:center; gap:3rem; flex-wrap:wrap; margin-top:1rem; }
+        .hero-stat { text-align:center; padding:1rem 1.5rem; background-color:rgba(0,0,0,0.25); border-radius:var(--border-radius); border:1px solid rgba(61,174,233,0.2); min-width:140px; transition:var(--transition); }
+        .hero-stat:hover { border-color:rgba(61,174,233,0.5); background-color:rgba(0,0,0,0.35); transform:translateY(-3px); }
+        .hero-stat-number { font-size:2rem; font-weight:bold; color:var(--accent-primary); display:block; }
+        .hero-stat-label { font-size:0.85rem; color:var(--text-secondary); margin-top:0.3rem; }
+        .hero-extra { margin-top:2rem; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; }
+        .hero-extra-item { display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.9rem; }
+        .hero-extra-item i { color:var(--accent-primary); }
+
+        /* ============ BUTTONS ============ */
+        .btn { display:inline-flex; align-items:center; gap:0.5rem; background-color:var(--accent-primary); color:white; padding:0.8rem 2rem; border-radius:50px; text-decoration:none; font-weight:bold; transition:var(--transition); border:none; cursor:pointer; font-size:1.05rem; box-shadow:0 4px 15px rgba(61,174,233,0.4); }
+        .btn:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(61,174,233,0.6); }
+        .btn-download { background-color:var(--success); box-shadow:0 4px 15px rgba(46,204,113,0.4); }
+        .btn-download:hover { box-shadow:0 6px 20px rgba(46,204,113,0.6); }
+        .btn-ghost { background:transparent; border:1px solid rgba(239,240,241,0.4); box-shadow:none; }
+        .btn-ghost:hover { background-color:rgba(239,240,241,0.08); box-shadow:0 4px 15px rgba(0,0,0,0.35); }
+        .btn-purple { background-color:var(--accent-purple); box-shadow:0 4px 15px rgba(155,89,182,0.4); }
+        .btn-purple:hover { box-shadow:0 6px 20px rgba(155,89,182,0.6); }
+        .btn-orange { background-color:var(--accent-orange); box-shadow:0 4px 15px rgba(230,126,34,0.4); }
+        .btn-orange:hover { box-shadow:0 6px 20px rgba(230,126,34,0.6); }
+        .btn-frozen { background-color:#555 !important; box-shadow:none !important; cursor:default !important; opacity:0.5; pointer-events:none; }
+        .btn-frozen:hover { transform:none !important; }
+
+        /* ============ SECTIONS ============ */
+        .section { padding:5rem 2rem; }
+        .section-alt { background-color:var(--bg-secondary); }
+        .section-title { text-align:center; margin-bottom:1rem; font-size:2.4rem; color:var(--accent-primary); }
+        .section-title.purple { color:var(--accent-purple); }
+        .section-title.orange { color:var(--accent-orange); }
+        .section-subtitle { text-align:center; margin:0 auto 3rem; max-width:750px; color:var(--text-secondary); font-size:1rem; line-height:1.7; }
+
+        /* ============ FEATURES ============ */
+        .features { max-width:1200px; margin:0 auto; }
+        .features-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:2rem; }
+        .feature-card { background-color:var(--bg-card); border-radius:var(--border-radius); padding:1.8rem; box-shadow:0 5px 15px rgba(0,0,0,0.3); transition:var(--transition); text-align:left; border:1px solid var(--bg-hover); position:relative; cursor:pointer; text-decoration:none; color:inherit; display:block; }
+        .feature-card::after { content:"Подробнее →"; position:absolute; right:1.2rem; bottom:1rem; font-size:0.75rem; color:var(--accent-primary); opacity:0; transform:translateY(4px); transition:var(--transition); }
+        .feature-card:hover { transform:translateY(-8px); box-shadow:0 15px 30px rgba(0,0,0,0.4); background-color:var(--bg-hover); border-color:var(--accent-primary); }
+        .feature-card:hover::after { opacity:1; transform:translateY(0); }
+        .feature-icon { font-size:2.4rem; color:var(--accent-primary); margin-bottom:1.2rem; }
+        .feature-card h3 { margin-bottom:0.6rem; color:var(--text-primary); }
+        .feature-card p { color:var(--text-secondary); font-size:0.95rem; line-height:1.6; }
+        .feature-detail { margin-top:0.6rem; font-size:0.85rem; color:var(--text-secondary); opacity:0.8; font-style:italic; }
+        .badges-row { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.8rem; }
+        .badge { padding:0.2rem 0.6rem; border-radius:999px; border:1px solid rgba(189,195,199,0.4); font-size:0.7rem; color:var(--text-secondary); }
+
+        /* ============ RUNGET 2.0 ============ */
+        .runget2 { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#1a1a2e 100%); position:relative; overflow:hidden; }
+        .runget2::before { content:""; position:absolute; inset:0; background-image:radial-gradient(circle at 20% 30%,rgba(155,89,182,0.15) 0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(155,89,182,0.1) 0%,transparent 50%); pointer-events:none; }
+        .runget2-container { max-width:1200px; margin:0 auto; position:relative; z-index:2; }
+        .runget2-header { text-align:center; margin-bottom:3rem; }
+        .runget2-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 1rem; border-radius:999px; background-color:rgba(155,89,182,0.2); border:1px solid var(--accent-purple); color:var(--accent-purple); font-size:0.85rem; margin-bottom:1rem; animation:pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
+        .runget2-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; }
+        .runget2-card { background-color:rgba(49,54,59,0.8); border-radius:var(--border-radius); padding:2rem; border:1px solid rgba(155,89,182,0.3); transition:var(--transition); }
+        .runget2-card:hover { transform:translateY(-6px); border-color:var(--accent-purple); background-color:rgba(58,63,68,0.9); box-shadow:0 10px 30px rgba(155,89,182,0.2); }
+        .runget2-card-icon { font-size:2rem; color:var(--accent-purple); margin-bottom:1rem; }
+        .runget2-card h3 { color:var(--text-primary); margin-bottom:0.5rem; }
+        .runget2-card p { color:var(--text-secondary); font-size:0.95rem; line-height:1.6; }
+        .runget2-card .badge { border-color:rgba(155,89,182,0.5); color:var(--accent-purple); }
+        .runget2-card ul { list-style:none; margin-top:0.7rem; }
+        .runget2-card ul li { color:var(--text-secondary); font-size:0.85rem; padding:0.25rem 0; padding-left:1.2rem; position:relative; }
+        .runget2-card ul li::before { content:"✦"; position:absolute; left:0; color:var(--accent-purple); font-size:0.7rem; }
+        .runget2-note { text-align:center; margin-top:3rem; padding:1.5rem; background-color:rgba(155,89,182,0.1); border-radius:var(--border-radius); border:1px dashed rgba(155,89,182,0.4); }
+        .runget2-note p { color:var(--text-secondary); font-size:0.95rem; }
+        .runget2-note i { color:var(--accent-purple); margin-right:0.5rem; }
+
+        /* ============ ARM (FROZEN) ============ */
+        .runget-arm { background:linear-gradient(135deg,#1a1a1a 0%,#222 50%,#1a1a1a 100%); position:relative; overflow:hidden; }
+        .runget-arm::before { content:""; position:absolute; inset:0; background-image:radial-gradient(circle at 15% 25%,rgba(100,100,100,0.06) 0%,transparent 45%),radial-gradient(circle at 85% 75%,rgba(100,100,100,0.04) 0%,transparent 45%); pointer-events:none; }
+        .runget-arm-container { max-width:1200px; margin:0 auto; position:relative; z-index:2; }
+        .runget-arm-header { text-align:center; margin-bottom:3rem; }
+        .runget-arm-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.4rem 1rem; border-radius:999px; background-color:rgba(100,100,100,0.15); border:1px solid #666; color:#888; font-size:0.85rem; margin-bottom:1rem; }
+        .frozen-banner {
+            display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1.2rem;
+            border-radius:999px; background-color:rgba(218,68,83,0.15); border:1px solid rgba(218,68,83,0.4);
+            color:var(--danger); font-size:0.9rem; font-weight:600; margin-bottom:1rem;
+        }
+        .arm-status { display:flex; justify-content:center; gap:2rem; margin-bottom:2rem; flex-wrap:wrap; }
+        .arm-status-item { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; background-color:rgba(0,0,0,0.3); border-radius:var(--border-radius); border:1px solid rgba(100,100,100,0.3); }
+        .arm-status-item i { color:#666; }
+        .arm-status-item span { color:#888; font-size:0.9rem; }
+        .runget-arm-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; }
+        .arm-card { background-color:rgba(40,40,40,0.7); border-radius:var(--border-radius); padding:1.8rem; border:1px solid rgba(100,100,100,0.25); }
+        .arm-card-header { display:flex; align-items:center; gap:1rem; margin-bottom:1rem; }
+        .arm-card-icon { font-size:2.2rem; }
+        .arm-card-icon.raspberry-icon { color:#777; }
+        .arm-card-icon.orange-icon { color:#777; }
+        .arm-card h3 { color:#999; font-size:1.2rem; }
+        .arm-card h4 { color:#999; font-size:1rem; margin:1rem 0 0.5rem; }
+        .arm-card p { color:#777; font-size:0.9rem; line-height:1.5; }
+        .arm-card ul { list-style:none; margin-top:0.8rem; }
+        .arm-card ul li { color:#777; font-size:0.85rem; padding:0.3rem 0; padding-left:1.2rem; position:relative; }
+        .arm-card ul li::before { content:"•"; position:absolute; left:0; color:#666; }
+        .arm-card .badge { border-color:rgba(100,100,100,0.4); color:#777; }
+        .arm-features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5rem; margin-top:2.5rem; }
+        .arm-feature { background-color:rgba(40,40,40,0.6); border-radius:var(--border-radius); padding:1.3rem; border:1px solid rgba(100,100,100,0.2); }
+        .arm-feature-icon { font-size:1.5rem; color:#666; margin-bottom:0.7rem; }
+        .arm-feature h4 { color:#999; font-size:0.95rem; margin-bottom:0.4rem; }
+        .arm-feature p { color:#777; font-size:0.85rem; }
+        .runget-arm-note { text-align:center; margin-top:3rem; padding:1.5rem; background-color:rgba(100,100,100,0.08); border-radius:var(--border-radius); border:1px dashed rgba(100,100,100,0.35); }
+        .runget-arm-note p { color:#888; font-size:0.95rem; }
+        .runget-arm-note i { color:#666; margin-right:0.5rem; }
+        .section-title.frozen { color:#777; }
+
+        /* ============ NEWS ============ */
+        .news { max-width:1200px; margin:0 auto; }
+        .news-list { display:grid; gap:1rem; }
+        .news-item { background-color:var(--bg-card); border-radius:var(--border-radius); padding:1.1rem 1.4rem; border:1px solid var(--bg-hover); transition:var(--transition); display:flex; flex-direction:column; gap:0.3rem; cursor:pointer; text-decoration:none; color:inherit; }
+        .news-item:hover { background-color:var(--bg-hover); transform:translateY(-4px); border-color:var(--accent-primary); }
+        .news-date { color:var(--accent-primary); font-weight:bold; font-size:0.85rem; }
+        .news-text { color:var(--text-secondary); font-size:0.95rem; }
+        .news-detail { color:var(--text-secondary); font-size:0.8rem; opacity:0.7; font-style:italic; margin-top:0.2rem; }
+        .news-item.news-highlight { border-color:var(--accent-purple); background:linear-gradient(135deg,rgba(155,89,182,0.1) 0%,var(--bg-card) 100%); }
+        .news-item.news-highlight .news-date { color:var(--accent-purple); }
+        .news-item.news-highlight:hover { border-color:var(--accent-purple); box-shadow:0 5px 20px rgba(155,89,182,0.2); }
+        .news-item.news-frozen { border-color:#555; background:rgba(50,50,50,0.5); cursor:default; pointer-events:none; }
+        .news-item.news-frozen .news-date { color:#666; }
+        .news-item.news-frozen .news-text { color:#777; }
+        .news-item.news-frozen .news-detail { color:#666; }
+        .news-item.news-frozen:hover { transform:none; background:rgba(50,50,50,0.5); border-color:#555; }
+
+        /* ============ DEVICES ============ */
+        .devices { color:var(--text-primary); text-align:center; }
+        .devices-container { max-width:1200px; margin:0 auto; }
+        .devices-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:2rem; margin-top:3rem; }
+        .device-card { background-color:var(--bg-card); border-radius:var(--border-radius); padding:1.5rem; transition:var(--transition); border:1px solid var(--bg-hover); }
+        .device-card:hover { background-color:var(--bg-hover); transform:translateY(-6px); border-color:var(--accent-primary); }
+        .device-icon { font-size:2.3rem; margin-bottom:1rem; color:var(--accent-primary); }
+        .device-card p { font-size:0.9rem; color:var(--text-secondary); line-height:1.5; }
+        .device-specs { margin-top:0.8rem; font-size:0.75rem; color:var(--text-secondary); opacity:0.7; }
+        .device-card.device-frozen { border-color:#444; cursor:default; pointer-events:none; }
+        .device-card.device-frozen:hover { background-color:var(--bg-card); transform:none; border-color:#444; }
+        .device-card.device-frozen .device-icon { color:#666; }
+        .device-card.device-frozen h3 { color:#888; }
+        .device-card.device-frozen p { color:#666; }
+        .device-card.device-frozen .device-specs { color:#555; }
+
+        /* ============ DOWNLOAD ============ */
+        .download { text-align:center; }
+        .download-container { max-width:1200px; margin:0 auto; }
+        .download-options { display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; margin-top:3rem; }
+        .download-card { background-color:var(--bg-card); border-radius:var(--border-radius); padding:2rem; width:300px; box-shadow:0 5px 15px rgba(0,0,0,0.3); transition:var(--transition); border:1px solid var(--bg-hover); text-align:left; position:relative; }
+        .download-card:hover { transform:translateY(-10px); box-shadow:0 15px 30px rgba(0,0,0,0.4); background-color:var(--bg-hover); border-color:var(--accent-primary); }
+        .download-card h3 { color:var(--text-primary); margin-bottom:0.5rem; }
+        .download-card p { color:var(--text-secondary); margin-bottom:1rem; font-size:0.95rem; }
+        .download-meta { font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.7rem; }
+        .download-chip { display:inline-block; padding:0.15rem 0.55rem; border-radius:999px; border:1px solid rgba(189,195,199,0.5); font-size:0.7rem; margin-right:0.3rem; margin-top:0.2rem; }
+        .download-requirements { margin-top:0.8rem; margin-bottom:1rem; padding:0.8rem; background-color:rgba(0,0,0,0.2); border-radius:var(--border-radius); border:1px solid rgba(189,195,199,0.15); }
+        .download-requirements h4 { font-size:0.8rem; color:var(--text-primary); margin-bottom:0.4rem; }
+        .download-requirements ul { list-style:none; font-size:0.75rem; color:var(--text-secondary); }
+        .download-requirements ul li { padding:0.15rem 0; padding-left:1rem; position:relative; }
+        .download-requirements ul li::before { content:"→"; position:absolute; left:0; color:var(--accent-primary); font-size:0.7rem; }
+        .download-card.download-frozen { border-color:#444 !important; cursor:default; pointer-events:none; }
+        .download-card.download-frozen:hover { transform:none; box-shadow:0 5px 15px rgba(0,0,0,0.3); background-color:var(--bg-card); border-color:#444; }
+        .download-card.download-frozen h3 { color:#777 !important; }
+        .download-card.download-frozen p { color:#666; }
+        .download-card.download-frozen .download-requirements h4 { color:#888; }
+        .download-card.download-frozen .download-requirements ul li { color:#666; }
+        .download-card.download-frozen .download-requirements ul li::before { color:#555; }
+        .download-card.download-frozen .download-chip { border-color:#555; color:#666; }
+        .download-card.download-frozen .btn { background-color:#555 !important; box-shadow:none !important; cursor:default !important; pointer-events:none; opacity:0.5; }
+
+        /* ============ GALLERY ============ */
+        .gallery { max-width:1200px; margin:0 auto; text-align:center; }
+        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+        .gallery-item { border-radius:var(--border-radius); overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.3); cursor:pointer; position:relative; text-decoration:none; display:block; aspect-ratio:16/10; }
+        .gallery-item::after { content:"Открыть скриншот"; position:absolute; left:50%; bottom:0.8rem; transform:translateX(-50%); padding:0.3rem 0.8rem; border-radius:999px; background-color:rgba(0,0,0,0.7); color:#fff; font-size:0.75rem; opacity:0; transition:var(--transition); }
+        .gallery-item img { width:100%; height:100%; object-fit:cover; display:block; transition:var(--transition); }
+        .gallery-item:hover img { transform:scale(1.05); }
+        .gallery-item:hover::after { opacity:1; }
+        .gallery-caption { text-align:center; margin-top:2rem; color:var(--text-secondary); font-size:0.9rem; max-width:700px; margin-left:auto; margin-right:auto; line-height:1.6; }
+
+        /* ============ ADVANTAGES ============ */
+        .os-advantages { max-width:1200px; margin:0 auto; }
+        .advantages-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; margin-top:2rem; }
+        .adv-card { background-color:var(--bg-card); border-radius:var(--border-radius); padding:1.7rem; border:1px solid var(--bg-hover); transition:var(--transition); cursor:pointer; text-decoration:none; color:inherit; display:block; }
+        .adv-card:hover { background-color:var(--bg-hover); transform:translateY(-6px); border-color:var(--accent-primary); }
+        .adv-title { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.7rem; }
+        .adv-title i { color:var(--accent-primary); }
+        .adv-card h3 { font-size:1.1rem; }
+        .adv-card p { color:var(--text-secondary); font-size:0.95rem; line-height:1.6; }
+        .adv-detail { margin-top:0.5rem; font-size:0.82rem; color:var(--text-secondary); opacity:0.7; border-top:1px solid rgba(189,195,199,0.15); padding-top:0.5rem; }
+
+        /* ============ SYSREQ ============ */
+        .sysreq { max-width:1200px; margin:0 auto; }
+        .sysreq-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2rem; margin-top:2rem; }
+        .sysreq-card { background-color:var(--bg-card); border-radius:var(--border-radius); padding:1.8rem; border:1px solid var(--bg-hover); transition:var(--transition); }
+        .sysreq-card:hover { border-color:var(--accent-primary); background-color:var(--bg-hover); }
+        .sysreq-card h3 { color:var(--accent-primary); margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+        .sysreq-card table { width:100%; border-collapse:collapse; }
+        .sysreq-card td { padding:0.4rem 0; font-size:0.9rem; color:var(--text-secondary); border-bottom:1px solid rgba(189,195,199,0.1); }
+        .sysreq-card td:first-child { color:var(--text-primary); font-weight:500; width:40%; }
+        .sysreq-card.sysreq-frozen { border-color:#444; cursor:default; pointer-events:none; }
+        .sysreq-card.sysreq-frozen:hover { border-color:#444; background-color:var(--bg-card); }
+        .sysreq-card.sysreq-frozen h3 { color:#666 !important; }
+        .sysreq-card.sysreq-frozen td { color:#666; }
+        .sysreq-card.sysreq-frozen td:first-child { color:#777; }
+
+        /* ============ FOOTER ============ */
+        .footer { background-color:var(--bg-secondary); color:var(--text-primary); padding:3rem 2rem; text-align:center; }
+        .footer-container { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; text-align:left; }
+        .footer-about p { color:var(--text-secondary); font-size:0.95rem; line-height:1.6; }
+        .footer-logo { display:flex; align-items:center; margin-bottom:1rem; }
+        .footer-logo img { height:30px; margin-right:10px; border-radius:6px; }
+        .footer-links h3 { margin-bottom:1rem; color:var(--accent-primary); }
+        .footer-links ul { list-style:none; }
+        .footer-links li { margin-bottom:0.5rem; font-size:0.9rem; line-height:1.5; }
+        .footer-links a { color:var(--text-secondary); text-decoration:none; transition:var(--transition); }
+        .footer-links a:hover { color:var(--accent-primary); }
+        .social-links { display:flex; gap:0.7rem; margin-top:1rem; }
+        .social-links a { color:var(--text-primary); background-color:var(--bg-hover); width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:var(--transition); text-decoration:none; }
+        .social-links a:hover { background-color:var(--accent-primary); transform:translateY(-3px); }
+        .footer-version { margin-top:1.5rem; padding:0.8rem; background-color:rgba(0,0,0,0.2); border-radius:var(--border-radius); font-size:0.8rem; color:var(--text-secondary); }
+        .copyright { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--bg-hover); color:var(--text-secondary); font-size:0.9rem; text-align:center; }
+        .copyright p:last-child { margin-top:0.5rem; font-size:0.8rem; opacity:0.7; }
+
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:translateY(0);} }
+        .animate-on-scroll { opacity:0; transform:translateY(30px); transition:opacity 0.6s ease, transform 0.6s ease; }
+        .animate-on-scroll.visible { opacity:1; transform:translateY(0); }
+
+        /* ============ BACK TO TOP ============ */
+        .back-to-top { position:fixed; bottom:2rem; right:2rem; width:50px; height:50px; background-color:var(--accent-primary); color:white; border:none; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem; opacity:0; visibility:hidden; transition:var(--transition); box-shadow:0 4px 15px rgba(61,174,233,0.4); z-index:999; }
+        .back-to-top.visible { opacity:1; visibility:visible; }
+        .back-to-top:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(61,174,233,0.6); }
+
+        /* ============ DESKTOP RESPONSIVE ============ */
+        @media (max-width:768px) {
+            body:not(.mode-mobile) .navbar-container { flex-direction:column; }
+            body:not(.mode-mobile) .nav-links { margin-top:1rem; flex-wrap:wrap; justify-content:center; }
+            body:not(.mode-mobile) .nav-links li { margin:0.3rem; }
+            body:not(.mode-mobile) .hero h1 { font-size:2rem; }
+            body:not(.mode-mobile) .hero-subtitle { font-size:1.2rem; }
+            body:not(.mode-mobile) .hero p { font-size:1rem; }
+            body:not(.mode-mobile) .hero-actions { flex-direction:column; }
+            body:not(.mode-mobile) .hero-stats { gap:1rem; }
+            body:not(.mode-mobile) .hero-stat { min-width:110px; padding:0.8rem 1rem; }
+            body:not(.mode-mobile) .btn { width:100%; justify-content:center; }
+            body:not(.mode-mobile) .section-title { font-size:1.8rem; }
+            body:not(.mode-mobile) .download-card { width:100%; }
+            body:not(.mode-mobile) .hero-extra { flex-direction:column; align-items:center; }
+        }
+
+        /* ============================================================ */
+        /* ============ MOBILE MODE STYLES ============ */
+        /* ============================================================ */
+        body.mode-mobile .navbar { display: none !important; }
+        body.mode-mobile .mobile-bottom-nav { display: block; }
+        body.mode-mobile .mobile-top-bar { display: block; }
+        body.mode-mobile .back-to-top { bottom: 5rem; right: 1rem; width: 44px; height: 44px; font-size: 1rem; }
+
+        body.mode-mobile .hero {
+            min-height: auto; padding: 70px 1rem 2rem; text-align: left;
+        }
+        body.mode-mobile .hero-content { padding: 1rem 0.5rem; }
+        body.mode-mobile .hero-badge { font-size: 0.75rem; padding: 0.2rem 0.7rem; }
+        body.mode-mobile .hero h1 { font-size: 1.6rem; text-align: left; line-height: 1.3; }
+        body.mode-mobile .hero-subtitle { font-size: 1rem; text-align: left; }
+        body.mode-mobile .hero p { font-size: 0.85rem; text-align: left; margin-bottom: 1.2rem; }
+        body.mode-mobile .hero-actions { flex-direction: column; gap: 0.6rem; margin-bottom: 1.5rem; }
+        body.mode-mobile .hero-actions .btn { width: 100%; justify-content: center; padding: 0.7rem 1.5rem; font-size: 0.9rem; border-radius: 12px; }
+        body.mode-mobile .hero-stats { gap: 0.6rem; justify-content: flex-start; }
+        body.mode-mobile .hero-stat { min-width: 0; flex: 1; padding: 0.7rem 0.5rem; border-radius: 12px; }
+        body.mode-mobile .hero-stat-number { font-size: 1.4rem; }
+        body.mode-mobile .hero-stat-label { font-size: 0.7rem; }
+        body.mode-mobile .hero-extra { flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; }
+        body.mode-mobile .hero-extra-item { font-size: 0.8rem; }
+
+        body.mode-mobile .section { padding: 2.5rem 1rem; }
+        body.mode-mobile .section-title { font-size: 1.5rem; text-align: left; }
+        body.mode-mobile .section-subtitle { text-align: left; font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+        body.mode-mobile .features-grid,
+        body.mode-mobile .runget2-grid,
+        body.mode-mobile .runget-arm-grid,
+        body.mode-mobile .advantages-grid,
+        body.mode-mobile .sysreq-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+
+        body.mode-mobile .feature-card,
+        body.mode-mobile .runget2-card,
+        body.mode-mobile .arm-card,
+        body.mode-mobile .adv-card,
+        body.mode-mobile .sysreq-card { padding: 1.2rem; border-radius: 12px; }
+        body.mode-mobile .feature-card::after { display: none; }
+        body.mode-mobile .feature-card:hover,
+        body.mode-mobile .runget2-card:hover,
+        body.mode-mobile .adv-card:hover { transform: none; }
+        body.mode-mobile .feature-icon { font-size: 1.8rem; margin-bottom: 0.7rem; }
+        body.mode-mobile .feature-detail { display: none; }
+
+        /* Mobile collapsible details */
+        body.mode-mobile .m-expand-btn {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            margin-top: 0.6rem; color: var(--accent-primary); font-size: 0.8rem;
+            cursor: pointer; border: none; background: none; padding: 0.3rem 0;
+        }
+        body.mode-mobile .feature-detail.m-expanded { display: block; }
+        body:not(.mode-mobile) .m-expand-btn { display: none !important; }
+
+        body.mode-mobile .arm-features-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        body.mode-mobile .arm-feature { padding: 1rem; border-radius: 12px; }
+        body.mode-mobile .arm-feature-icon { font-size: 1.2rem; margin-bottom: 0.4rem; }
+        body.mode-mobile .arm-feature h4 { font-size: 0.85rem; }
+        body.mode-mobile .arm-feature p { font-size: 0.75rem; }
+
+        body.mode-mobile .arm-status { flex-direction: column; gap: 0.5rem; align-items: stretch; }
+        body.mode-mobile .arm-status-item { justify-content: center; font-size: 0.8rem; padding: 0.4rem 0.8rem; border-radius: 10px; }
+
+        body.mode-mobile .news-list { gap: 0.6rem; }
+        body.mode-mobile .news-item { padding: 0.9rem 1rem; border-radius: 12px; }
+        body.mode-mobile .news-item:hover { transform: none; }
+
+        body.mode-mobile .devices-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1.5rem; }
+        body.mode-mobile .device-card { padding: 1rem; border-radius: 12px; text-align: center; }
+        body.mode-mobile .device-card:hover { transform: none; }
+        body.mode-mobile .device-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        body.mode-mobile .device-card h3 { font-size: 0.9rem; }
+        body.mode-mobile .device-card p { font-size: 0.75rem; }
+        body.mode-mobile .device-specs { font-size: 0.65rem; }
+
+        body.mode-mobile .download-options { flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; }
+        body.mode-mobile .download-card { width: 100%; padding: 1.2rem; border-radius: 12px; }
+        body.mode-mobile .download-card:hover { transform: none; }
+        body.mode-mobile .download-card .btn { width: 100%; justify-content: center; border-radius: 10px; padding: 0.7rem; font-size: 0.9rem; }
+
+        body.mode-mobile .gallery-grid { grid-template-columns: 1fr; gap: 0.8rem; }
+        body.mode-mobile .gallery-item { border-radius: 12px; aspect-ratio: 16/9; }
+        body.mode-mobile .gallery-item::after { display: none; }
+        body.mode-mobile .gallery-caption { text-align: left; font-size: 0.8rem; }
+
+        body.mode-mobile .footer { padding: 2rem 1rem 5rem; }
+        body.mode-mobile .footer-container { grid-template-columns: 1fr; gap: 1.5rem; }
+        body.mode-mobile .footer-links h3 { font-size: 1rem; }
+
+        body.mode-mobile .runget2-header,
+        body.mode-mobile .runget-arm-header { text-align: left; }
+        body.mode-mobile .runget2-badge,
+        body.mode-mobile .runget-arm-badge { font-size: 0.75rem; }
+        body.mode-mobile .runget2-note,
+        body.mode-mobile .runget-arm-note { text-align: left; padding: 1rem; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <!-- ============ VERSION SELECTOR ============ -->
+    <div class="version-selector" id="versionSelector">
+        <div class="vs-logo">
+            <img src="Runget.jpg" alt="Runget">
+            <span>Runget OS</span>
+        </div>
+        <p class="vs-subtitle">Легкая, быстрая, простая и красивая Debian-based ОС</p>
+        <p class="vs-title">Выберите версию сайта</p>
+        <div class="vs-options">
+            <div class="vs-card" id="vsDesktop">
+                <div class="vs-card-icon"><i class="fas fa-desktop"></i></div>
+                <h3>Обычная</h3>
+                <p>Для ПК и ноутбуков. Полный интерфейс с навигацией, анимациями и эффектами наведения.</p>
+                <span class="vs-rec" style="background:rgba(61,174,233,0.15); color:var(--accent-primary); border:1px solid rgba(61,174,233,0.4);">Для компьютеров</span>
+            </div>
+            <div class="vs-card" id="vsMobile">
+                <div class="vs-card-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Мобильная</h3>
+                <p>Для смартфонов и планшетов. Адаптивный интерфейс с нижней навигацией и крупными элементами.</p>
+                <span class="vs-rec" style="background:rgba(46,204,113,0.15); color:var(--success); border:1px solid rgba(46,204,113,0.4);">Для телефонов</span>
+            </div>
+        </div>
+
+        <p class="vs-footer">© 2026 Kolyadual & kirilldual. Все права защищены.</p>
+    </div>
+
+    <!-- ============ MOBILE TOP BAR ============ -->
+    <div class="mobile-top-bar">
+        <div class="mobile-top-bar-container">
+            <a href="#top" class="logo">
+                <img src="Runget.jpg" alt="Runget Logo">
+                <span>Runget OS</span>
+            </a>
+            <div class="mobile-top-bar-right">
+                <button class="btn-switch-mode" id="switchToDesktop"><i class="fas fa-desktop"></i> ПК</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MOBILE BOTTOM NAV ============ -->
+    <nav class="mobile-bottom-nav">
+        <ul>
+            <li><a href="#top" class="active"><i class="fas fa-home"></i><span>Главная</span></a></li>
+            <li><a href="#features"><i class="fas fa-star"></i><span>Функции</span></a></li>
+            <li><a href="#download"><i class="fas fa-download"></i><span>Скачать</span></a></li>
+            <li><a href="#news"><i class="fas fa-newspaper"></i><span>Новости</span></a></li>
+            <li><a href="#community"><i class="fas fa-users"></i><span>Ещё</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- ============ DESKTOP NAVBAR ============ -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="#top" class="logo">
+                <img src="Runget.jpg" alt="Runget Logo">
+                <span>Runget OS</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Возможности</a></li>
+                <li><a href="#runget2" class="nav-new"><i class="fas fa-rocket"></i> 2.0</a></li>
+                <li><a href="#runget-arm" class="nav-arm"><i class="fas fa-snowflake"></i> ARM (заморожено)</a></li>
+                <li><a href="#advantages">Плюсы</a></li>
+                <li><a href="#sysreq">Требования</a></li>
+                <li><a href="#news">Новости</a></li>
+                <li><a href="#devices">Устройства</a></li>
+                <li><a href="#download">Скачать</a></li>
+                <li><a href="#gallery">Галерея</a></li>
+                <li><a href="#community">Сообщество</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="top">
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fab fa-linux"></i>
+                    <span>Debian-based Linux с поддержкой Windows и Android</span>
+                </div>
+                <h1>Runget — удобная, красивая и быстрая операционная система</h1>
+                <p class="hero-subtitle">Одна система для дома, офиса, серверов, игр и экспериментов.</p>
+                <p>Runget основан на Debian и Linux-ядре и сочетает стабильность Debian-семейства с расширенной совместимостью с Windows, Linux и Android-приложениями, включая подсистему Andryemu для Android. Система оптимизирована для работы на широком спектре оборудования — от старых ПК с минимальными характеристиками до современных игровых станций и серверов.</p>
+                <div class="hero-actions">
+                    <a href="#download" class="btn btn-download"><i class="fas fa-download"></i> Скачать Runget 1.0</a>
+                    <a href="#runget2" class="btn btn-purple"><i class="fas fa-rocket"></i> Runget 2.0</a>
+                    <a href="#features" class="btn"><i class="fas fa-list"></i> Возможности</a>
+                    <a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" class="btn btn-ghost" target="_blank" rel="noopener"><i class="fab fa-github"></i> Исходный код</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><span class="hero-stat-number">3</span><span class="hero-stat-label">Платформы приложений</span></div>
+                    <div class="hero-stat"><span class="hero-stat-number">2</span><span class="hero-stat-label">Редакции системы</span></div>
+                    <div class="hero-stat"><span class="hero-stat-number">5+</span><span class="hero-stat-label">Типов устройств</span></div>
+                    <div class="hero-stat"><span class="hero-stat-number">∞</span><span class="hero-stat-label">Пакетов через APT</span></div>
+                </div>
+                <div class="hero-extra">
+                    <div class="hero-extra-item"><i class="fas fa-check-circle"></i><span>Бесплатная и с открытым кодом</span></div>
+                    <div class="hero-extra-item"><i class="fas fa-check-circle"></i><span>Основана на Debian Stable</span></div>
+                    <div class="hero-extra-item"><i class="fas fa-check-circle"></i><span>KDE Plasma интерфейс</span></div>
+                    <div class="hero-extra-item"><i class="fas fa-check-circle"></i><span>Активная разработка</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="section" id="features">
+            <div class="features">
+                <h2 class="section-title">Почему именно Runget?</h2>
+                <p class="section-subtitle">Современный интерфейс в стиле KDE, запуск Windows и Android-приложений, поддержка приложений разных Linux-дистрибутивов и высокая производительность даже на старом железе.</p>
+                <div class="features-grid">
+                    <a class="feature-card" href="https://www.debian.org" target="_blank" rel="noopener">
+                        <div class="feature-icon"><i class="fab fa-linux"></i></div>
+                        <h3>На базе Debian</h3>
+                        <p>Runget использует стабильную платформу Debian, что даёт предсказуемые обновления, безопасность и совместимость с огромным количеством пакетов.</p>
+                        <p class="feature-detail">Debian — один из старейших и наиболее проверенных Linux-дистрибутивов. Runget наследует эту стабильную базу и добавляет собственные репозитории.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Debian</span><span class="badge">APT</span><span class="badge">Stable</span><span class="badge">dpkg</span><span class="badge">systemd</span></div>
+                    </a>
+                    <a class="feature-card" href="https://www.winehq.org" target="_blank" rel="noopener">
+                        <div class="feature-icon"><i class="fab fa-windows"></i></div>
+                        <h3>Поддержка Windows-приложений</h3>
+                        <p>Запускайте Windows-программы и игры через совместимый слой (Wine/Proton), чтобы использовать привычный софт без переустановки системы.</p>
+                        <p class="feature-detail">Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других Windows-приложений через Wine.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Игры</span><span class="badge">Офис</span><span class="badge">Wine</span><span class="badge">Proton</span><span class="badge">.exe</span></div>
+                    </a>
+                    <a class="feature-card" href="https://github.com/Kolyadual/Andryemu" target="_blank" rel="noopener">
+                        <div class="feature-icon"><i class="fab fa-android"></i></div>
+                        <h3>Android-приложения</h3>
+                        <p>Andryemu — Android-эмулятор и подсистема для Runget, позволяющая запускать Android-приложения прямо на рабочем столе.</p>
+                        <p class="feature-detail">Устанавливайте APK-файлы напрямую, используйте мобильные приложения и игры. Andryemu обеспечивает аппаратное ускорение графики.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Andryemu</span><span class="badge">APK</span><span class="badge">Google Play</span><span class="badge">ARM-трансляция</span></div>
+                    </a>
+                    <a class="feature-card" href="#advantages">
+                        <div class="feature-icon"><i class="fas fa-random"></i></div>
+                        <h3>Приложения других дистрибутивов</h3>
+                        <p>Runget нацелен на запуск приложений, созданных для Debian, Ubuntu, Fedora, Arch и других дистрибутивов.</p>
+                        <p class="feature-detail">Flatpak и AppImage работают «из коробки», а Snap-пакеты можно установить дополнительно.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">.deb</span><span class="badge">Flatpak</span><span class="badge">AppImage</span><span class="badge">Snap</span></div>
+                    </a>
+                    <a class="feature-card" href="https://store.steampowered.com" target="_blank" rel="noopener">
+                        <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
+                        <h3>Игровая платформа</h3>
+                        <p>Поддержка Steam, Proton и других лаунчеров делает Runget удобной платформой для игр под Linux.</p>
+                        <p class="feature-detail">Тысячи игр из библиотеки Steam работают нативно или через Proton. Vulkan и OpenGL обеспечивают высокую производительность.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Steam</span><span class="badge">Proton</span><span class="badge">Lutris</span><span class="badge">Vulkan</span></div>
+                    </a>
+                    <a class="feature-card" href="#gallery">
+                        <div class="feature-icon"><i class="fas fa-magic"></i></div>
+                        <h3>Красивый интерфейс</h3>
+                        <p>Интерфейс с тёмной темой вдохновлён KDE Plasma и Breeze Dark. Плавные анимации, виджеты и полная кастомизация.</p>
+                        <p class="feature-detail">Настраиваемые виджеты, панели и рабочие столы. Полная кастомизация внешнего вида.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">KDE-стиль</span><span class="badge">Тёмная тема</span><span class="badge">Виджеты</span></div>
+                    </a>
+                    <a class="feature-card" href="#devices">
+                        <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <h3>Высокая производительность</h3>
+                        <p>Оптимизация под слабые и старые ПК. Минимальное потребление RAM (от 512 МБ), быстрая загрузка.</p>
+                        <p class="feature-detail">Отзывчивый интерфейс даже на процессорах 10-летней давности. Runget Core потребляет ещё меньше ресурсов.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Старые ПК</span><span class="badge">Оптимизация</span><span class="badge">Быстрая загрузка</span></div>
+                    </a>
+                    <a class="feature-card" href="#sysreq">
+                        <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Безопасность и приватность</h3>
+                        <p>Без телеметрии и сбора данных. Регулярные обновления безопасности от Debian, встроенный файрвол.</p>
+                        <p class="feature-detail">Поддержка LUKS, SELinux/AppArmor, автоматические обновления безопасности.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">Без телеметрии</span><span class="badge">Файрвол</span><span class="badge">LUKS</span><span class="badge">AppArmor</span></div>
+                    </a>
+                    <a class="feature-card" href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener">
+                        <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
+                        <h3>Открытый исходный код</h3>
+                        <p>Runget полностью открыт — исходный код доступен на GitHub. Каждый может изучить и модифицировать систему.</p>
+                        <p class="feature-detail">Прозрачная разработка, открытый баг-трекер, возможность внести свой вклад через pull-request.</p>
+                        <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
+                        <div class="badges-row"><span class="badge">GitHub</span><span class="badge">Open Source</span><span class="badge">GPL</span><span class="badge">Community</span></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- RUNGET 2.0 -->
+        <section class="section runget2" id="runget2">
+            <div class="runget2-container">
+                <div class="runget2-header">
+                    <div class="runget2-badge"><i class="fas fa-flask"></i><span>В разработке</span></div>
+                    <h2 class="section-title purple">Runget 2.0 Big Brain</h2>
+                    <p class="section-subtitle">Следующее поколение Runget с улучшенной безопасностью, стабильностью и расширенной совместимостью.</p>
+                </div>
+                <div class="runget2-grid">
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-shield-alt"></i></div>
+                        <h3>Улучшенная стабильность</h3>
+                        <p>Переработанное ядро и системные компоненты обеспечивают ещё более надёжную работу.</p>
+                        <ul><li>Обновлённое ядро Linux</li><li>Улучшенное управление памятью</li><li>Автоматическое восстановление после сбоев</li><li>Оптимизированный планировщик задач</li><li>Поддержка Btrfs, ZFS, ext4</li></ul>
+                        <div class="badges-row"><span class="badge">Надёжность</span><span class="badge">Ядро</span><span class="badge">Драйверы</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fab fa-windows"></i></div>
+                        <h3>Улучшенная поддержка Windows</h3>
+                        <p>Расширенная совместимость с Windows-приложениями и играми.</p>
+                        <ul><li>Автоопределение Windows-приложений</li><li>Профили для популярных программ</li><li>DirectX 11/12 через DXVK/VKD3D</li><li>Интеграция .exe в файловый менеджер</li><li>.NET Framework и Visual C++ Runtime</li></ul>
+                        <div class="badges-row"><span class="badge">Wine 9+</span><span class="badge">Proton</span><span class="badge">DXVK</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fab fa-android"></i></div>
+                        <h3>Улучшенная поддержка Android</h3>
+                        <p>Доработанная подсистема Andryemu с лучшей производительностью.</p>
+                        <ul><li>Andryemu 2.0</li><li>Улучшенная трансляция ARM → x86</li><li>Уведомления в системном трее</li><li>Общий буфер обмена</li><li>GPU-ускорение для мобильных игр</li></ul>
+                        <div class="badges-row"><span class="badge">Andryemu 2.0</span><span class="badge">APK</span><span class="badge">GPU</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-lock"></i></div>
+                        <h3>Secure Boot и TPM 2.0</h3>
+                        <p>Полная поддержка Secure Boot и TPM/fTPM 2.0 для повышенной безопасности.</p>
+                        <ul><li>Подписанный загрузчик UEFI</li><li>Интеграция с TPM 2.0</li><li>Поддержка fTPM (AMD/Intel)</li><li>Верификация ядра при загрузке</li><li>Корпоративные политики</li></ul>
+                        <div class="badges-row"><span class="badge">Secure Boot</span><span class="badge">TPM 2.0</span><span class="badge">fTPM</span><span class="badge">UEFI</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-palette"></i></div>
+                        <h3>Обновлённый интерфейс</h3>
+                        <p>Новые виджеты, улучшенные анимации и расширенная кастомизация.</p>
+                        <ul><li>Новые темы и иконки</li><li>Улучшенный центр уведомлений</li><li>Переработанное меню приложений</li><li>Динамические обои</li><li>HiDPI и мульти-мониторы</li></ul>
+                        <div class="badges-row"><span class="badge">UI/UX</span><span class="badge">HiDPI</span><span class="badge">Темы</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-hdd"></i></div>
+                        <h3>Улучшенный установщик</h3>
+                        <p>Переработанный процесс установки с графическим интерфейсом.</p>
+                        <ul><li>Пошаговый графический мастер</li><li>Автоматическая разметка диска</li><li>Определение драйверов</li><li>Выбор пакетов и конфигураций</li><li>NVMe, SSD, HDD, USB</li></ul>
+                        <div class="badges-row"><span class="badge">GUI-установщик</span><span class="badge">Dual-boot</span><span class="badge">Auto-detect</span></div>
+                    </div>
+                </div>
+                <div class="runget2-note">
+                    <p><i class="fas fa-info-circle"></i> Это не полный список нововведений. Многие доработки будут опубликованы позже. Следите за обновлениями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:var(--accent-purple);">@runget_rt</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- RUNGET ARM (FROZEN) -->
+        <section class="section runget-arm" id="runget-arm">
+            <div class="runget-arm-container">
+                <div class="runget-arm-header">
+                    <div class="frozen-banner"><i class="fas fa-snowflake"></i><span>Разработка заморожена</span></div>
+                    <div class="runget-arm-badge"><i class="fas fa-pause-circle"></i><span>Проект приостановлен</span></div>
+                    <h2 class="section-title frozen">Runget для Raspberry Pi и Orange Pi</h2>
+                    <p class="section-subtitle" style="color:#888;">Специальные сборки для одноплатных компьютеров на базе ARM-архитектуры. Разработка временно заморожена.</p>
+                    <div class="arm-status">
+                        <div class="arm-status-item"><i class="fas fa-snowflake"></i><span>Статус: Заморожено</span></div>
+                        <div class="arm-status-item"><i class="fas fa-pause-circle"></i><span>Разработка приостановлена</span></div>
+                        <div class="arm-status-item"><i class="fas fa-question-circle"></i><span>Дата возобновления: неизвестна</span></div>
+                    </div>
+                </div>
+                <div class="runget-arm-grid">
+                    <div class="arm-card raspberry">
+                        <div class="arm-card-header"><div class="arm-card-icon raspberry-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3></div>
+                        <p>Официальная сборка для семейства Raspberry Pi. Оптимизирована для максимальной производительности.</p>
+                        <h4>Модели (планировалось):</h4>
+                        <ul><li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li><li>Raspberry Pi 4 Model B (8GB/4GB/2GB)</li><li>Raspberry Pi 3 Model B+</li><li>Raspberry Pi Zero 2 W — CLI-сборка</li><li>Raspberry Pi 400</li><li>Compute Module 4</li></ul>
+                        <h4>Особенности:</h4>
+                        <ul><li>GPIO (40-pin) для электроники</li><li>Драйверы Pi Camera</li><li>Поддержка сенсорного дисплея</li><li>VideoCore GPU с аппаратным декодированием</li><li>Wi-Fi и Bluetooth</li></ul>
+                        <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Broadcom</span><span class="badge">GPIO</span><span class="badge">Заморожено</span></div>
+                    </div>
+                    <div class="arm-card orange">
+                        <div class="arm-card-header"><div class="arm-card-icon orange-icon"><i class="fas fa-microchip"></i></div><h3>Orange Pi</h3></div>
+                        <p>Сборка для линейки Orange Pi — мощных альтернатив Raspberry Pi на процессорах Rockchip и Allwinner.</p>
+                        <h4>Модели (планировалось):</h4>
+                        <ul><li>Orange Pi 5 Plus (RK3588) — до 32GB RAM</li><li>Orange Pi 5 (RK3588S) — NPU 6 TOPS</li><li>Orange Pi 4 LTS (RK3399)</li><li>Orange Pi 3 LTS (H6)</li><li>Orange Pi Zero 2/3 — для IoT</li></ul>
+                        <h4>Особенности:</h4>
+                        <ul><li>NPU для машинного обучения</li><li>NVMe SSD через M.2</li><li>До 32GB LPDDR4X RAM</li><li>8K через HDMI 2.1</li><li>USB 3.0/3.1</li></ul>
+                        <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Rockchip</span><span class="badge">Allwinner</span><span class="badge">NPU</span><span class="badge">Заморожено</span></div>
+                    </div>
+                </div>
+                <div class="arm-features-grid">
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-home"></i></div><h4>Умный дом</h4><p>Home Assistant, openHAB. Zigbee, Z-Wave, Wi-Fi.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-photo-video"></i></div><h4>Медиа-центр</h4><p>Kodi, Jellyfin, Plex. 4K/8K декодирование.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-network-wired"></i></div><h4>Сетевые сервисы</h4><p>Pi-hole, VPN, NAS. WireGuard, Samba.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-robot"></i></div><h4>Робототехника</h4><p>GPIO, I2C, SPI, UART. Совместимость с ROS.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-graduation-cap"></i></div><h4>Обучение</h4><p>Python, Scratch, C/C++ из коробки.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-gamepad"></i></div><h4>Ретро-игры</h4><p>RetroPie, Lakka. NES, SNES, PS1, N64.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-cloud"></i></div><h4>Edge Computing</h4><p>K3s, Docker, Grafana, InfluxDB.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-bolt"></i></div><h4>Энергоэффективность</h4><p>От 2W до 15W. Бесшумная работа 24/7.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-video"></i></div><h4>Видеонаблюдение</h4><p>MotionEye, Frigate. USB и CSI камеры.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-print"></i></div><h4>3D-печать</h4><p>OctoPrint, Klipper. Веб-интерфейс, мониторинг.</p></div>
+                </div>
+                <div class="runget-arm-note">
+                    <p><i class="fas fa-snowflake"></i> <strong>Разработка заморожена.</strong> ARM-версии Runget временно приостановлены. Дата возобновления пока неизвестна. Следите за новостями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:#888;">@runget_rt</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADVANTAGES -->
+        <section class="section section-alt" id="advantages">
+            <div class="os-advantages">
+                <h2 class="section-title">Плюсы Runget и Debian-based систем</h2>
+                <p class="section-subtitle">Runget наследует сильные стороны Debian-семейства и добавляет свои фишки: акцент на совместимость и восстановление систем.</p>
+                <div class="advantages-grid">
+                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian-based дистрибутивы известны стабильностью и строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
+                    <a class="adv-card" href="https://packages.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-box-open"></i><h3>Огромный выбор пакетов</h3></div><p>APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Более 59 000 пакетов в репозиториях Debian.</p></a>
+                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-sync-alt"></i><h3>Простые обновления</h3></div><p>Обновление через apt или графические утилиты.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sudo apt update && sudo apt upgrade</code></p></a>
+                    <a class="adv-card" href="https://dzen.ru/video/watch/690a15ec93cc0216e183ee80" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-project-diagram"></i><h3>Восстановление систем</h3></div><p>Runget может использоваться для восстановления Debian/Ubuntu-систем.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Восстановление GRUB, fstab, сброс пароля root.</p></a>
+                    <a class="adv-card" href="#community"><div class="adv-title"><i class="fas fa-users"></i><h3>Сообщество</h3></div><p>Большое сообщество Debian и формирующаяся база Runget.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Инструкции для Debian/Ubuntu применимы напрямую.</p></a>
+                    <a class="adv-card" href="https://t.me/runget_rt" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-life-ring"></i><h3>Удобство для новичков</h3></div><p>Дружественный интерфейс и подсказки для лёгкой адаптации.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Панель задач, меню «Пуск» — как в Windows.</p></a>
+                    <a class="adv-card" href="#features"><div class="adv-title"><i class="fas fa-puzzle-piece"></i><h3>Универсальная совместимость</h3></div><p>Три экосистемы одновременно: Linux, Windows и Android.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> LibreOffice + 1С через Wine + Telegram через Andryemu.</p></a>
+                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-feather-alt"></i><h3>Лёгкость и скорость</h3></div><p>Потребляет меньше ресурсов, чем Windows 10/11 или macOS.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> 1GB RAM и 10GB диска vs 4GB RAM и 64GB для Windows 11.</p></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYSTEM REQUIREMENTS -->
+        <section class="section" id="sysreq">
+            <div class="sysreq">
+                <h2 class="section-title">Системные требования</h2>
+                <p class="section-subtitle">Runget оптимизирован для широкого спектра оборудования.</p>
+                <div class="sysreq-grid">
+                    <div class="sysreq-card"><h3><i class="fas fa-desktop"></i> Runget 1.0</h3><table><tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr><tr><td>Видео</td><td>X11/Wayland</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet или Wi-Fi</td></tr></table></div>
+                    <div class="sysreq-card"><h3><i class="fas fa-server"></i> Runget 1.0 Core</h3><table><tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr><tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr><tr><td>Видео</td><td>Не требуется (CLI)</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr></table></div>
+                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5V/3A USB-C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEWS -->
+        <section class="section section-alt" id="news">
+            <div class="news">
+                <h2 class="section-title">Новости Runget</h2>
+                <p class="section-subtitle">Следите за развитием системы и новыми возможностями.</p>
+                <div class="news-list">
+                    <a class="news-item news-highlight" href="#runget2"><span class="news-date"><i class="fas fa-rocket"></i> Анонс</span><span class="news-text">Runget 2.0 Big Brain — следующее поколение системы уже в разработке!</span><span class="news-detail">Улучшенная стабильность, Secure Boot, TPM 2.0, новый установщик.</span></a>
+                    <div class="news-item news-frozen"><span class="news-date"><i class="fas fa-snowflake"></i> ARM — заморожено</span><span class="news-text">Разработка версий для Raspberry Pi и Orange Pi приостановлена.</span><span class="news-detail">Дата возобновления пока неизвестна.</span></div>
+                    <div class="news-item"><span class="news-date">[07.05.2025]</span><span class="news-text">Runget 1.0 Anythink Anywhere is coming soon!</span><span class="news-detail">Полноценная настольная версия с предустановленными приложениями.</span></div>
+                    <a class="news-item" href="https://t.me/runget_rt" target="_blank" rel="noopener"><span class="news-date">[09.04.2025]</span><span class="news-text">Новый официальный канал: @runget_rt.</span><span class="news-detail">Все новости и обновления теперь в @runget_rt.</span></a>
+                    <div class="news-item"><span class="news-date">[01.09.2025]</span><span class="news-text">Runget 1.0 Core доступен для загрузки.</span></div>
+                    <div class="news-item"><span class="news-date">[03.11.2025]</span><span class="news-text">Релиз Runget 1.0 — первая стабильная версия.</span></div>
+                    <div class="news-item"><span class="news-date">[05.11.2025]</span><span class="news-text">Протестирован в QEMU с Core2Duo — отличные результаты.</span></div>
+                    <div class="news-item"><span class="news-date">[06.11.2025]</span><span class="news-text">Windows и Android-приложения работают успешно.</span></div>
+                    <div class="news-item"><span class="news-date">[07.11.2025]</span><span class="news-text">Приложения Debian, Ubuntu, Arch, Gentoo, Fedora работают корректно.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEVICES -->
+        <section class="section devices" id="devices">
+            <div class="devices-container">
+                <h2 class="section-title">Runget на любом устройстве</h2>
+                <p class="section-subtitle">Универсальная система для компьютеров, ноутбуков, серверов и экспериментальных платформ.</p>
+                <div class="devices-grid">
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-desktop"></i></div><h3>Компьютеры</h3><p>Полноценная замена Windows. Поддержка NVIDIA, AMD, Intel GPU.</p><div class="device-specs">Intel/AMD x86_64 • 1+ ГБ RAM</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-laptop"></i></div><h3>Ноутбуки</h3><p>Оптимизация питания и драйверов. Гибернация и спящий режим.</p><div class="device-specs">TLP • Wi-Fi/BT • Тачпад</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-server"></i></div><h3>Серверы</h3><p>Runget Core для серверных сценариев. Docker и KVM из коробки.</p><div class="device-specs">SSH • Docker • KVM/QEMU</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-mobile-alt"></i></div><h3>Телефоны</h3><p>Экспериментальная поддержка смартфонов и планшетов.</p><div class="device-specs">Экспериментально • Сенсорный UI</div></div>
+                    <div class="device-card device-frozen"><div class="device-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3><p>Специальная сборка для одноплатных компьютеров. <em>(Заморожено)</em></p><div class="device-specs">ARM64 • Broadcom • GPIO</div></div>
+                    <div class="device-card device-frozen"><div class="device-icon"><i class="fas fa-microchip"></i></div><h3>Orange Pi</h3><p>Сборки для Orange Pi 3/4/5 с NPU. <em>(Заморожено)</em></p><div class="device-specs">ARM64 • Rockchip • Allwinner</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-hdd"></i></div><h3>Виртуальные машины</h3><p>QEMU/KVM, VirtualBox и VMware.</p><div class="device-specs">QEMU • VirtualBox • VMware</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <section class="section section-alt download" id="download">
+            <div class="download-container">
+                <h2 class="section-title">Скачать Runget</h2>
+                <p class="section-subtitle">Выберите сборку под ваши задачи. Все образы бесплатны и с открытым исходным кодом.</p>
+                <div class="download-options">
+                    <div class="download-card">
+                        <h3>Runget 1.0</h3>
+                        <p>Полная настольная версия с графическим интерфейсом.</p>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>KDE Plasma с тёмной темой</li><li>Браузер, файловый менеджер, терминал</li><li>Wine для Windows-приложений</li><li>Andryemu для Android</li><li>Мультимедиа-кодеки</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">x86_64</span><span class="download-chip">ISO</span><span class="download-chip">UEFI+BIOS</span></div>
+                        <a href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
+                    </div>
+                    <div class="download-card">
+                        <h3>Runget 1.0 Core</h3>
+                        <p>Облегченная версия для серверов и продвинутых пользователей.</p>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>CLI-установка без GUI</li><li>SSH-сервер</li><li>Базовые утилиты и APT</li><li>Docker</li><li>Опциональный рабочий стол</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">CLI</span><span class="download-chip">x86_64</span><span class="download-chip">UEFI+BIOS</span></div>
+                        <a href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
+                    </div>
+                    <div class="download-card download-frozen">
+                        <h3>Raspberry Pi</h3>
+                        <p>Сборка для Raspberry Pi 3/4/5, Zero 2 W и Pi 400.</p>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD</li><li>Pi 3, 4, 5, 400, Zero 2 W</li><li>GPIO-библиотеки</li><li>VideoCore GPU</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
+                        <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                    </div>
+                    <div class="download-card download-frozen">
+                        <h3>Orange Pi</h3>
+                        <p>Сборка для Orange Pi 3/4/5 на Rockchip и Allwinner.</p>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD/eMMC</li><li>Rockchip RK3588/RK3399</li><li>Allwinner H6/H616/H618</li><li>NPU-драйверы</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
+                        <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="section gallery" id="gallery">
+            <h2 class="section-title">Галерея Runget</h2>
+            <p class="section-subtitle">Runget 1.0 Anythink Anywhere.</p>
+            <div class="gallery-grid">
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/7296ed95-d2d0-4693-8b65-a0193eaeb880" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/7296ed95-d2d0-4693-8b65-a0193eaeb880" alt="Рабочий стол" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/8daac9e6-442a-45ea-a9c8-a8da8293cdbf" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/8daac9e6-442a-45ea-a9c8-a8da8293cdbf" alt="Интерфейс системы" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/cd00d85f-887d-4c61-bf02-9cbaf823eeac" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/cd00d85f-887d-4c61-bf02-9cbaf823eeac" alt="Файловый менеджер" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/fc973a90-011e-40a7-a548-d1cc392e798e" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/fc973a90-011e-40a7-a548-d1cc392e798e" alt="Настройки системы" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/0b5a2fa2-f7ac-40c8-bc46-1481568e4842" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/0b5a2fa2-f7ac-40c8-bc46-1481568e4842" alt="Терминал" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/b4306b28-e013-4e0e-9e30-1292b8f6f876" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/b4306b28-e013-4e0e-9e30-1292b8f6f876" alt="Панель задач" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/ca25da02-9359-47bf-893d-fb24757d66d8" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/ca25da02-9359-47bf-893d-fb24757d66d8" alt="Тестирование" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/e22b9726-2ed9-4828-9b2e-2d35161a1590" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/e22b9726-2ed9-4828-9b2e-2d35161a1590" alt="Обои Runget" loading="lazy"></a>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="community">
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="Runget.jpg" alt="Runget Logo"><span>Runget OS</span></div>
+                <p>Универсальная операционная система для всех ваших устройств. Бесплатная, с открытым исходным кодом.</p>
+                <div class="social-links">
+                    <a href="https://t.me/runget_rt" target="_blank" rel="noopener" title="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="404.html" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+                    <a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="404.html" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="footer-version"><strong>Текущая:</strong> Runget 1.0 Anythink Anywhere<br><strong>В разработке:</strong> Runget 2.0 Big Brain<br><strong>Заморожено:</strong> ARM-версии</div>
+            </div>
+            <div class="footer-links"><h3>Ресурсы</h3><ul><li><a href="404.html">Документация</a></li><li><a href="404.html">Руководство по установке</a></li><li><a href="404.html">FAQ</a></li><li><a href="404.html">Форум</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Блог</a></li><li><a href="#gallery">Галерея</a></li><li><a href="#sysreq">Системные требования</a></li></ul></div>
+            <div class="footer-links"><h3>Поддержка</h3><ul><li><a href="mailto:runget.feedback.kirilldual@gmail.com">Email: runget.feedback.kirilldual@gmail.com</a></li><li><a href="https://t.me/kirilldual" target="_blank" rel="noopener">Telegram: @kirilldual</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Канал: @runget_rt</a></li><li><a href="404.html">Сообщить об ошибке</a></li><li><a href="404.html">Пожертвования</a></li></ul><h3 style="margin-top:1.5rem;">Совместимые проекты</h3><ul><li><a href="https://github.com/Kolyadual/Andryemu" target="_blank" rel="noopener">Andryemu</a></li><li><a href="https://www.winehq.org" target="_blank" rel="noopener">Wine</a></li><li><a href="https://www.debian.org" target="_blank" rel="noopener">Debian</a></li></ul></div>
+            <div class="footer-links"><h3>Разработка</h3><ul><li><a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener">Исходный код на GitHub</a></li><li><a href="https://github.com/Kolyadual" target="_blank" rel="noopener">Профиль Kolyadual</a></li><li><a href="404.html">Баги и предложения</a></li><li><a href="404.html">Contributing</a></li><li><a href="404.html">Roadmap</a></li><li><a href="404.html">Changelog</a></li></ul><h3 style="margin-top:1.5rem;">Команда</h3><ul><li><strong>Kolyadual</strong> — Основатель, Архитектор</li><li><strong>Kirilldual</strong> — Дизайнер, Тестировщик</li><li><strong>Seregaosm</strong> — Дизайнер №2, UI/UX</li><li><strong>Neeby</strong> — Создатель ПО</li></ul></div>
+        </div>
+        <div class="copyright">
+            <p>© 2026 Kolyadual & kirilldual. Все права защищены.</p>
+            <p>Runget OS — свободное ПО. Лицензия GPL.</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" title="Наверх"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+    (function() {
+        const selector = document.getElementById('versionSelector');
+        const body = document.body;
+        const backToTopBtn = document.getElementById('backToTop');
+
+        // Desktop choice
+        document.getElementById('vsDesktop').addEventListener('click', function() {
+            activateMode('mode-desktop');
+        });
+
+        // Mobile choice
+        document.getElementById('vsMobile').addEventListener('click', function() {
+            activateMode('mode-mobile');
+        });
+
+        function activateMode(mode) {
+            body.classList.remove('mode-desktop', 'mode-mobile');
+            body.classList.add(mode);
+            selector.classList.add('hidden');
+            setTimeout(function() { selector.style.display = 'none'; }, 500);
+        }
+
+        // Switch mode buttons
+        document.getElementById('switchToDesktop').addEventListener('click', function() {
+            body.classList.remove('mode-mobile');
+            body.classList.add('mode-desktop');
+        });
+
+        // Back to top
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) backToTopBtn.classList.add('visible');
+            else backToTopBtn.classList.remove('visible');
+        });
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scroll for internal links only
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href && href !== '#' && href.startsWith('#')) {
+                    e.preventDefault();
+                    var target = document.querySelector(href);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mobile bottom nav active state
+        var mobileNavLinks = document.querySelectorAll('.mobile-bottom-nav a');
+        mobileNavLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                mobileNavLinks.forEach(function(l) { l.classList.remove('active'); });
+                this.classList.add('active');
+            });
+        });
+
+        // Scroll spy for mobile nav
+        var sections = ['top', 'features', 'download', 'news', 'community'];
+        window.addEventListener('scroll', function() {
+            if (!body.classList.contains('mode-mobile')) return;
+            var scrollPos = window.scrollY + 100;
+            sections.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && el.offsetTop <= scrollPos && (el.offsetTop + el.offsetHeight) > scrollPos) {
+                    mobileNavLinks.forEach(function(l) {
+                        l.classList.remove('active');
+                        if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+                    });
+                }
+            });
+        });
+
+        // DCS Easter Egg — type Shift+D, Shift+C, Shift+S quickly on version selector
+        (function() {
+            var dcsSeq = '';
+            var dcsTimer = null;
+            document.addEventListener('keydown', function(e) {
+                if (selector.classList.contains('hidden') || selector.style.display === 'none') return;
+                if (e.key === 'Shift') return;
+                if (!e.shiftKey) { dcsSeq = ''; clearTimeout(dcsTimer); return; }
+                var k = e.key.toLowerCase();
+                if (k === 'd' && dcsSeq === '') { dcsSeq = 'd'; clearTimeout(dcsTimer); dcsTimer = setTimeout(function(){ dcsSeq=''; }, 2000); }
+                else if (k === 'c' && dcsSeq === 'd') { dcsSeq = 'dc'; }
+                else if (k === 's' && dcsSeq === 'dc') { dcsSeq = ''; clearTimeout(dcsTimer); window.location.href = 'dcs.html'; }
+                else { dcsSeq = ''; clearTimeout(dcsTimer); }
+            });
+        })();
+
+        // Animate on scroll
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.feature-card,.runget2-card,.arm-card,.arm-feature,.adv-card,.device-card,.download-card,.news-item,.sysreq-card').forEach(function(el) {
+            el.classList.add('animate-on-scroll');
+            observer.observe(el);
+        });
+    })();
+    </script>
+</body>
+</html>

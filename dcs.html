@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCS-recovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        @font-face { font-family: 'MS Sans Serif'; src: local('Tahoma'), local('Arial'); }
+        * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+        :root {
+            --bg-black:#0a0a0a; --bg-dark:#121212; --bg-medium:#1a1a1a; --bg-light:#252525;
+            --purple-dark:#2d1b4e; --purple-medium:#4a2c7a; --purple-light:#6b3fa0;
+            --purple-bright:#8b5cf6; --purple-glow:#a78bfa;
+            --text-primary:#e0e0e0; --text-secondary:#a0a0a0;
+            --border-dark:#0a0a0a; --border-light:#3a3a3a;
+        }
+        body { font-family:'Tahoma','Arial',sans-serif; font-size:11px; background:var(--bg-black); color:var(--text-primary); overflow:hidden; height:100vh; }
+
+        /* Boot Console */
+        #bootConsole { position:fixed; inset:0; background:#000; z-index:10000; padding:20px; font-family:'Consolas','Courier New',monospace; font-size:14px; overflow:hidden; }
+        .console-line { color:var(--purple-bright); margin-bottom:2px; opacity:0; animation:fadeIn 0.1s forwards; }
+        .console-line.white { color:#e0e0e0; }
+        .console-line.dim { color:#666; }
+        .console-line.bright { color:var(--purple-glow); }
+        @keyframes fadeIn { to { opacity:1; } }
+        .cursor { display:inline-block; width:8px; height:14px; background:var(--purple-bright); animation:blink 0.5s infinite; }
+        @keyframes blink { 0%,50%{opacity:1;} 51%,100%{opacity:0;} }
+
+        /* Click to Start */
+        #clickToStart { position:fixed; inset:0; background:#000; z-index:10001; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; }
+        #clickToStart .logo { font-size:80px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark); margin-bottom:40px; font-family:'Consolas',monospace; }
+        #clickToStart .click-text { font-size:24px; color:var(--purple-glow); animation:pulse 2s infinite; font-family:'Consolas',monospace; }
+        #clickToStart .subtitle { font-size:14px; color:var(--text-secondary); margin-top:15px; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+        /* Desktop */
+        #desktop { position:fixed; inset:0; bottom:32px; background:linear-gradient(135deg,#0a0a0a 0%,#1a1020 50%,#0a0a0a 100%); display:none; }
+        #desktopIcons { position:absolute; top:10px; left:10px; display:flex; flex-direction:column; gap:5px; }
+        .desktop-icon { width:75px; padding:5px; cursor:pointer; text-align:center; border:1px solid transparent; }
+        .desktop-icon:hover { background:rgba(139,92,246,0.2); border-color:var(--purple-medium); }
+        .desktop-icon.selected { background:var(--purple-dark); border-color:var(--purple-bright); }
+        .desktop-icon-img { width:32px; height:32px; margin:0 auto 4px; display:flex; align-items:center; justify-content:center; background:var(--purple-dark); border:1px solid var(--purple-medium); }
+        .desktop-icon-img i { font-size:18px; color:var(--purple-bright); }
+        .desktop-icon-name { color:var(--text-primary); font-size:10px; word-wrap:break-word; text-shadow:1px 1px 1px #000; }
+
+        /* Taskbar */
+        #taskbar { position:fixed; bottom:0; left:0; right:0; height:32px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-medium) 50%,var(--bg-dark) 100%); border-top:2px solid var(--purple-medium); display:flex; align-items:center; padding:0 4px; z-index:1000; }
+        #taskbarWindows { flex:1; display:flex; gap:2px; padding:0 4px; overflow:hidden; }
+        .taskbar-item { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:4px; max-width:140px; overflow:hidden; white-space:nowrap; flex-shrink:0; }
+        .taskbar-item.active { border-style:inset; background:linear-gradient(180deg,var(--purple-dark) 0%,var(--bg-dark) 100%); }
+        .taskbar-item i { color:var(--purple-bright); font-size:11px; }
+        #taskbarRight { display:flex; align-items:center; gap:2px; }
+        .taskbar-btn { width:24px; height:24px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--purple-bright); font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .taskbar-btn:active { border-style:inset; }
+        .taskbar-btn:hover { background:var(--purple-dark); }
+        #clockArea { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-dark) 0%,#000 100%); border:2px inset var(--border-light); color:var(--purple-glow); font-size:11px; font-weight:bold; display:flex; align-items:center; font-family:'Consolas',monospace; }
+
+        /* Windows */
+        .window { position:absolute; background:var(--bg-medium); border:2px outset var(--border-light); display:flex; flex-direction:column; min-width:300px; min-height:200px; }
+        .window.inactive .window-header { background:linear-gradient(180deg,#333 0%,#222 100%); }
+        .window-header { height:22px; background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); display:flex; align-items:center; padding:0 3px; cursor:move; flex-shrink:0; }
+        .window-icon { font-size:12px; margin-right:5px; color:var(--purple-glow); }
+        .window-title { flex:1; color:var(--text-primary); font-size:11px; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .window-controls { display:flex; gap:2px; }
+        .window-btn { width:16px; height:16px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--text-primary); }
+        .window-btn:active { border-style:inset; }
+        .window-btn:hover { background:var(--purple-dark); }
+        .window-content { flex:1; overflow:auto; background:var(--bg-dark); border:2px inset var(--border-light); margin:3px; }
+        .window-resize { position:absolute; right:0; bottom:0; width:16px; height:16px; cursor:se-resize; background:linear-gradient(135deg,transparent 50%,var(--purple-dark) 50%); }
+
+        /* Context Menu */
+        #contextMenu { position:fixed; background:var(--bg-medium); border:2px outset var(--border-light); display:none; z-index:5000; min-width:180px; padding:2px; }
+        .context-item { padding:5px 20px; color:var(--text-primary); font-size:11px; cursor:pointer; display:flex; align-items:center; gap:10px; }
+        .context-item:hover { background:var(--purple-dark); }
+        .context-item i { width:14px; text-align:center; color:var(--purple-bright); }
+        .context-separator { height:1px; background:var(--border-light); margin:3px 2px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width:16px; height:16px; }
+        ::-webkit-scrollbar-track { background:var(--bg-dark); border:1px inset var(--border-light); }
+        ::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); }
+        ::-webkit-scrollbar-button { background:var(--bg-medium); border:2px outset var(--border-light); height:16px; }
+
+        /* App styles */
+        .app-toolbar { background:var(--bg-medium); padding:3px; display:flex; gap:2px; border-bottom:2px groove var(--border-light); flex-wrap:wrap; }
+        .app-btn { padding:3px 10px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+        .app-btn:active { border-style:inset; }
+        .app-btn:hover { background:var(--purple-dark); }
+        .app-btn i { color:var(--purple-bright); }
+        .app-btn.tab-active { background:var(--purple-dark); border-style:inset; color:var(--purple-glow); }
+        .app-input { padding:3px 5px; background:var(--bg-black); border:2px inset var(--border-light); color:var(--text-primary); font-size:11px; outline:none; }
+
+        /* File Manager */
+        .fm-sidebar { width:150px; background:var(--bg-medium); border-right:2px groove var(--border-light); padding:5px; }
+        .fm-section-title { color:var(--purple-bright); font-size:10px; font-weight:bold; padding:5px 0; border-bottom:1px solid var(--border-light); margin-bottom:5px; }
+        .fm-item { padding:3px 5px; color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:5px; }
+        .fm-item:hover { background:var(--purple-dark); }
+        .fm-item.active { background:var(--purple-medium); }
+        .fm-item i { color:var(--purple-bright); font-size:12px; }
+        .fm-content { flex:1; padding:10px; display:grid; grid-template-columns:repeat(auto-fill,minmax(70px,1fr)); gap:5px; align-content:start; overflow-y:auto; }
+        .fm-file { padding:5px; cursor:pointer; text-align:center; border:1px solid transparent; }
+        .fm-file:hover { background:rgba(139,92,246,0.2); border-color:var(--purple-medium); }
+        .fm-file.selected { background:var(--purple-dark); border-color:var(--purple-bright); }
+        .fm-file-icon { font-size:28px; margin-bottom:3px; color:var(--purple-bright); }
+        .fm-file-name { color:var(--text-primary); font-size:9px; word-break:break-word; }
+
+        /* Terminal */
+        .terminal { background:#000; color:var(--purple-bright); font-family:'Consolas','Courier New',monospace; font-size:12px; padding:10px; height:100%; overflow-y:auto; }
+        .terminal-line { margin-bottom:2px; white-space:pre-wrap; }
+        .terminal-prompt { color:var(--purple-glow); }
+        .terminal-path { color:var(--purple-bright); }
+        .terminal-input { background:transparent; border:none; color:var(--purple-bright); font-family:inherit; font-size:inherit; outline:none; width:calc(100% - 200px); }
+
+        /* Folder Grid */
+        .folder-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:10px; padding:15px; }
+        .folder-app { padding:10px 5px; cursor:pointer; text-align:center; border:1px solid transparent; }
+        .folder-app:hover { background:rgba(139,92,246,0.2); border-color:var(--purple-medium); }
+        .folder-app-icon { width:32px; height:32px; margin:0 auto 5px; display:flex; align-items:center; justify-content:center; background:var(--purple-dark); border:1px solid var(--purple-medium); }
+        .folder-app-icon i { font-size:16px; color:var(--purple-bright); }
+        .folder-app-name { color:var(--text-primary); font-size:9px; }
+
+        /* Game Container */
+        .game-container { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; background:var(--bg-black); padding:10px; }
+        .game-canvas { border:2px inset var(--border-light); background:#000; }
+        .game-info { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px; margin-bottom:10px; }
+        .game-score { color:var(--purple-glow); font-size:14px; font-weight:bold; }
+
+        /* Settings */
+        .settings-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:15px; }
+        .wallpaper-option { border:2px outset var(--border-light); cursor:pointer; }
+        .wallpaper-option:hover { border-color:var(--purple-medium); }
+        .wallpaper-option.active { border:2px solid var(--purple-bright); }
+        .wallpaper-preview { height:60px; }
+        .wallpaper-name { padding:5px; background:var(--bg-medium); color:var(--text-primary); font-size:9px; text-align:center; }
+
+        /* About */
+        .about-container { padding:20px; text-align:center; }
+        .about-logo { font-size:60px; font-weight:bold; color:var(--purple-bright); text-shadow:2px 2px 0 var(--purple-dark); margin-bottom:10px; }
+        .about-title { font-size:18px; color:var(--text-primary); margin-bottom:5px; }
+        .about-subtitle { color:var(--purple-glow); margin-bottom:20px; }
+        .about-info { background:var(--bg-medium); border:2px inset var(--border-light); padding:15px; text-align:left; max-width:400px; margin:0 auto; }
+        .about-row { display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid var(--border-light); }
+        .about-row:last-child { border-bottom:none; }
+        .about-label { color:var(--text-secondary); }
+        .about-value { color:var(--purple-bright); }
+
+        /* Shutdown Dialog */
+        #shutdownDialog { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:9999; }
+        .shutdown-dialog-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:350px; }
+        .shutdown-dialog-header { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); padding:5px 10px; color:var(--text-primary); font-weight:bold; font-size:11px; }
+        .shutdown-dialog-content { padding:20px; text-align:center; }
+        .shutdown-dialog-text { margin-bottom:20px; }
+        .shutdown-dialog-text .strikethrough { color:var(--text-secondary); text-decoration:line-through; font-size:11px; }
+        .shutdown-dialog-text .correction { color:var(--purple-bright); font-size:10px; font-style:italic; margin-left:5px; }
+        .shutdown-dialog-text .main-text { color:var(--text-primary); font-size:13px; margin-top:10px; }
+        .shutdown-dialog-buttons { display:flex; justify-content:center; gap:15px; }
+        .shutdown-dialog-btn { padding:8px 25px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:12px; font-weight:bold; cursor:pointer; }
+        .shutdown-dialog-btn:active { border-style:inset; }
+        .shutdown-dialog-btn:hover { background:var(--purple-dark); }
+        .shutdown-dialog-btn.yes { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); }
+
+        /* Game Downloads */
+        .game-download-item { background:var(--bg-medium); border:2px outset var(--border-light); padding:10px; cursor:pointer; text-align:center; transition:all 0.1s; }
+        .game-download-item:hover { background:var(--purple-dark); border-color:var(--purple-medium); }
+        .game-download-item:active { border-style:inset; }
+        .game-download-icon { font-size:32px; color:var(--purple-bright); margin-bottom:8px; }
+        .game-download-name { color:var(--text-primary); font-size:10px; font-weight:bold; margin-bottom:4px; word-break:break-word; }
+        .game-download-size { color:var(--text-secondary); font-size:9px; }
+
+        /* Splash Screen */
+        #splashScreen { position:fixed; inset:0; background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 25%,#2d1b4e 50%,#1a0a2e 75%,#0a0a0a 100%); z-index:10002; display:none; align-items:center; justify-content:center; flex-direction:column; }
+        .splash-content { text-align:center; }
+        .splash-logo { font-size:72px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark),0 0 60px var(--purple-dark); font-family:'Tahoma',sans-serif; letter-spacing:4px; }
+        .splash-subtitle { font-size:28px; color:var(--purple-glow); margin-top:10px; letter-spacing:15px; text-transform:uppercase; }
+
+        #pixelTransition { position:fixed; inset:0; z-index:10003; display:none; pointer-events:none; }
+
+        .desktop-fade-in { animation:fadeInDesktop 0.8s ease-out forwards; }
+        .desktop-fade-out { animation:fadeOutDesktop 0.5s ease-out forwards; }
+        .taskbar-fade-in { animation:fadeInDesktop 0.8s ease-out forwards; }
+        .taskbar-fade-out { animation:fadeOutDesktop 0.5s ease-out forwards; }
+        @keyframes fadeInDesktop { from{opacity:0;} to{opacity:1;} }
+        @keyframes fadeOutDesktop { from{opacity:1;} to{opacity:0;} }
+
+        /* ====== RUNGET OS VIEWER STYLES ====== */
+        .rg-viewer { padding:0; height:100%; display:flex; flex-direction:column; }
+        .rg-tabs { display:flex; flex-wrap:wrap; gap:1px; background:var(--bg-medium); padding:3px 3px 0; border-bottom:2px groove var(--border-light); }
+        .rg-tab { padding:4px 10px; background:linear-gradient(180deg,var(--bg-light),var(--bg-dark)); border:2px outset var(--border-light); border-bottom:none; color:var(--text-secondary); font-size:10px; cursor:pointer; margin-bottom:-2px; }
+        .rg-tab:hover { background:var(--purple-dark); color:var(--text-primary); }
+        .rg-tab.active { background:var(--bg-dark); border-bottom:2px solid var(--bg-dark); color:var(--purple-glow); font-weight:bold; }
+        .rg-body { flex:1; overflow-y:auto; padding:12px; background:var(--bg-dark); }
+        .rg-section { display:none; }
+        .rg-section.active { display:block; }
+        .rg-h1 { color:var(--purple-bright); font-size:18px; margin-bottom:8px; border-bottom:1px solid var(--purple-dark); padding-bottom:5px; }
+        .rg-h2 { color:var(--purple-glow); font-size:14px; margin:12px 0 6px; }
+        .rg-h3 { color:var(--purple-bright); font-size:12px; margin:8px 0 4px; }
+        .rg-p { color:var(--text-secondary); font-size:11px; line-height:1.6; margin-bottom:8px; }
+        .rg-card { background:var(--bg-medium); border:2px outset var(--border-light); padding:10px; margin-bottom:8px; }
+        .rg-card:hover { background:rgba(139,92,246,0.1); }
+        .rg-card-title { color:var(--purple-bright); font-size:12px; font-weight:bold; margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+        .rg-card-title i { font-size:14px; }
+        .rg-card-text { color:var(--text-secondary); font-size:10px; line-height:1.5; }
+        .rg-badge { display:inline-block; padding:1px 6px; border:1px solid var(--purple-medium); color:var(--purple-glow); font-size:9px; margin:2px 2px 0 0; }
+        .rg-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; }
+        .rg-grid-sm { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:6px; }
+        .rg-list { list-style:none; }
+        .rg-list li { padding:3px 0 3px 12px; color:var(--text-secondary); font-size:10px; position:relative; }
+        .rg-list li::before { content:"►"; position:absolute; left:0; color:var(--purple-bright); font-size:7px; top:5px; }
+        .rg-news-item { background:var(--bg-medium); border:2px outset var(--border-light); padding:8px 10px; margin-bottom:4px; }
+        .rg-news-date { color:var(--purple-bright); font-weight:bold; font-size:10px; }
+        .rg-news-text { color:var(--text-secondary); font-size:10px; margin-top:2px; }
+        .rg-dl-btn { display:inline-block; padding:5px 15px; background:linear-gradient(180deg,var(--purple-medium),var(--purple-dark)); border:2px outset var(--border-light); color:var(--text-primary); font-size:10px; font-weight:bold; cursor:pointer; text-decoration:none; margin-top:6px; }
+        .rg-dl-btn:hover { background:var(--purple-light); }
+        .rg-dl-btn:active { border-style:inset; }
+        .rg-dl-btn.frozen { background:linear-gradient(180deg,#333,#222); color:#666; cursor:default; pointer-events:none; }
+        .rg-frozen { opacity:0.5; }
+        .rg-frozen .rg-card-title { color:#666; }
+        .rg-frozen .rg-card-text { color:#555; }
+        .rg-table { width:100%; border-collapse:collapse; margin-top:6px; }
+        .rg-table td { padding:3px 6px; font-size:10px; color:var(--text-secondary); border-bottom:1px solid var(--border-light); }
+        .rg-table td:first-child { color:var(--text-primary); font-weight:bold; width:35%; }
+        .rg-gallery-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
+        .rg-gallery-item { border:2px outset var(--border-light); cursor:pointer; overflow:hidden; }
+        .rg-gallery-item img { width:100%; height:100px; object-fit:cover; display:block; }
+        .rg-gallery-item:hover { border-color:var(--purple-bright); }
+        .rg-highlight { background:rgba(139,92,246,0.15); border-color:var(--purple-medium) !important; }
+        .rg-warning { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; background:rgba(218,68,83,0.15); border:1px solid rgba(218,68,83,0.4); color:#da4453; font-size:10px; font-weight:bold; margin-bottom:8px; }
+    </style>
+</head>
+<body>
+    <div id="clickToStart">
+        <div class="logo">DCS</div>
+        <div class="click-text">[ CLICK TO START ]</div>
+        <div class="subtitle">Dual Computers Systems v1.0 — DCS-recovery</div>
+    </div>
+
+    <div id="bootConsole" style="display:none;"></div>
+
+    <div id="desktop">
+        <div id="desktopIcons"></div>
+        <div id="windowsContainer"></div>
+        <div id="contextMenu"></div>
+    </div>
+
+    <div id="taskbar" style="display:none;">
+        <div id="taskbarWindows"></div>
+        <div id="taskbarRight">
+            <button class="taskbar-btn" onclick="toggleAllWindows()" title="Свернуть/Развернуть все"><i class="fas fa-layer-group"></i></button>
+            <div id="clockArea">00:00</div>
+        </div>
+    </div>
+
+    <div id="splashScreen">
+        <div class="splash-content">
+            <div class="splash-logo">Dual-Computers</div>
+            <div class="splash-subtitle">Systems</div>
+        </div>
+    </div>
+
+    <canvas id="pixelTransition"></canvas>
+
+    <div id="shutdownDialog">
+        <div class="shutdown-dialog-box">
+            <div class="shutdown-dialog-header">Dual Computers Systems</div>
+            <div class="shutdown-dialog-content">
+                <div class="shutdown-dialog-text">
+                    <span class="strikethrough">вы действительно хотите выключить миров.....</span>
+                    <span class="correction">нет, не тот текст</span>
+                    <div class="main-text">Вы действительно хотите выключить Dual-machines?</div>
+                </div>
+                <div class="shutdown-dialog-buttons">
+                    <button class="shutdown-dialog-btn yes" onclick="confirmShutdown()">ДА</button>
+                    <button class="shutdown-dialog-btn" onclick="cancelShutdown()">НЕТ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ==================== DCS CORE ====================
+    const DCS = {
+        version:'1.0', codename:'Dark Matter',
+        windows:new Map(), windowOrder:[], activeWindow:null, windowId:0,
+        dragState:null, resizeState:null, allMinimized:false,
+        settings:{ wallpaper:0 },
+        fileSystem:{
+            '/':{type:'folder',children:{
+                'home':{type:'folder',children:{
+                    'user':{type:'folder',children:{
+                        'Documents':{type:'folder',children:{
+                            'readme.txt':{type:'file',content:'Welcome to DCS-recovery!\n\nDual Computers Systems v1.0\nEaster egg from Runget OS site.'},
+                            'runget-info.txt':{type:'file',content:'Runget OS — Debian-based операционная система\nСайт: https://github.com/Kolyadual/Runget-next_generating_operating_system'}
+                        }},
+                        'Downloads':{type:'folder',children:{}},
+                        'Pictures':{type:'folder',children:{}}
+                    }}
+                }},
+                'system':{type:'folder',children:{
+                    'config':{type:'file',content:'SYSTEM=DCS\nVERSION=1.0\nMODE=recovery'}
+                }}
+            }}
+        }
+    };
+
+    const wallpapers = [
+        {name:'Dark Void',gradient:'linear-gradient(135deg,#0a0a0a 0%,#1a1020 50%,#0a0a0a 100%)'},
+        {name:'Purple Abyss',gradient:'linear-gradient(135deg,#0a0a0a 0%,#2d1b4e 50%,#0a0a0a 100%)'},
+        {name:'Violet Storm',gradient:'linear-gradient(180deg,#0a0a0a 0%,#4a2c7a 50%,#0a0a0a 100%)'},
+        {name:'Neon Purple',gradient:'linear-gradient(135deg,#0a0a0a 0%,#6b3fa0 30%,#2d1b4e 70%,#0a0a0a 100%)'},
+        {name:'Deep Space',gradient:'linear-gradient(180deg,#000 0%,#1a1020 50%,#2d1b4e 100%)'},
+        {name:'Midnight',gradient:'radial-gradient(ellipse at center,#2d1b4e 0%,#0a0a0a 70%)'},
+        {name:'Matrix',gradient:'linear-gradient(135deg,#0a0a0a,#1a1a2a,#2d1b4e,#1a1a2a,#0a0a0a)'},
+        {name:'Obsidian',gradient:'linear-gradient(180deg,#0a0a0a 0%,#151515 50%,#0a0a0a 100%)'}
+    ];
+
+    const apps = [
+        {id:'files',name:'Файлы',icon:'fa-folder'},
+        {id:'terminal',name:'Терминал',icon:'fa-terminal'},
+        {id:'editor',name:'Редактор',icon:'fa-file-alt'},
+        {id:'browser',name:'Браузер',icon:'fa-globe'},
+        {id:'settings',name:'Настройки',icon:'fa-cog'},
+        {id:'about',name:'О системе',icon:'fa-info-circle'},
+        {id:'calculator',name:'Калькулятор',icon:'fa-calculator'},
+        {id:'screenshot',name:'Скриншот',icon:'fa-camera'},
+        {id:'paint',name:'Рисование',icon:'fa-paint-brush'},
+        {id:'notes',name:'Заметки',icon:'fa-sticky-note'},
+        {id:'clock',name:'Часы',icon:'fa-clock'},
+        {id:'snake',name:'Змейка',icon:'fa-gamepad'},
+        {id:'tetris',name:'Тетрис',icon:'fa-th'},
+        {id:'pong',name:'Понг',icon:'fa-table-tennis'},
+        {id:'2048',name:'2048',icon:'fa-th-large'}
+    ];
+
+    // ==================== SOUNDS ====================
+    let firstClickTime=null;
+    function initClickSound(){
+        firstClickTime=Date.now();
+        document.addEventListener('click',function(){
+            if(firstClickTime&&(Date.now()-firstClickTime>10000)){
+                const s=new Audio('click.mp3'); s.volume=0.5; s.play().catch(()=>{});
+            }
+        });
+    }
+    function playStartupSound(){
+        const a=new Audio('DCS-startup.mp3'); a.volume=0.5; a.play().catch(()=>{});
+    }
+
+    // ==================== SHUTDOWN ====================
+    function showShutdownDialog(){document.getElementById('shutdownDialog').style.display='flex';}
+    function cancelShutdown(){document.getElementById('shutdownDialog').style.display='none';}
+    function confirmShutdown(){document.getElementById('shutdownDialog').style.display='none';shutdownSystem();}
+
+    async function shutdownSystem(){
+        const d=document.getElementById('desktop'),t=document.getElementById('taskbar');
+        d.classList.add('desktop-fade-out');t.classList.add('taskbar-fade-out');
+        await new Promise(r=>setTimeout(r,500));
+        d.style.display='none';t.style.display='none';
+        d.classList.remove('desktop-fade-out');t.classList.remove('taskbar-fade-out');
+        const c=document.getElementById('bootConsole');c.style.display='block';c.innerHTML='';
+        const lines=[
+            {text:'',delay:300},{text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'              DUAL COMPUTERS SYSTEMS - SHUTDOWN',class:'bright'},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'',delay:200},{text:'Initiating system shutdown...',class:'white',delay:500},
+            {text:''},{text:'[SERVICES] Stopping system services...',delay:300},
+            {text:'  > network-manager stopped',class:'dim',delay:100},
+            {text:'  > audio-server stopped',class:'dim',delay:100},
+            {text:'  > window-manager stopped',class:'dim',delay:100},
+            {text:'  > dcs-daemon stopped',class:'dim',delay:100},
+            {text:'[SERVICES] All services stopped',class:'bright',delay:200},
+            {text:''},{text:'[DESKTOP] Closing user session...',delay:400},
+            {text:'[DESKTOP] Session closed',class:'bright',delay:200},
+            {text:''},{text:'[DISK] Unmounting filesystems...',delay:300},
+            {text:'  > /dev/sda2 unmounted from /home',class:'dim',delay:100},
+            {text:'  > /dev/sda1 unmounted from /',class:'dim',delay:100},
+            {text:'[DISK] Filesystems unmounted',class:'bright',delay:200},
+            {text:''},{text:'[MEMORY] Clearing RAM...',delay:300},
+            {text:'  > Memory banks cleared',class:'dim',delay:150},
+            {text:'[MEMORY] RAM cleared',class:'bright',delay:200},
+            {text:''},{text:'[HARDWARE] Powering down devices...',delay:400},
+            {text:'  > GPU powered off',class:'dim',delay:100},
+            {text:'  > USB controllers powered off',class:'dim',delay:100},
+            {text:'  > Network interfaces powered off',class:'dim',delay:100},
+            {text:'[HARDWARE] All devices powered off',class:'bright',delay:200},
+            {text:'',delay:200},{text:'[KERNEL] Unloading kernel modules...',delay:300},
+            {text:'[KERNEL] Kernel unloaded',class:'bright',delay:200},
+            {text:'',delay:300},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'  DUAL COMPUTERS SYSTEMS - POWER OFF',class:'bright'},
+            {text:'  Reload page to restart the system',class:'dim'},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'',delay:500}
+        ];
+        for(const line of lines){
+            const div=document.createElement('div');div.className='console-line '+(line.class||'');div.textContent=line.text;
+            c.appendChild(div);c.scrollTop=c.scrollHeight;await new Promise(r=>setTimeout(r,line.delay||50));
+        }
+        await new Promise(r=>setTimeout(r,1000));
+        c.innerHTML='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center"><div style="color:var(--purple-glow);font-size:16px;margin-bottom:10px">System is powered off</div><div style="color:var(--text-secondary);font-size:12px">Reload page to restart</div></div>';
+    }
+
+    // ==================== BOOT ====================
+    async function boot(){
+        const con=document.getElementById('bootConsole');
+        const lines=[
+            {text:'',delay:300},
+            {text:'                    ╔══════════════════════════════╗',class:'bright'},
+            {text:'                    ║  ┌────────────────────────┐  ║',class:'bright'},
+            {text:'                    ║  │ ████████████████████ │  ║',class:'bright'},
+            {text:'                    ║  │ ██   DUAL         ██ │  ║',class:'bright'},
+            {text:'                    ║  │ ██   COMPUTERS    ██ │  ║',class:'bright'},
+            {text:'                    ║  │ ██   SYSTEMS      ██ │  ║',class:'bright'},
+            {text:'                    ║  │ ████████████████████ │  ║',class:'bright'},
+            {text:'                    ║  └────────────────────────┘  ║',class:'bright'},
+            {text:'                    ╚══════════════════════════════╝',class:'bright'},
+            {text:'',delay:500},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'              DUAL COMPUTERS SYSTEMS - BOOT SEQUENCE',class:'bright'},
+            {text:'                         DCS-recovery MODE',class:'bright'},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'',delay:300},
+            {text:'dual-machines on dual computers systems is starting up...',class:'white',delay:800},
+            {text:'',delay:200},
+            {text:'[INIT] Loading kernel modules...',delay:300},
+            {text:'[INIT] Kernel version 6.2.0-dcs loaded',class:'dim',delay:150},
+            {text:''},{text:'[HARDWARE] Detecting hardware configuration...',delay:400},
+            {text:'  > CPU: Detected multi-core processor',class:'dim',delay:100},
+            {text:'  > GPU: Graphics adapter initialized',class:'dim',delay:100},
+            {text:'  > USB: Universal Serial Bus controllers ready',class:'dim',delay:100},
+            {text:'  > NET: Network interfaces configured',class:'dim',delay:100},
+            {text:'[HARDWARE] Complete',class:'bright',delay:200},
+            {text:''},{text:'[MEMORY] Performing RAM check...',delay:500},
+            {text:'  > Bank 0: OK (8192 MB)',class:'dim',delay:100},
+            {text:'  > Bank 1: OK (8192 MB)',class:'dim',delay:100},
+            {text:'  > Total: 16384 MB detected',class:'dim',delay:100},
+            {text:'[MEMORY] RAM check passed',class:'bright',delay:200},
+            {text:''},{text:'[DISK] Mounting filesystems...',delay:300},
+            {text:'  > /dev/sda1 mounted on /',class:'dim',delay:100},
+            {text:'  > /dev/sda2 mounted on /home',class:'dim',delay:100},
+            {text:'[DISK] Filesystems mounted',class:'bright',delay:200},
+            {text:''},{text:'[SERVICES] Starting system services...',delay:300},
+            {text:'  > dcs-daemon started',class:'dim',delay:80},
+            {text:'  > window-manager started',class:'dim',delay:80},
+            {text:'  > audio-server started',class:'dim',delay:80},
+            {text:'  > network-manager started',class:'dim',delay:80},
+            {text:'  > runget-recovery-module started',class:'dim',delay:80},
+            {text:'[SERVICES] All services running',class:'bright',delay:200},
+            {text:'',delay:200},
+            {text:'[DESKTOP] Initializing graphical interface...',delay:400},
+            {text:'[DESKTOP] Loading user session...',delay:600},
+            {text:'',delay:200},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'  DUAL COMPUTERS SYSTEMS v1.0 "Dark Matter" — DCS-recovery',class:'bright'},
+            {text:'═══════════════════════════════════════════════════════════════',class:'bright'},
+            {text:'',delay:1000}
+        ];
+        for(const line of lines){
+            const div=document.createElement('div');div.className='console-line '+(line.class||'');div.textContent=line.text;
+            con.appendChild(div);con.scrollTop=con.scrollHeight;await new Promise(r=>setTimeout(r,line.delay||50));
+        }
+        await new Promise(r=>setTimeout(r,500));
+        con.style.display='none';
+        playStartupSound();
+        const splash=document.getElementById('splashScreen');splash.style.display='flex';
+        await new Promise(r=>setTimeout(r,2000));
+        await pixelDissolveTransition();
+    }
+
+    async function pixelDissolveTransition(){
+        const canvas=document.getElementById('pixelTransition'),ctx=canvas.getContext('2d');
+        const splash=document.getElementById('splashScreen'),desktop=document.getElementById('desktop'),taskbar=document.getElementById('taskbar');
+        canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+        const splashCanvas=await html2canvas(splash,{backgroundColor:null,scale:1});
+        desktop.style.display='block';desktop.style.opacity='1';
+        taskbar.style.display='flex';taskbar.style.opacity='1';
+        initDesktop();
+        splash.style.display='none';canvas.style.display='block';
+        ctx.drawImage(splashCanvas,0,0,canvas.width,canvas.height);
+        await new Promise(r=>setTimeout(r,500));
+        const ps=10,cols=Math.ceil(canvas.width/ps),rows=Math.ceil(canvas.height/ps);
+        const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+            const px=x*ps,py=y*ps,sx=Math.min(px+ps/2,canvas.width-1),sy=Math.min(py+ps/2,canvas.height-1);
+            const i=(Math.floor(sy)*canvas.width+Math.floor(sx))*4;
+            ctx.fillStyle=`rgba(${imageData.data[i]},${imageData.data[i+1]},${imageData.data[i+2]},${imageData.data[i+3]/255})`;
+            ctx.fillRect(px,py,ps,ps);
+        }
+        await new Promise(r=>setTimeout(r,400));
+        for(let row=0;row<rows;row++){
+            for(let x=0;x<cols;x++){setTimeout(()=>{ctx.clearRect(x*ps,row*ps,ps,ps);},Math.random()*10);}
+            await new Promise(r=>setTimeout(r,12));
+        }
+        await new Promise(r=>setTimeout(r,100));
+        canvas.style.display='none';
+    }
+
+    // ==================== DESKTOP ====================
+    function initDesktop(){
+        renderDesktopIcons();updateClock();setInterval(updateClock,1000);applyWallpaper();
+        document.addEventListener('click',()=>{document.getElementById('contextMenu').style.display='none';});
+        document.getElementById('desktop').addEventListener('contextmenu',(e)=>{
+            if(!e.target.closest('.window')){e.preventDefault();showContextMenu(e.clientX,e.clientY);}
+        });
+        document.addEventListener('mousemove',handleMouseMove);
+        document.addEventListener('mouseup',handleMouseUp);
+    }
+
+    function renderDesktopIcons(){
+        const c=document.getElementById('desktopIcons');
+        const icons=[
+            {name:'Runget OS',icon:'fa-laptop',action:()=>openRungetViewer()},
+            {name:'Разное',icon:'fa-folder',action:()=>openMiscFolder()},
+            {name:'Терминал',icon:'fa-terminal',action:()=>openApp('terminal')},
+            {name:'Файлы',icon:'fa-folder-open',action:()=>openApp('files')},
+            {name:'Пиратские\nигры',icon:'fa-skull-crossbones',action:()=>openGamesFolder()},
+            {name:'DGC',icon:'fa-gamepad',action:()=>openDGC()},
+            {name:'Telegram',icon:'fa-telegram',action:()=>openTelegramFolder()},
+            {name:'Каналы',icon:'fa-play-circle',action:()=>openChannelsFolder()},
+            {name:'GitHub',icon:'fa-github',action:()=>openGitHubFolder()},
+            {name:'kirilldual0987',icon:'fa-code',action:()=>openKirilldualDev()},
+            {name:'Назад на\nсайт',icon:'fa-arrow-left',action:()=>{window.location.href='index.html';}},
+            {name:'Turn Off',icon:'fa-power-off',action:()=>showShutdownDialog()}
+        ];
+        icons.forEach(icon=>{
+            const el=document.createElement('div');el.className='desktop-icon';
+            el.innerHTML=`<div class="desktop-icon-img"><i class="${icon.icon.startsWith('fa-telegram')||icon.icon.startsWith('fa-github')?'fab':'fas'} ${icon.icon}"></i></div><div class="desktop-icon-name">${icon.name}</div>`;
+            el.ondblclick=icon.action;c.appendChild(el);
+        });
+    }
+
+    function updateClock(){document.getElementById('clockArea').textContent=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});}
+    function applyWallpaper(){document.getElementById('desktop').style.background=wallpapers[DCS.settings.wallpaper].gradient;}
+    function toggleAllWindows(){DCS.allMinimized=!DCS.allMinimized;DCS.windows.forEach((w,id)=>{const el=document.getElementById(`window-${id}`);if(el)el.style.display=DCS.allMinimized?'none':'flex';});}
+
+    function showContextMenu(x,y){
+        const m=document.getElementById('contextMenu');
+        m.innerHTML=`
+            <div class="context-item" onclick="openRungetViewer()"><i class="fas fa-laptop"></i> Runget OS</div>
+            <div class="context-separator"></div>
+            <div class="context-item" onclick="openApp('terminal')"><i class="fas fa-terminal"></i> Терминал</div>
+            <div class="context-item" onclick="openApp('files')"><i class="fas fa-folder"></i> Файлы</div>
+            <div class="context-separator"></div>
+            <div class="context-item" onclick="openApp('screenshot')"><i class="fas fa-camera"></i> Скриншот</div>
+            <div class="context-separator"></div>
+            <div class="context-item" onclick="openApp('settings')"><i class="fas fa-cog"></i> Настройки</div>
+            <div class="context-item" onclick="openApp('about')"><i class="fas fa-info-circle"></i> О системе</div>
+            <div class="context-separator"></div>
+            <div class="context-item" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Назад на сайт</div>
+        `;
+        m.style.left=Math.min(x,window.innerWidth-200)+'px';
+        m.style.top=Math.min(y,window.innerHeight-300)+'px';
+        m.style.display='block';
+    }
+
+    function updateTaskbar(){
+        const c=document.getElementById('taskbarWindows');c.innerHTML='';
+        DCS.windows.forEach((w,id)=>{
+            const el=document.createElement('div');el.className='taskbar-item'+(id===DCS.activeWindow?' active':'');
+            el.innerHTML=`<i class="fas ${w.icon}"></i> ${w.title}`;
+            el.onclick=()=>{const we=document.getElementById(`window-${id}`);if(we.style.display==='none')we.style.display='flex';focusWindow(id);};
+            c.appendChild(el);
+        });
+    }
+
+    // ==================== WINDOW MANAGEMENT ====================
+    function createWindow(o){
+        const id=DCS.windowId++;
+        const w={id,title:o.title||'Window',icon:o.icon||'fa-window-maximize',width:o.width||600,height:o.height||400,x:o.x??50+(DCS.windows.size*25)%150,y:o.y??50+(DCS.windows.size*25)%100,content:o.content||''};
+        DCS.windows.set(id,w);DCS.windowOrder.push(id);renderWindow(w);focusWindow(id);updateTaskbar();return id;
+    }
+    function renderWindow(w){
+        const el=document.createElement('div');el.id=`window-${w.id}`;el.className='window';
+        el.style.cssText=`left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px;z-index:${100+DCS.windowOrder.indexOf(w.id)}`;
+        el.innerHTML=`<div class="window-header" data-window="${w.id}"><span class="window-icon"><i class="fas ${w.icon}"></i></span><span class="window-title">${w.title}</span><div class="window-controls"><button class="window-btn" onclick="minimizeWindow(${w.id})">_</button><button class="window-btn" onclick="maximizeWindow(${w.id})">☐</button><button class="window-btn" onclick="closeWindow(${w.id})">×</button></div></div><div class="window-content">${w.content}</div><div class="window-resize" data-window="${w.id}"></div>`;
+        document.getElementById('windowsContainer').appendChild(el);
+        const h=el.querySelector('.window-header');
+        h.onmousedown=(e)=>{if(e.target.closest('.window-controls'))return;focusWindow(w.id);const ww=DCS.windows.get(w.id);DCS.dragState={id:w.id,startX:e.clientX-ww.x,startY:e.clientY-ww.y};};
+        h.ondblclick=(e)=>{if(!e.target.closest('.window-controls'))maximizeWindow(w.id);};
+        el.querySelector('.window-resize').onmousedown=(e)=>{e.stopPropagation();const ww=DCS.windows.get(w.id);DCS.resizeState={id:w.id,startX:e.clientX,startY:e.clientY,startW:ww.width,startH:ww.height};};
+        el.onmousedown=()=>focusWindow(w.id);
+    }
+    function handleMouseMove(e){
+        if(DCS.dragState){const w=DCS.windows.get(DCS.dragState.id);w.x=e.clientX-DCS.dragState.startX;w.y=Math.max(0,e.clientY-DCS.dragState.startY);const el=document.getElementById(`window-${w.id}`);el.style.left=w.x+'px';el.style.top=w.y+'px';}
+        if(DCS.resizeState){const w=DCS.windows.get(DCS.resizeState.id);w.width=Math.max(300,DCS.resizeState.startW+e.clientX-DCS.resizeState.startX);w.height=Math.max(200,DCS.resizeState.startH+e.clientY-DCS.resizeState.startY);const el=document.getElementById(`window-${w.id}`);el.style.width=w.width+'px';el.style.height=w.height+'px';}
+    }
+    function handleMouseUp(){DCS.dragState=null;DCS.resizeState=null;}
+    function focusWindow(id){DCS.activeWindow=id;DCS.windowOrder=DCS.windowOrder.filter(i=>i!==id);DCS.windowOrder.push(id);DCS.windows.forEach((w,wid)=>{const el=document.getElementById(`window-${wid}`);if(el){el.style.zIndex=100+DCS.windowOrder.indexOf(wid);el.classList.toggle('inactive',wid!==id);}});updateTaskbar();}
+    function minimizeWindow(id){document.getElementById(`window-${id}`).style.display='none';}
+    function maximizeWindow(id){const w=DCS.windows.get(id),el=document.getElementById(`window-${id}`);if(!w.maximized){w.prevState={x:w.x,y:w.y,width:w.width,height:w.height};w.x=0;w.y=0;w.width=window.innerWidth;w.height=window.innerHeight-32;w.maximized=true;}else{Object.assign(w,w.prevState);w.maximized=false;}el.style.cssText=`left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px;z-index:${el.style.zIndex}`;}
+    function closeWindow(id){document.getElementById(`window-${id}`)?.remove();DCS.windows.delete(id);DCS.windowOrder=DCS.windowOrder.filter(i=>i!==id);updateTaskbar();}
+
+    // ==================== APPS ====================
+    function openApp(appId,params={}){
+        const h={files:()=>openFileManager(params.path),terminal:openTerminal,editor:()=>openEditor(params.file),browser:openBrowser,settings:openSettings,about:openAbout,calculator:openCalculator,screenshot:takeScreenshot,paint:openPaint,notes:openNotes,clock:openClock,snake:openSnake,tetris:openTetris,pong:openPong,'2048':open2048};
+        if(h[appId])h[appId]();
+    }
+
+    // ==================== RUNGET OS VIEWER ====================
+    function openRungetViewer(){
+        const tabs=['Обзор','Возможности','Runget 2.0','ARM','Преимущества','Требования','Новости','Устройства','Скачать','Галерея','Сообщество'];
+        const winId=createWindow({title:'Runget OS — Информация',icon:'fa-laptop',width:850,height:550,content:''});
+        const contentEl=document.querySelector(`#window-${winId} .window-content`);
+
+        function render(activeTab){
+            let tabsHtml=tabs.map((t,i)=>`<div class="rg-tab ${i===activeTab?'active':''}" onclick="window.__rgTab(${i})">${t}</div>`).join('');
+            let body='';
+            switch(activeTab){
+                case 0: body=renderOverview(); break;
+                case 1: body=renderFeatures(); break;
+                case 2: body=renderRunget2(); break;
+                case 3: body=renderARM(); break;
+                case 4: body=renderAdvantages(); break;
+                case 5: body=renderSysreq(); break;
+                case 6: body=renderNews(); break;
+                case 7: body=renderDevices(); break;
+                case 8: body=renderDownload(); break;
+                case 9: body=renderGallery(); break;
+                case 10: body=renderCommunity(); break;
+            }
+            contentEl.innerHTML=`<div class="rg-viewer"><div class="rg-tabs">${tabsHtml}</div><div class="rg-body">${body}</div></div>`;
+        }
+        window.__rgTab=function(i){render(i);};
+        render(0);
+    }
+
+    function renderOverview(){
+        return `
+            <h1 class="rg-h1"><i class="fab fa-linux"></i> Runget OS</h1>
+            <p class="rg-p" style="font-size:13px;color:var(--purple-glow);">Легкая, быстрая, простая и красивая Debian-based ОС</p>
+            <p class="rg-p">Runget основан на Debian и Linux-ядре и сочетает стабильность Debian-семейства с расширенной совместимостью с Windows, Linux и Android-приложениями, включая подсистему Andryemu для Android. Система оптимизирована для работы на широком спектре оборудования — от старых ПК с минимальными характеристиками до современных игровых станций и серверов.</p>
+            <h2 class="rg-h2">Ключевые показатели</h2>
+            <div class="rg-grid-sm">
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-cubes"></i> 3 платформы</div><div class="rg-card-text">Linux, Windows, Android приложения</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-layer-group"></i> 2 редакции</div><div class="rg-card-text">Runget 1.0 и Runget 1.0 Core</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-devices"></i> 5+ устройств</div><div class="rg-card-text">ПК, ноутбуки, серверы, VM, телефоны</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-infinity"></i> ∞ пакетов</div><div class="rg-card-text">Через APT, Flatpak, AppImage</div></div>
+            </div>
+            <h2 class="rg-h2">Характеристики</h2>
+            <ul class="rg-list">
+                <li>Бесплатная и с открытым исходным кодом (GPL)</li>
+                <li>Основана на Debian Stable</li>
+                <li>KDE Plasma интерфейс с тёмной темой Breeze Dark</li>
+                <li>Активная разработка — Runget 2.0 уже в процессе</li>
+                <li>Поддержка Windows-приложений через Wine/Proton</li>
+                <li>Android-приложения через Andryemu</li>
+                <li>Работает на старом оборудовании (от 1 ГБ RAM)</li>
+            </ul>
+            <div style="margin-top:12px">
+                <a class="rg-dl-btn" href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a class="rg-dl-btn" href="https://t.me/runget_rt" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
+            </div>
+        `;
+    }
+
+    function renderFeatures(){
+        const features=[
+            {icon:'fa-linux',t:'На базе Debian',d:'Стабильная платформа Debian с предсказуемыми обновлениями, безопасностью и совместимостью с огромным количеством пакетов. Debian — один из старейших и наиболее проверенных Linux-дистрибутивов.',b:['Debian','APT','Stable','dpkg','systemd']},
+            {icon:'fa-windows',t:'Поддержка Windows-приложений',d:'Запускайте Windows-программы и игры через Wine/Proton. Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других приложений.',b:['Игры','Офис','Wine','Proton','.exe'],fab:true},
+            {icon:'fa-android',t:'Android-приложения (Andryemu)',d:'Andryemu — Android-эмулятор и подсистема для Runget. Устанавливайте APK-файлы, используйте мобильные приложения и игры с аппаратным ускорением.',b:['Andryemu','APK','Google Play','ARM-трансляция'],fab:true},
+            {icon:'fa-random',t:'Приложения других дистрибутивов',d:'Запуск приложений для Debian, Ubuntu, Fedora, Arch и других. Flatpak и AppImage из коробки, Snap дополнительно.',b:['.deb','Flatpak','AppImage','Snap']},
+            {icon:'fa-gamepad',t:'Игровая платформа',d:'Steam, Proton и другие лаунчеры. Тысячи игр нативно или через Proton. Vulkan и OpenGL обеспечивают высокую производительность.',b:['Steam','Proton','Lutris','Vulkan']},
+            {icon:'fa-magic',t:'Красивый интерфейс',d:'Тёмная тема вдохновлена KDE Plasma и Breeze Dark. Плавные анимации, настраиваемые виджеты, панели и рабочие столы.',b:['KDE-стиль','Тёмная тема','Виджеты']},
+            {icon:'fa-tachometer-alt',t:'Высокая производительность',d:'Оптимизация под слабые и старые ПК. Минимальное потребление RAM от 512 МБ, быстрая загрузка. Core потребляет ещё меньше.',b:['Старые ПК','Оптимизация','Быстрая загрузка']},
+            {icon:'fa-shield-alt',t:'Безопасность и приватность',d:'Без телеметрии и сбора данных. Регулярные обновления безопасности от Debian, встроенный файрвол. LUKS, AppArmor.',b:['Без телеметрии','Файрвол','LUKS','AppArmor']},
+            {icon:'fa-code-branch',t:'Открытый исходный код',d:'Полностью открыт на GitHub. Прозрачная разработка, открытый баг-трекер, возможность контрибьютить.',b:['GitHub','Open Source','GPL','Community']}
+        ];
+        let html='<h1 class="rg-h1">Почему именно Runget?</h1><p class="rg-p">Современный интерфейс, запуск Windows и Android-приложений, поддержка приложений разных дистрибутивов и высокая производительность.</p><div class="rg-grid">';
+        features.forEach(f=>{
+            html+=`<div class="rg-card"><div class="rg-card-title"><i class="${f.fab?'fab':'fas'} ${f.icon}"></i> ${f.t}</div><div class="rg-card-text">${f.d}</div><div style="margin-top:4px">${f.b.map(b=>`<span class="rg-badge">${b}</span>`).join('')}</div></div>`;
+        });
+        return html+'</div>';
+    }
+
+    function renderRunget2(){
+        const items=[
+            {icon:'fa-shield-alt',t:'Улучшенная стабильность',list:['Обновлённое ядро Linux','Улучшенное управление памятью','Автоматическое восстановление после сбоев','Оптимизированный планировщик задач','Поддержка Btrfs, ZFS, ext4']},
+            {icon:'fa-windows',t:'Улучшенная поддержка Windows',list:['Автоопределение Windows-приложений','Профили для популярных программ','DirectX 11/12 через DXVK/VKD3D','Интеграция .exe в файловый менеджер','.NET Framework и Visual C++ Runtime'],fab:true},
+            {icon:'fa-android',t:'Улучшенная поддержка Android',list:['Andryemu 2.0','Улучшенная трансляция ARM → x86','Уведомления в системном трее','Общий буфер обмена','GPU-ускорение для мобильных игр'],fab:true},
+            {icon:'fa-lock',t:'Secure Boot и TPM 2.0',list:['Подписанный загрузчик UEFI','Интеграция с TPM 2.0','Поддержка fTPM (AMD/Intel)','Верификация ядра при загрузке','Корпоративные политики']},
+            {icon:'fa-palette',t:'Обновлённый интерфейс',list:['Новые темы и иконки','Улучшенный центр уведомлений','Переработанное меню приложений','Динамические обои','HiDPI и мульти-мониторы']},
+            {icon:'fa-hdd',t:'Улучшенный установщик',list:['Пошаговый графический мастер','Автоматическая разметка диска','Определение драйверов','Выбор пакетов и конфигураций','NVMe, SSD, HDD, USB']}
+        ];
+        let html='<h1 class="rg-h1"><i class="fas fa-rocket"></i> Runget 2.0 Big Brain</h1><div style="display:inline-block;padding:3px 10px;background:rgba(139,92,246,0.2);border:1px solid var(--purple-medium);color:var(--purple-glow);font-size:10px;margin-bottom:10px;">🚀 В разработке</div><p class="rg-p">Следующее поколение Runget с улучшенной безопасностью, стабильностью и расширенной совместимостью.</p><div class="rg-grid">';
+        items.forEach(it=>{
+            html+=`<div class="rg-card rg-highlight"><div class="rg-card-title"><i class="${it.fab?'fab':'fas'} ${it.icon}"></i> ${it.t}</div><ul class="rg-list">${it.list.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
+        });
+        html+='</div><div class="rg-card" style="margin-top:12px;border-color:var(--purple-medium);"><div class="rg-card-text"><i class="fas fa-info-circle" style="color:var(--purple-bright)"></i> Это не полный список нововведений. Многие доработки будут опубликованы позже. Следите за обновлениями в <a href="https://t.me/runget_rt" target="_blank" style="color:var(--purple-bright)">@runget_rt</a>.</div></div>';
+        return html;
+    }
+
+    function renderARM(){
+        return `
+            <h1 class="rg-h1" style="color:#666;"><i class="fas fa-snowflake"></i> Runget для Raspberry Pi и Orange Pi</h1>
+            <div class="rg-warning"><i class="fas fa-snowflake"></i> Разработка заморожена</div>
+            <p class="rg-p" style="color:#777;">Специальные сборки для одноплатных компьютеров на ARM-архитектуре. Разработка временно приостановлена. Дата возобновления неизвестна.</p>
+            <div class="rg-grid rg-frozen">
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fab fa-raspberry-pi"></i> Raspberry Pi</div>
+                    <div class="rg-card-text">Модели (планировалось):</div>
+                    <ul class="rg-list">
+                        <li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li>
+                        <li>Raspberry Pi 4 Model B (8GB/4GB/2GB)</li>
+                        <li>Raspberry Pi 3 Model B+</li>
+                        <li>Raspberry Pi Zero 2 W — CLI-сборка</li>
+                        <li>Raspberry Pi 400</li>
+                        <li>Compute Module 4</li>
+                    </ul>
+                    <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Broadcom</span><span class="rg-badge">GPIO</span><span class="rg-badge">Заморожено</span></div>
+                </div>
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-microchip"></i> Orange Pi</div>
+                    <div class="rg-card-text">Модели (планировалось):</div>
+                    <ul class="rg-list">
+                        <li>Orange Pi 5 Plus (RK3588) — до 32GB RAM</li>
+                        <li>Orange Pi 5 (RK3588S) — NPU 6 TOPS</li>
+                        <li>Orange Pi 4 LTS (RK3399)</li>
+                        <li>Orange Pi 3 LTS (H6)</li>
+                        <li>Orange Pi Zero 2/3 — для IoT</li>
+                    </ul>
+                    <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Rockchip</span><span class="rg-badge">Allwinner</span><span class="rg-badge">NPU</span><span class="rg-badge">Заморожено</span></div>
+                </div>
+            </div>
+            <h2 class="rg-h2" style="color:#666;">Сценарии использования (планировалось)</h2>
+            <div class="rg-grid-sm rg-frozen">
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-home"></i> Умный дом</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-photo-video"></i> Медиа-центр</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-network-wired"></i> Сетевые сервисы</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-robot"></i> Робототехника</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-graduation-cap"></i> Обучение</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-gamepad"></i> Ретро-игры</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-cloud"></i> Edge Computing</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-bolt"></i> Энергоэффективность</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-video"></i> Видеонаблюдение</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-print"></i> 3D-печать</div></div>
+            </div>
+        `;
+    }
+
+    function renderAdvantages(){
+        const advs=[
+            {icon:'fa-shield-alt',t:'Стабильность и безопасность',d:'Debian-based дистрибутивы известны стабильностью. Обновления безопасности — обычно в течение 48 часов.'},
+            {icon:'fa-box-open',t:'Огромный выбор пакетов',d:'APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений. Более 59 000 пакетов в репозиториях Debian.'},
+            {icon:'fa-sync-alt',t:'Простые обновления',d:'sudo apt update && sudo apt upgrade — и система обновлена.'},
+            {icon:'fa-project-diagram',t:'Восстановление систем',d:'Runget может использоваться для восстановления Debian/Ubuntu-систем. GRUB, fstab, сброс пароля root.'},
+            {icon:'fa-users',t:'Сообщество',d:'Большое сообщество Debian и формирующаяся база Runget. Инструкции для Debian/Ubuntu применимы напрямую.'},
+            {icon:'fa-life-ring',t:'Удобство для новичков',d:'Дружественный интерфейс и подсказки. Панель задач, меню «Пуск» — как в Windows.'},
+            {icon:'fa-puzzle-piece',t:'Универсальная совместимость',d:'Три экосистемы: Linux, Windows и Android. LibreOffice + 1С через Wine + Telegram через Andryemu.'},
+            {icon:'fa-feather-alt',t:'Лёгкость и скорость',d:'1GB RAM и 10GB диска vs 4GB RAM и 64GB для Windows 11. Потребляет меньше ресурсов.'}
+        ];
+        let html='<h1 class="rg-h1">Плюсы Runget и Debian-based систем</h1><p class="rg-p">Runget наследует сильные стороны Debian-семейства и добавляет акцент на совместимость и восстановление систем.</p><div class="rg-grid">';
+        advs.forEach(a=>{
+            html+=`<div class="rg-card"><div class="rg-card-title"><i class="fas ${a.icon}"></i> ${a.t}</div><div class="rg-card-text">${a.d}</div></div>`;
+        });
+        return html+'</div>';
+    }
+
+    function renderSysreq(){
+        return `
+            <h1 class="rg-h1">Системные требования</h1>
+            <div class="rg-grid">
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-desktop"></i> Runget 1.0</div>
+                    <table class="rg-table">
+                        <tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr>
+                        <tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr>
+                        <tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr>
+                        <tr><td>Видео</td><td>X11/Wayland</td></tr>
+                        <tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr>
+                        <tr><td>Сеть</td><td>Ethernet или Wi-Fi</td></tr>
+                    </table>
+                </div>
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-server"></i> Runget 1.0 Core</div>
+                    <table class="rg-table">
+                        <tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr>
+                        <tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr>
+                        <tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr>
+                        <tr><td>Видео</td><td>Не требуется (CLI)</td></tr>
+                        <tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr>
+                        <tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr>
+                    </table>
+                </div>
+                <div class="rg-card rg-frozen">
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> ARM (заморожено)</div>
+                    <table class="rg-table">
+                        <tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr>
+                        <tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr>
+                        <tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr>
+                        <tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr>
+                        <tr><td>Питание</td><td>5V/3A USB-C</td></tr>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderNews(){
+        const news=[
+            {date:'Анонс',text:'Runget 2.0 Big Brain — следующее поколение уже в разработке!',detail:'Улучшенная стабильность, Secure Boot, TPM 2.0, новый установщик.',highlight:true},
+            {date:'ARM — заморожено',text:'Разработка версий для Raspberry Pi и Orange Pi приостановлена.',detail:'Дата возобновления пока неизвестна.',frozen:true},
+            {date:'07.05.2025',text:'Runget 1.0 Anythink Anywhere is coming soon!',detail:'Полноценная настольная версия с предустановленными приложениями.'},
+            {date:'09.04.2025',text:'Новый официальный канал: @runget_rt.',detail:'Все новости и обновления теперь в @runget_rt.'},
+            {date:'01.09.2025',text:'Runget 1.0 Core доступен для загрузки.'},
+            {date:'03.11.2025',text:'Релиз Runget 1.0 — первая стабильная версия.'},
+            {date:'05.11.2025',text:'Протестирован в QEMU с Core2Duo — отличные результаты.'},
+            {date:'06.11.2025',text:'Windows и Android-приложения работают успешно.'},
+            {date:'07.11.2025',text:'Приложения Debian, Ubuntu, Arch, Gentoo, Fedora работают корректно.'}
+        ];
+        let html='<h1 class="rg-h1">Новости Runget</h1>';
+        news.forEach(n=>{
+            let cls='rg-news-item';
+            if(n.highlight)cls+=' rg-highlight';
+            if(n.frozen)cls+=' rg-frozen';
+            html+=`<div class="${cls}"><div class="rg-news-date">${n.frozen?'<i class="fas fa-snowflake"></i> ':n.highlight?'<i class="fas fa-rocket"></i> ':''}[${n.date}]</div><div class="rg-news-text">${n.text}</div>${n.detail?`<div style="color:#666;font-size:9px;font-style:italic;margin-top:2px">${n.detail}</div>`:''}</div>`;
+        });
+        return html;
+    }
+
+    function renderDevices(){
+        const devs=[
+            {icon:'fa-desktop',t:'Компьютеры',d:'Полноценная замена Windows. NVIDIA, AMD, Intel GPU.',s:'Intel/AMD x86_64 • 1+ ГБ RAM'},
+            {icon:'fa-laptop',t:'Ноутбуки',d:'Оптимизация питания и драйверов. Гибернация и спящий режим.',s:'TLP • Wi-Fi/BT • Тачпад'},
+            {icon:'fa-server',t:'Серверы',d:'Runget Core для серверов. Docker и KVM из коробки.',s:'SSH • Docker • KVM/QEMU'},
+            {icon:'fa-mobile-alt',t:'Телефоны',d:'Экспериментальная поддержка смартфонов и планшетов.',s:'Экспериментально • Сенсорный UI'},
+            {icon:'fa-hdd',t:'Виртуальные машины',d:'QEMU/KVM, VirtualBox и VMware.',s:'QEMU • VirtualBox • VMware'},
+            {icon:'fa-raspberry-pi',t:'Raspberry Pi (заморожено)',d:'Специальная сборка для одноплатных компьютеров.',s:'ARM64 • Broadcom • GPIO',frozen:true,fab:true},
+            {icon:'fa-microchip',t:'Orange Pi (заморожено)',d:'Сборки для Orange Pi 3/4/5 с NPU.',s:'ARM64 • Rockchip • Allwinner',frozen:true}
+        ];
+        let html='<h1 class="rg-h1">Runget на любом устройстве</h1><div class="rg-grid">';
+        devs.forEach(d=>{
+            html+=`<div class="rg-card ${d.frozen?'rg-frozen':''}"><div class="rg-card-title"><i class="${d.fab?'fab':'fas'} ${d.icon}"></i> ${d.t}</div><div class="rg-card-text">${d.d}</div><div style="color:#555;font-size:9px;margin-top:4px">${d.s}</div></div>`;
+        });
+        return html+'</div>';
+    }
+
+    function renderDownload(){
+        return `
+            <h1 class="rg-h1">Скачать Runget</h1>
+            <p class="rg-p">Все образы бесплатны и с открытым исходным кодом.</p>
+            <div class="rg-grid">
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-desktop"></i> Runget 1.0</div>
+                    <div class="rg-card-text">Полная настольная версия с графическим интерфейсом. KDE Plasma, Wine, Andryemu, мультимедиа-кодеки.</div>
+                    <div style="margin-top:4px"><span class="rg-badge">x86_64</span><span class="rg-badge">ISO</span><span class="rg-badge">UEFI+BIOS</span></div>
+                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" target="_blank"><i class="fas fa-download"></i> Скачать ISO</a>
+                </div>
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-server"></i> Runget 1.0 Core</div>
+                    <div class="rg-card-text">Облегченная версия для серверов. CLI-установка, SSH, Docker, опциональный рабочий стол.</div>
+                    <div style="margin-top:4px"><span class="rg-badge">CLI</span><span class="rg-badge">x86_64</span><span class="rg-badge">UEFI+BIOS</span></div>
+                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" target="_blank"><i class="fas fa-download"></i> Скачать ISO</a>
+                </div>
+                <div class="rg-card rg-frozen">
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> Raspberry Pi (заморожено)</div>
+                    <div class="rg-card-text">Образ для microSD. Разработка приостановлена.</div>
+                    <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Заморожено</span></div>
+                    <span class="rg-dl-btn frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                </div>
+                <div class="rg-card rg-frozen">
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> Orange Pi (заморожено)</div>
+                    <div class="rg-card-text">Образ для microSD/eMMC. Разработка приостановлена.</div>
+                    <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Заморожено</span></div>
+                    <span class="rg-dl-btn frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderGallery(){
+        const imgs=[
+            'https://github.com/user-attachments/assets/7296ed95-d2d0-4693-8b65-a0193eaeb880',
+            'https://github.com/user-attachments/assets/8daac9e6-442a-45ea-a9c8-a8da8293cdbf',
+            'https://github.com/user-attachments/assets/cd00d85f-887d-4c61-bf02-9cbaf823eeac',
+            'https://github.com/user-attachments/assets/fc973a90-011e-40a7-a548-d1cc392e798e',
+            'https://github.com/user-attachments/assets/0b5a2fa2-f7ac-40c8-bc46-1481568e4842',
+            'https://github.com/user-attachments/assets/b4306b28-e013-4e0e-9e30-1292b8f6f876',
+            'https://github.com/user-attachments/assets/ca25da02-9359-47bf-893d-fb24757d66d8',
+            'https://github.com/user-attachments/assets/e22b9726-2ed9-4828-9b2e-2d35161a1590'
+        ];
+        let html='<h1 class="rg-h1">Галерея Runget</h1><p class="rg-p">Runget 1.0 Anythink Anywhere.</p><div class="rg-gallery-grid">';
+        imgs.forEach((img,i)=>{
+            html+=`<div class="rg-gallery-item" onclick="window.open('${img}','_blank')"><img src="${img}" alt="Runget screenshot ${i+1}" loading="lazy"></div>`;
+        });
+        return html+'</div>';
+    }
+
+    function renderCommunity(){
+        return `
+            <h1 class="rg-h1">Сообщество и поддержка</h1>
+            <div class="rg-grid">
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fab fa-telegram"></i> Telegram</div>
+                    <div class="rg-card-text">Официальный канал — <a href="https://t.me/runget_rt" target="_blank" style="color:var(--purple-bright)">@runget_rt</a></div>
+                    <div class="rg-card-text" style="margin-top:4px">Поддержка — <a href="https://t.me/kirilldual" target="_blank" style="color:var(--purple-bright)">@kirilldual</a></div>
+                </div>
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fab fa-github"></i> GitHub</div>
+                    <div class="rg-card-text"><a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" style="color:var(--purple-bright)">Исходный код Runget</a></div>
+                    <div class="rg-card-text" style="margin-top:4px"><a href="https://github.com/Kolyadual/Andryemu" target="_blank" style="color:var(--purple-bright)">Andryemu</a></div>
+                </div>
+                <div class="rg-card">
+                    <div class="rg-card-title"><i class="fas fa-envelope"></i> Email</div>
+                    <div class="rg-card-text"><a href="mailto:runget.feedback.kirilldual@gmail.com" style="color:var(--purple-bright)">runget.feedback.kirilldual@gmail.com</a></div>
+                </div>
+            </div>
+            <h2 class="rg-h2">Команда</h2>
+            <div class="rg-grid-sm">
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Kolyadual</div><div class="rg-card-text">Основатель, Архитектор</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Kirilldual</div><div class="rg-card-text">Дизайнер, Тестировщик</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Seregaosm</div><div class="rg-card-text">Дизайнер №2, UI/UX</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Neeby</div><div class="rg-card-text">Создатель ПО</div></div>
+            </div>
+            <h2 class="rg-h2">Версии</h2>
+            <div class="rg-card">
+                <div class="rg-card-text"><strong style="color:var(--purple-bright)">Текущая:</strong> Runget 1.0 Anythink Anywhere</div>
+                <div class="rg-card-text"><strong style="color:var(--purple-bright)">В разработке:</strong> Runget 2.0 Big Brain</div>
+                <div class="rg-card-text"><strong style="color:#666">Заморожено:</strong> ARM-версии</div>
+            </div>
+            <div style="margin-top:12px;color:var(--text-secondary);font-size:10px;text-align:center;border-top:1px solid var(--border-light);padding-top:10px;">
+                © 2026 Kolyadual & kirilldual. Все права защищены.<br>Runget OS — свободное ПО. Лицензия GPL.
+            </div>
+        `;
+    }
+
+    // ==================== PIRATE GAMES ====================
+    const pirateGames=[
+        {name:'OneShot WME',icon:'fa-sun',url:'https://drive.usercontent.google.com/download?id=1peNBgKyVIhAImJlOe-6prZD-Zsmv9UjS&export=download&confirm=t',size:'~500 MB'},
+        {name:'Schedule 1',icon:'fa-calendar-alt',url:'https://drive.usercontent.google.com/download?id=1MdVl40loEy9ToHuz442c830J4w9Isy7m&export=download&confirm=t',size:'~2 GB'},
+        {name:'КЛЕТЬ (KLETKA)',icon:'fa-cube',url:'https://drive.usercontent.google.com/download?id=1RegCu8zToWbv-u81w9GGpg9ZdXigO98F&export=download&confirm=t',size:'~1 GB'},
+        {name:'Zompiercer',icon:'fa-train',url:'https://drive.usercontent.google.com/download?id=10cQ66HhzJg1eM2y00Gc-iVcjS-HZfLyv&export=download&confirm=t',size:'~3 GB'},
+        {name:'Hello Neighbor',icon:'fa-house-user',url:'https://drive.usercontent.google.com/download?id=1xcCodWG3bE4dfkKkp2gHyaOetrchITbt&export=download&confirm=t',size:'~2 GB'},
+        {name:'FNAF: Into The Pit',icon:'fa-ghost',url:'https://drive.usercontent.google.com/download?id=1nwvnx_yNRVWTlWVqfeELZj8L1t5y0MKA&export=download&confirm=t',size:'~1.5 GB'},
+        {name:'Tin Can',icon:'fa-rocket',url:'https://drive.usercontent.google.com/download?id=12SXweGlCSfJNrX7s4pSgET52TuqQpWAp&export=download&confirm=t',size:'~500 MB'},
+        {name:'My Summer Car',icon:'fa-car',url:'https://drive.usercontent.google.com/download?id=1caiQuBgdDwYfs1EBTwpX1jDOi7d8cHmf&export=download&confirm=t',size:'~800 MB'},
+        {name:'Exit 8',icon:'fa-door-open',url:'https://drive.usercontent.google.com/download?id=1pesmN_NXzsUlH1Z2Lts5vDtxM4zicPvE&export=download&confirm=t',size:'~2 GB'},
+        {name:'R.E.P.O.',icon:'fa-users',url:'https://disk.yandex.ru/d/OOnUlKtk7SPI4g',size:'~1.5 GB'},
+        {name:'GTA 3 (HD)',icon:'fa-city',url:'https://drive.usercontent.google.com/download?id=1byT3J2ArNqLelLmdhwJGnq1pmIg-QRi0&export=download&confirm=t',size:'~4 GB'},
+        {name:'Stray',icon:'fa-cat',url:'https://drive.usercontent.google.com/download?id=1wYKlItqPwG70wvJH8DujOZl2SomDPQZ5&export=download&confirm=t',size:'~7 GB'},
+        {name:'Drive Beyond Horizons',icon:'fa-road',url:'https://drive.usercontent.google.com/download?id=1o9JqdNuafFYkEsuejuFtPf3UK_nVHx-F&export=download&confirm=t',size:'~3 GB'},
+        {name:'FNAF 1-2-3-4 + Halloween',icon:'fa-mask',url:'https://drive.usercontent.google.com/download?id=1hX-JhDaT4i_Ap4iXJaHSQNXt7L4f17lf&export=download&confirm=t',size:'~500 MB'}
+    ];
+
+    function openGamesFolder(){
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fas fa-skull-crossbones"></i> Пиратские игры</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">';
+        pirateGames.forEach(g=>{c+=`<div class="game-download-item" onclick="downloadGame('${g.url}','${g.name}')"><div class="game-download-icon"><i class="fas ${g.icon}"></i></div><div class="game-download-name">${g.name}</div><div class="game-download-size">${g.size}</div></div>`;});
+        c+='</div></div>';
+        createWindow({title:'Пиратские игры',icon:'fa-skull-crossbones',width:500,height:400,content:c});
+    }
+
+    function downloadGame(url,name){
+        const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);
+        const n=document.createElement('div');n.style.cssText='position:fixed;bottom:50px;right:10px;background:var(--bg-medium);border:2px outset var(--border-light);padding:10px 15px;color:var(--purple-glow);font-size:11px;z-index:9999;';
+        n.innerHTML=`<i class="fas fa-download"></i> Загрузка "${name}" начата...`;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);
+    }
+
+    function openDGC(){createWindow({title:'DGC - Dual Gaming Centre',icon:'fa-gamepad',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-sync"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kolyadual.github.io/dualgamingcentre/new.html','_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button></div><iframe src="https://kolyadual.github.io/dualgamingcentre/new.html" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
+
+    function openTelegramFolder(){
+        const ch=[{name:'DGC Official',icon:'fa-gamepad',url:'https://t.me/DGC_off'},{name:'Runget OS',icon:'fa-laptop',url:'https://t.me/runget_rt'}];
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fab fa-telegram"></i> Telegram каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fas ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        c+='</div></div>';createWindow({title:'Telegram каналы',icon:'fa-telegram',width:400,height:300,content:c});
+    }
+
+    function openChannelsFolder(){
+        const ch=[{name:'Dzen - Binary',icon:'fa-newspaper',url:'https://dzen.ru/binary'},{name:'YouTube',icon:'fa-youtube',url:'https://www.youtube.com/channel/UChevVs3tuWf8a_mvpd2i_ng'}];
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fas fa-play-circle"></i> Наши каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fab ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        c+='</div></div>';createWindow({title:'Наши каналы',icon:'fa-play-circle',width:400,height:300,content:c});
+    }
+
+    function openKirilldualDev(){createWindow({title:'kirilldual0987 - Developer',icon:'fa-code',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-sync"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kirilldual0987.github.io/kirilldual/','_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button></div><iframe src="https://kirilldual0987.github.io/kirilldual/" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
+
+    function openGitHubFolder(){
+        const r=[{name:'Kolyadual',icon:'fa-user',url:'https://github.com/Kolyadual'},{name:'kirilldual0987',icon:'fa-user',url:'https://github.com/kirilldual0987'}];
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fab fa-github"></i> Наши GitHub</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        r.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fas ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        c+='</div></div>';createWindow({title:'Наши GitHub',icon:'fa-github',width:400,height:300,content:c});
+    }
+
+    function openMiscFolder(){
+        let c='<div class="folder-grid">';apps.forEach(a=>{c+=`<div class="folder-app" ondblclick="openApp('${a.id}')"><div class="folder-app-icon"><i class="fas ${a.icon}"></i></div><div class="folder-app-name">${a.name}</div></div>`;});c+='</div>';
+        createWindow({title:'Разное',icon:'fa-folder',width:500,height:400,content:c});
+    }
+
+    // ==================== STANDARD APPS ====================
+    function openFileManager(path='/home/user'){
+        let cwd=path;
+        function getFolder(p){const parts=p.split('/').filter(Boolean);let cur=DCS.fileSystem['/'];for(const part of parts){if(cur.children?.[part])cur=cur.children[part];}return cur;}
+        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${item.type==='folder'?'fa-folder':'fa-file-alt'}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
+        const winId=createWindow({title:'Файлы - '+cwd,icon:'fa-folder',width:700,height:450,content:render()});
+        const ce=document.querySelector(`#window-${winId} .window-content`);
+        ce.__nav=(d)=>{if(d==='..'){const p=cwd.split('/').filter(Boolean);p.pop();cwd='/'+p.join('/');}else cwd=d;ce.innerHTML=render();document.querySelector(`#window-${winId} .window-title`).textContent='Файлы - '+cwd;};
+        ce.__go=(p)=>{cwd=p;ce.innerHTML=render();};
+        ce.__open=(n,t)=>{if(t==='folder'){cwd=cwd==='/'?'/'+n:cwd+'/'+n;ce.innerHTML=render();}else{const f=getFolder(cwd);openApp('editor',{file:{name:n,content:f.children[n].content}});}};
+    }
+
+    function openTerminal(){
+        let history=['Dual Computers Systems v1.0 "Dark Matter" — DCS-recovery','Type "help" for available commands',''];let cwd='/home/user';
+        function getFolder(p){const parts=p.split('/').filter(Boolean);let cur=DCS.fileSystem['/'];for(const part of parts){if(cur.children?.[part])cur=cur.children[part];}return cur;}
+        const winId=createWindow({title:'Терминал',icon:'fa-terminal',width:650,height:400,content:`<div class="terminal" id="term-${DCS.windowId}"><div id="termOut"></div><div><span class="terminal-prompt">user@dcs</span>:<span class="terminal-path">~</span>$ <input class="terminal-input" id="termIn" autofocus></div></div>`});
+        const output=document.getElementById('termOut'),input=document.getElementById('termIn');
+        function updateOutput(){output.innerHTML=history.map(l=>`<div class="terminal-line">${l}</div>`).join('');}
+        updateOutput();
+        input.onkeydown=(e)=>{
+            if(e.key==='Enter'){
+                const cmd=input.value.trim();history.push(`<span class="terminal-prompt">user@dcs</span>:<span class="terminal-path">${cwd.replace('/home/user','~')}</span>$ ${cmd}`);
+                if(cmd){
+                    const[command,...args]=cmd.split(' ');
+                    const commands={
+                        help:()=>'Available: help, ls, cd, pwd, cat, mkdir, touch, rm, clear, date, whoami, neofetch, runget',
+                        ls:()=>{const f=getFolder(cwd);return Object.keys(f.children||{}).join('  ')||'';},
+                        cd:()=>{if(!args[0]||args[0]==='~'){cwd='/home/user';return'';}if(args[0]==='/'){cwd='/';return'';}if(args[0]==='..'){const p=cwd.split('/').filter(Boolean);p.pop();cwd='/'+p.join('/')||'/';return'';}const f=getFolder(cwd);if(f.children?.[args[0]]?.type==='folder'){cwd=cwd==='/'?'/'+args[0]:cwd+'/'+args[0];return'';}return`cd: ${args[0]}: No such directory`;},
+                        pwd:()=>cwd,
+                        cat:()=>{if(!args[0])return'cat: missing file';const f=getFolder(cwd);return f.children?.[args[0]]?.content||`cat: ${args[0]}: No such file`;},
+                        mkdir:()=>{if(!args[0])return'mkdir: missing name';getFolder(cwd).children[args[0]]={type:'folder',children:{}};return'';},
+                        touch:()=>{if(!args[0])return'touch: missing name';getFolder(cwd).children[args[0]]={type:'file',content:''};return'';},
+                        rm:()=>{if(!args[0])return'rm: missing name';const f=getFolder(cwd);if(f.children?.[args[0]]){delete f.children[args[0]];return'';}return`rm: ${args[0]}: No such file`;},
+                        clear:()=>{history=[];return'';},
+                        date:()=>new Date().toLocaleString('ru-RU'),
+                        whoami:()=>'user',
+                        runget:()=>'<span style="color:var(--purple-glow)">Runget OS v1.0 "Anythink Anywhere"\nDebased-based Linux OS\nhttps://github.com/Kolyadual/Runget-next_generating_operating_system</span>',
+                        neofetch:()=>`<span style="color:var(--purple-glow)">  DCS v1.0 "Dark Matter"</span>\n  <span style="color:var(--purple-bright)">OS:</span> Dual Computers Systems 1.0\n  <span style="color:var(--purple-bright)">Mode:</span> DCS-recovery\n  <span style="color:var(--purple-bright)">Kernel:</span> 6.2.0-dcs\n  <span style="color:var(--purple-bright)">Uptime:</span> ${Math.floor(performance.now()/60000)} mins\n  <span style="color:var(--purple-bright)">Shell:</span> dcs-shell\n  <span style="color:var(--purple-bright)">Resolution:</span> ${window.innerWidth}x${window.innerHeight}\n  <span style="color:var(--purple-bright)">CPU:</span> Virtual (${navigator.hardwareConcurrency} cores)\n  <span style="color:var(--purple-bright)">Memory:</span> 4096 MB / 16384 MB`
+                    };
+                    const result=commands[command]?commands[command]():`${command}: command not found`;
+                    if(result)history.push(result);
+                }
+                updateOutput();input.value='';
+                input.parentElement.querySelector('.terminal-path').textContent=cwd.replace('/home/user','~')||'/';
+            }
+        };
+        setTimeout(()=>input.focus(),100);
+    }
+
+    function openEditor(file){createWindow({title:file?file.name+' - Редактор':'Новый файл - Редактор',icon:'fa-file-alt',width:600,height:400,content:`<div class="app-toolbar"><button class="app-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fas fa-save"></i> Сохранить</button></div><textarea style="width:100%;height:calc(100% - 30px);background:#000;color:var(--purple-bright);border:none;padding:10px;font-family:Consolas,monospace;font-size:12px;resize:none;outline:none">${file?.content||''}</textarea>`});}
+
+    function openBrowser(){createWindow({title:'Браузер',icon:'fa-globe',width:900,height:600,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()"><i class="fas fa-redo"></i></button><input class="app-input" style="flex:1" value="https://www.google.com" id="browserUrl"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i></button></div><iframe src="https://www.google.com/webhp?igu=1" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`});}
+
+    function openSettings(){
+        let c='<div style="padding:15px"><h3 style="color:var(--purple-bright);margin-bottom:15px">Настройки</h3><h4 style="color:var(--purple-glow);margin-bottom:10px">Обои</h4><div class="settings-grid">';
+        wallpapers.forEach((w,i)=>{c+=`<div class="wallpaper-option ${DCS.settings.wallpaper===i?'active':''}" onclick="DCS.settings.wallpaper=${i};applyWallpaper();document.querySelectorAll('.wallpaper-option').forEach(e=>e.classList.remove('active'));this.classList.add('active')"><div class="wallpaper-preview" style="background:${w.gradient}"></div><div class="wallpaper-name">${w.name}</div></div>`;});
+        c+='</div></div>';createWindow({title:'Настройки',icon:'fa-cog',width:550,height:400,content:c});
+    }
+
+    function openAbout(){createWindow({title:'О системе',icon:'fa-info-circle',width:400,height:380,content:`<div class="about-container"><div class="about-logo">DCS</div><div class="about-title">Dual Computers Systems</div><div class="about-subtitle">Version 1.0 "Dark Matter" — DCS-recovery</div><div class="about-info"><div class="about-row"><span class="about-label">Версия</span><span class="about-value">1.0</span></div><div class="about-row"><span class="about-label">Кодовое имя</span><span class="about-value">Dark Matter</span></div><div class="about-row"><span class="about-label">Режим</span><span class="about-value">DCS-recovery</span></div><div class="about-row"><span class="about-label">Ядро</span><span class="about-value">6.2.0-dcs</span></div><div class="about-row"><span class="about-label">Источник</span><span class="about-value">Runget OS Easter Egg</span></div></div></div>`});}
+
+    function openCalculator(){
+        const winId=createWindow({title:'Калькулятор',icon:'fa-calculator',width:280,height:350,content:''});
+        let display='0';
+        function render(){return `<div style="padding:10px;background:#000;height:100%"><div style="background:var(--bg-dark);border:2px inset var(--border-light);padding:10px;text-align:right;font-size:24px;color:var(--purple-glow);margin-bottom:10px;font-family:Consolas" id="calcDisplay">${display}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px">${['C','±','%','÷','7','8','9','×','4','5','6','-','1','2','3','+','0','.','⌫','='].map(b=>`<button style="padding:12px;background:linear-gradient(180deg,var(--bg-light),var(--bg-dark));border:2px outset var(--border-light);font-size:16px;cursor:pointer;color:var(--text-primary)" onclick="window.__calc('${b}')">${b}</button>`).join('')}</div></div>`;}
+        document.querySelector(`#window-${winId} .window-content`).innerHTML=render();
+        let prev=null,op=null,waitOp=false;
+        window.__calc=(b)=>{
+            if(b>='0'&&b<='9'||b==='.'){display=waitOp?b:(display==='0'&&b!=='.'?b:display+b);waitOp=false;}
+            else if(['+','-','×','÷'].includes(b)){prev=parseFloat(display);op=b;waitOp=true;}
+            else if(b==='='){const cur=parseFloat(display);if(op==='+')display=String(prev+cur);else if(op==='-')display=String(prev-cur);else if(op==='×')display=String(prev*cur);else if(op==='÷')display=cur!==0?String(prev/cur):'Error';op=null;waitOp=true;}
+            else if(b==='C'){display='0';prev=null;op=null;}
+            else if(b==='±'){display=String(-parseFloat(display));}
+            else if(b==='%'){display=String(parseFloat(display)/100);}
+            else if(b==='⌫'){display=display.length>1?display.slice(0,-1):'0';}
+            document.getElementById('calcDisplay').textContent=display;
+        };
+    }
+
+    async function takeScreenshot(){const c=await html2canvas(document.body);const a=document.createElement('a');a.download=`dcs-screenshot-${Date.now()}.png`;a.href=c.toDataURL();a.click();}
+
+    function openPaint(){
+        const winId=createWindow({title:'Рисование',icon:'fa-paint-brush',width:650,height:450,content:`<div class="app-toolbar"><input type="color" id="paintColor" value="#8b5cf6" style="border:2px inset var(--border-light)"><input type="range" id="paintSize" min="1" max="30" value="3" style="width:80px"><button class="app-btn" onclick="window.__clearPaint()"><i class="fas fa-trash"></i> Очистить</button><button class="app-btn" onclick="window.__savePaint()"><i class="fas fa-save"></i> Сохранить</button></div><canvas id="paintCanvas" style="cursor:crosshair"></canvas>`});
+        setTimeout(()=>{
+            const canvas=document.getElementById('paintCanvas'),ctx=canvas.getContext('2d');canvas.width=644;canvas.height=380;ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
+            let drawing=false,lastX,lastY;
+            canvas.onmousedown=(e)=>{drawing=true;[lastX,lastY]=[e.offsetX,e.offsetY];};
+            canvas.onmousemove=(e)=>{if(!drawing)return;ctx.strokeStyle=document.getElementById('paintColor').value;ctx.lineWidth=document.getElementById('paintSize').value;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(lastX,lastY);ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();[lastX,lastY]=[e.offsetX,e.offsetY];};
+            canvas.onmouseup=canvas.onmouseleave=()=>drawing=false;
+            window.__clearPaint=()=>{ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);};
+            window.__savePaint=()=>{const a=document.createElement('a');a.href=canvas.toDataURL();a.download='drawing.png';a.click();};
+        },50);
+    }
+
+    function openNotes(){const n=localStorage.getItem('dcs-notes')||'';createWindow({title:'Заметки',icon:'fa-sticky-note',width:350,height:300,content:`<textarea style="width:100%;height:100%;background:#000;color:var(--purple-bright);border:none;padding:10px;resize:none;outline:none;font-size:12px" oninput="localStorage.setItem('dcs-notes',this.value)">${n}</textarea>`});}
+
+    function openClock(){
+        const winId=createWindow({title:'Часы',icon:'fa-clock',width:250,height:300,content:''});
+        function update(){const now=new Date();const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:20px;text-align:center;background:#000;height:100%"><div style="font-size:40px;color:var(--purple-glow);font-family:Consolas">${now.toLocaleTimeString('ru-RU')}</div><div style="color:var(--text-secondary);margin-top:10px">${now.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}</div></div>`;}
+        update();setInterval(update,1000);
+    }
+
+    // ==================== GAMES ====================
+    function openSnake(){
+        const winId=createWindow({title:'Змейка',icon:'fa-gamepad',width:420,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="snakeScore">0</span></span><button class="app-btn" onclick="window.__startSnake()"><i class="fas fa-play"></i> Старт</button></div><canvas id="snakeCanvas" class="game-canvas" width="400" height="400"></canvas></div>`});
+        const canvas=document.getElementById('snakeCanvas'),ctx=canvas.getContext('2d');let snake,food,dir,score,loop;
+        function init(){snake=[{x:10,y:10}];dir={x:1,y:0};score=0;placeFood();}
+        function placeFood(){food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}
+        function draw(){ctx.fillStyle='#000';ctx.fillRect(0,0,400,400);ctx.fillStyle='#6b3fa0';snake.forEach(s=>ctx.fillRect(s.x*20+1,s.y*20+1,18,18));ctx.fillStyle='#8b5cf6';ctx.fillRect(food.x*20+1,food.y*20+1,18,18);}
+        function update(){const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};if(head.x<0||head.x>=20||head.y<0||head.y>=20||snake.some(s=>s.x===head.x&&s.y===head.y)){clearInterval(loop);return;}snake.unshift(head);if(head.x===food.x&&head.y===food.y){score++;document.getElementById('snakeScore').textContent=score;placeFood();}else snake.pop();draw();}
+        document.addEventListener('keydown',(e)=>{const d={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}};if(d[e.key]&&(d[e.key].x!==-dir.x||d[e.key].y!==-dir.y)){e.preventDefault();dir=d[e.key];}});
+        window.__startSnake=()=>{clearInterval(loop);init();draw();loop=setInterval(update,100);};init();draw();
+    }
+
+    function openTetris(){
+        createWindow({title:'Тетрис',icon:'fa-th',width:260,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="tetrisScore">0</span></span><button class="app-btn" onclick="window.__startTetris()"><i class="fas fa-play"></i></button></div><canvas id="tetrisCanvas" class="game-canvas" width="200" height="400"></canvas></div>`});
+        const canvas=document.getElementById('tetrisCanvas'),ctx=canvas.getContext('2d');
+        const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
+        let board,piece,pieceX,pieceY,pieceType,score,loop;
+        function init(){board=Array(20).fill().map(()=>Array(10).fill(0));score=0;newPiece();}
+        function newPiece(){pieceType=Math.floor(Math.random()*shapes.length);piece=shapes[pieceType];pieceX=4;pieceY=0;if(collision())clearInterval(loop);}
+        function collision(){for(let y=0;y<piece.length;y++)for(let x=0;x<piece[y].length;x++)if(piece[y][x]&&(board[pieceY+y]?.[pieceX+x]!==0||pieceX+x<0||pieceX+x>=10||pieceY+y>=20))return true;return false;}
+        function merge(){for(let y=0;y<piece.length;y++)for(let x=0;x<piece[y].length;x++)if(piece[y][x])board[pieceY+y][pieceX+x]=pieceType+1;}
+        function clearLines(){for(let y=19;y>=0;y--)if(board[y].every(c=>c)){board.splice(y,1);board.unshift(Array(10).fill(0));score+=100;y++;}document.getElementById('tetrisScore').textContent=score;}
+        function draw(){ctx.fillStyle='#000';ctx.fillRect(0,0,200,400);for(let y=0;y<20;y++)for(let x=0;x<10;x++)if(board[y][x]){ctx.fillStyle='#6b3fa0';ctx.fillRect(x*20+1,y*20+1,18,18);}ctx.fillStyle='#8b5cf6';for(let y=0;y<piece.length;y++)for(let x=0;x<piece[y].length;x++)if(piece[y][x])ctx.fillRect((pieceX+x)*20+1,(pieceY+y)*20+1,18,18);}
+        function update(){pieceY++;if(collision()){pieceY--;merge();clearLines();newPiece();}draw();}
+        document.addEventListener('keydown',(e)=>{if(e.key==='ArrowLeft'){pieceX--;if(collision())pieceX++;}else if(e.key==='ArrowRight'){pieceX++;if(collision())pieceX--;}else if(e.key==='ArrowDown'){pieceY++;if(collision())pieceY--;}else if(e.key==='ArrowUp'){const r=piece[0].map((_,i)=>piece.map(r=>r[i]).reverse());const o=piece;piece=r;if(collision())piece=o;}draw();});
+        window.__startTetris=()=>{clearInterval(loop);init();draw();loop=setInterval(update,500);};init();draw();
+    }
+
+    function openPong(){
+        createWindow({title:'Понг',icon:'fa-table-tennis',width:520,height:400,content:`<div class="game-container"><div class="game-info"><span class="game-score"><span id="pongScore1">0</span> : <span id="pongScore2">0</span></span><button class="app-btn" onclick="window.__startPong()"><i class="fas fa-play"></i></button></div><canvas id="pongCanvas" class="game-canvas" width="480" height="320"></canvas></div>`});
+        const canvas=document.getElementById('pongCanvas'),ctx=canvas.getContext('2d');let ball,p1,p2,score1,score2,loop;
+        function init(){ball={x:240,y:160,vx:4,vy:2};p1=p2=130;score1=score2=0;}
+        function draw(){ctx.fillStyle='#000';ctx.fillRect(0,0,480,320);ctx.fillStyle='#6b3fa0';ctx.fillRect(10,p1,10,60);ctx.fillRect(460,p2,10,60);ctx.fillStyle='#8b5cf6';ctx.beginPath();ctx.arc(ball.x,ball.y,8,0,Math.PI*2);ctx.fill();}
+        function update(){ball.x+=ball.vx;ball.y+=ball.vy;if(ball.y<=8||ball.y>=312)ball.vy=-ball.vy;if(ball.x<=28&&ball.y>=p1&&ball.y<=p1+60)ball.vx=-ball.vx;if(ball.x>=452&&ball.y>=p2&&ball.y<=p2+60)ball.vx=-ball.vx;if(ball.x<0){score2++;document.getElementById('pongScore2').textContent=score2;ball={x:240,y:160,vx:4,vy:2};}if(ball.x>480){score1++;document.getElementById('pongScore1').textContent=score1;ball={x:240,y:160,vx:-4,vy:2};}if(p2+30<ball.y)p2=Math.min(260,p2+3);if(p2+30>ball.y)p2=Math.max(0,p2-3);draw();}
+        document.addEventListener('keydown',(e)=>{if(e.key==='ArrowUp')p1=Math.max(0,p1-20);if(e.key==='ArrowDown')p1=Math.min(260,p1+20);});
+        window.__startPong=()=>{clearInterval(loop);init();draw();loop=setInterval(update,16);};init();draw();
+    }
+
+    function open2048(){
+        const winId=createWindow({title:'2048',icon:'fa-th-large',width:350,height:420,content:''});let grid,score;
+        function init(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];score=0;addTile();addTile();}
+        function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}}
+        function getColor(v){return v?`hsl(${270-Math.log2(v)*15},60%,${30+Math.log2(v)*5}%)`:'#1a1a1a';}
+        function render(){const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:15px;background:#000;height:100%"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--purple-glow)">Счёт: ${score}</span><button class="app-btn" onclick="window.__start2048()"><i class="fas fa-redo"></i></button></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--bg-dark);padding:5px;border:2px inset var(--border-light)">${grid.flat().map(v=>`<div style="height:60px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};font-size:20px;font-weight:bold;color:${v>4?'#fff':'var(--purple-bright)'}">${v||''}</div>`).join('')}</div></div>`;}
+        function move(dir){let moved=false;const rotate=(g)=>g[0].map((_,i)=>g.map(r=>r[i]).reverse());for(let i=0;i<dir;i++)grid=rotate(grid);for(let y=0;y<4;y++){let row=grid[y].filter(v=>v);for(let i=0;i<row.length-1;i++)if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}while(row.length<4)row.push(0);if(row.join(',')!==grid[y].join(','))moved=true;grid[y]=row;}for(let i=0;i<(4-dir)%4;i++)grid=rotate(grid);if(moved)addTile();render();}
+        document.addEventListener('keydown',(e)=>{const d={ArrowLeft:0,ArrowUp:1,ArrowRight:2,ArrowDown:3};if(d[e.key]!==undefined){e.preventDefault();move(d[e.key]);}});
+        window.__start2048=()=>{init();render();};init();render();
+    }
+
+    // ==================== START ====================
+    document.getElementById('clickToStart').addEventListener('click',function(){
+        this.style.display='none';
+        document.getElementById('bootConsole').style.display='block';
+        initClickSound();
+        boot();
+    });
+    </script>
+</body>
+</html>
