@@ -441,7 +441,7 @@
         body.mode-mobile .feature-detail.m-expanded { display: block; }
         body:not(.mode-mobile) .m-expand-btn { display: none !important; }
 
-        body.mode-mobile .arm-features-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        body.mode-mobile .arm-features-grid { grid-template-columns: 1fr 1ff; gap: 0.6rem; }
         body.mode-mobile .arm-feature { padding: 1rem; border-radius: 12px; }
         body.mode-mobile .arm-feature-icon { font-size: 1.2rem; margin-bottom: 0.4rem; }
         body.mode-mobile .arm-feature h4 { font-size: 0.85rem; }
@@ -488,7 +488,7 @@
     <!-- ============ VERSION SELECTOR ============ -->
     <div class="version-selector" id="versionSelector">
         <div class="vs-logo">
-            <img src="Runget.jpg" alt="Runget">
+            <img src="Runget-beta.jpg" alt="Runget">
             <span>Runget OS</span>
         </div>
         <p class="vs-subtitle">Легкая, быстрая, простая и красивая Debian-based ОС</p>
@@ -515,7 +515,7 @@
     <div class="mobile-top-bar">
         <div class="mobile-top-bar-container">
             <a href="#top" class="logo">
-                <img src="Runget.jpg" alt="Runget Logo">
+                <img src="Runget-beta.jpg" alt="Runget Logo">
                 <span>Runget OS</span>
             </a>
             <div class="mobile-top-bar-right">
@@ -539,7 +539,7 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="#top" class="logo">
-                <img src="Runset.jpg" alt="Runget Logo">
+                <img src="Runget-beta.jpg" alt="Runget Logo">
                 <span>Runget OS</span>
             </a>
             <ul class="nav-links">
@@ -596,7 +596,7 @@
                 <div class="runget2-header">
                     <div class="runget2-badge"><i class="fas fa-flask"></i><span>Экспериментальная стабильная версия</span></div>
                     <h2 class="section-title purple">Runget 2.0 Neon</h2>
-                    <p class="section-subtitle">Первый стабильный эксперимент: собственное ядро, слияние AOSP, Debian и Arch Linux, а также наши кастомные программы.</p>
+                    <p class="section-subtitle">Первый стабильный эксперимент: собственное ядро, слияние AOSP, Debian, Arch Linux и наши программы.</p>
                 </div>
                 <div class="runget2-grid">
                     <div class="runget2-card">
@@ -882,7 +882,7 @@
                 <h2 class="section-title">Плюсы Runget и Debian‑based систем</h2>
                 <p class="section-subtitle">Runget наследует сильные стороны Debian‑семейства и добавляет свои фишки: акцент на совместимость и восстановление систем.</p>
                 <div class="advantages-grid">
-                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian‑based дистрибутивы известны стабильностью Debian‑семейства с строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
+                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian‑based дистрибутивы известны стабильностью Debian‑семейства с строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
                     <a class="adv-card" href="https://packages.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-box-open"></i><h3>Огромный выбор пакетов</h3></div><p>APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Более 59 000 пакетов в репозиториях Debian.</p></a>
                     <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-sync-alt"></i><h3>Простые обновления</h3></div><p>Обновление через apt или графические утилиты.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sudo apt update && sudo apt upgrade</code></p></a>
                     <a class="adv-card" href="https://dzen.ru/video/watch/690a15ec93cc0216e183ee80" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-project-diagram"></i><h3>Восстановление систем</h3></div><p>Runget может использоваться для восстановления Debian/Ubuntu‑систем.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Восстановление GRUB, fstab, сброс пароля root.</p></a>
@@ -902,7 +902,7 @@
                 <div class="sysreq-grid">
                     <div class="sysreq-card"><h3><i class="fas fa-desktop"></i> Runget 1.0</h3><table><tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr><tr><td>Видео</td><td>X11/Wayland</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet или Wi‑Fi</td></tr></table></div>
                     <div class="sysreq-card"><h3><i class="fas fa-server"></i> Runget 1.0 Core</h3><table><tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr><tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr><tr><td>Видео</td><td>Не требуется (CLI)</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr></table></div>
-                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5 V/3 A USB‑C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
+                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5 V/3 A USB‑C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
                 </div>
             </div>
         </section>
@@ -1004,7 +1004,7 @@
     <footer class="footer" id="community">
         <div class="footer-container">
             <div class="footer-about">
-                <div class="footer-logo"><img src="Runget.jpg" alt="Runget Logo"><span>Runget OS</span></div>
+                <div class="footer-logo"><img src="Runget-beta.jpg" alt="Runget Logo"><span>Runget OS</span></div>
                 <p>Универсальная операционная система для всех ваших устройств. Бесплатная, с открытым кодом.</p>
                 <div class="social-links">
                     <a href="https://t.me/runget_rt" target="_blank" rel="noopener" title="Telegram"><i class="fab fa-telegram"></i></a>
