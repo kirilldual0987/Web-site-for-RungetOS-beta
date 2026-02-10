@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Runget - Легкая, быстрая, простая и красивая Debian-based ОС</title>
-    <meta name="description" content="Runget OS — универсальная операционная система на базе Debian с поддержкой Windows и Android приложений.">
-    <meta name="keywords" content="Runget, Linux, Debian, операционная система, Windows приложения, Android, ARM, Raspberry Pi, Orange Pi">
+    <title>Runget 2.0 Neon — экспериментальная стабильная версия</title>
+    <meta name="description" content="Runget 2.0 Neon — первая экспериментальная стабильная версия на базе собственного ядра, объединяющая AOSP, Debian, Arch Linux и наши программы.">
+    <meta name="keywords" content="Runget, Neon, Linux, собственное ядро, AOSP, Debian, Arch, экспериментальная версия">
     <meta name="author" content="Kolyadual and Runget team">
-    <meta property="og:title" content="Runget OS — универсальная Debian-based операционная система">
-    <meta property="og:description" content="Легкая, быстрая и красивая ОС с поддержкой Windows, Android и Linux приложений">
+    <meta property="og:title" content="Runget 2.0 Neon — экспериментальная версия">
+    <meta property="og:description" content="Экспериментальная стабильная версия, объединяющая AOSP, Debian, Arch и собственные программы.">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -132,7 +132,7 @@
         .hero::before {
             content: ""; position: absolute; inset: 0;
             background-image: radial-gradient(circle at 10% 20%, rgba(61,174,233,0.18) 0%, transparent 45%),
-                radial-gradient(circle at 80% 80%, rgba(22,160,133,0.2) 0%, transparent 55%);
+                radial-gradient(circle at 80% 80%, rgba(22,160,113,0.2) 0%, transparent 55%);
             opacity: 0.9; pointer-events: none;
         }
         .hero-content { max-width:1200px; margin:0 auto; padding:2rem; position:relative; z-index:2; }
@@ -539,11 +539,12 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="#top" class="logo">
-                <img src="Runget.jpg" alt="Runget Logo">
+                <img src="Runset.jpg" alt="Runget Logo">
                 <span>Runget OS</span>
             </a>
             <ul class="nav-links">
                 <li><a href="#features">Возможности</a></li>
+                <li><a href="#runget-neon" class="nav-new"><i class="fas fa-star"></i> Neon</a></li>
                 <li><a href="#runget2" class="nav-new"><i class="fas fa-rocket"></i> 2.0</a></li>
                 <li><a href="#runget-arm" class="nav-arm"><i class="fas fa-snowflake"></i> ARM (заморожено)</a></li>
                 <li><a href="#advantages">Плюсы</a></li>
@@ -567,11 +568,11 @@
                 </div>
                 <h1>Runget — удобная, красивая и быстрая операционная система</h1>
                 <p class="hero-subtitle">Одна система для дома, офиса, серверов, игр и экспериментов.</p>
-                <p>Runget основан на Debian и Linux-ядре и сочетает стабильность Debian-семейства с расширенной совместимостью с Windows, Linux и Android-приложениями, включая подсистему Andryemu для Android. Система оптимизирована для работы на широком спектре оборудования — от старых ПК с минимальными характеристиками до современных игровых станций и серверов.</p>
+                <p>Runget основан на Debian и Linux‑ядре и сочетает стабильность Debian‑семейства с расширенной совместимостью с Windows, Linux и Android‑приложениями, включая подсистему Andryemu для Android. Система оптимизирована для работы на широком спектре оборудования — от старых ПК с минимальными характеристиками до современных игровых станций и серверов.</p>
                 <div class="hero-actions">
                     <a href="#download" class="btn btn-download"><i class="fas fa-download"></i> Скачать Runget 1.0</a>
                     <a href="#runget2" class="btn btn-purple"><i class="fas fa-rocket"></i> Runget 2.0</a>
-                    <a href="#features" class="btn"><i class="fas fa-list"></i> Возможности</a>
+                    <a href="#runget-neon" class="btn btn-orange"><i class="fas fa-star"></i> Runget Neon</a>
                     <a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" class="btn btn-ghost" target="_blank" rel="noopener"><i class="fab fa-github"></i> Исходный код</a>
                 </div>
                 <div class="hero-stats">
@@ -589,41 +590,135 @@
             </div>
         </section>
 
+        <!-- NEON SECTION (NEW) -->
+        <section class="section runget2" id="runget-neon">
+            <div class="runget2-container">
+                <div class="runget2-header">
+                    <div class="runget2-badge"><i class="fas fa-flask"></i><span>Экспериментальная стабильная версия</span></div>
+                    <h2 class="section-title purple">Runget 2.0 Neon</h2>
+                    <p class="section-subtitle">Первый стабильный эксперимент: собственное ядро, слияние AOSP, Debian и Arch Linux, а также наши кастомные программы.</p>
+                </div>
+                <div class="runget2-grid">
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-microchip"></i></div>
+                        <h3>Собственное ядро</h3>
+                        <p>Тестовое ядро, адаптированное под наши задачи, с улучшенным планировщиком и новейшими драйверами.</p>
+                        <ul>
+                            <li>Оптимизированный планировщик процессов</li>
+                            <li>Поддержка современных графических драйверов</li>
+                            <li>Минимальное потребление RAM</li>
+                            <li>Встроенный механизм отката при сбоях</li>
+                            <li>Поддержка eBPF</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">Custom Kernel</span><span class="badge">eBPF</span><span class="badge">Low RAM</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fab fa-android"></i></div>
+                        <h3>Интеграция AOSP</h3>
+                        <p>Слияние Android Open Source Project с ядром Linux, позволяющее запускать Android‑приложения нативно.</p>
+                        <ul>
+                            <li>Поддержка APK‑файлов «из коробки»</li>
+                            <li>GPU‑ускорение через OpenGL ES / Vulkan</li>
+                            <li>Синхронизация буфера обмена</li>
+                            <li>Уведомления в системном трее</li>
+                            <li>Тонкая настройка DPI</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">AOSP</span><span class="badge">APK</span><span class="badge">Vulkan</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-linux"></i></div>
+                        <h3>Debian + Arch совместимость</h3>
+                        <p>Объединение пакетов из Debian и Arch, без конфликтов, с поддержкой Flatpak и AppImage.</p>
+                        <ul>
+                            <li>APT + Pacman в одном окружении</li>
+                            <li>Полный набор репозиториев Debian Stable</li>
+                            <li>Arch User Repository (AUR) через yay</li>
+                            <li>Flatpak и AppImage поддерживаются «из коробки»</li>
+                            <li>Системные библиотеки из обеих баз</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">Debian</span><span class="badge">Arch</span><span class="badge">Flatpak</span><span class="badge">AppImage</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-code"></i></div>
+                        <h3>Экспериментальное ПО</h3>
+                        <p>Набор наших собственных утилит и приложений, специально написанных под Neon.</p>
+                        <ul>
+                            <li>runget‑cli — набор команд для администрирования</li>
+                            <li>neon‑theme — динамический набор тем и иконок</li>
+                            <li>gpu‑optimiser — автонастройка графики</li>
+                            <li>secure‑wrap — обёртка для запуска незнакомых бинарников</li>
+                            <li>activity‑tracker — сбор статистики использования (по желанию)</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">CLI</span><span class="badge">Theme</span><span class="badge">GPU</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-lock"></i></div>
+                        <h3>Усиленная безопасность</h3>
+                        <p>Поддержка Secure Boot, TPM 2.0 и современного шифрования для безопасных систем.</p>
+                        <ul>
+                            <li>Подписанный загрузчик UEFI</li>
+                            <li>Интеграция TPM 2.0 / fTPM</li>
+                            <li>Полная поддержка LUKS 2</li>
+                            <li>AppArmor в режиме «enforced»</li>
+                            <li>Отслеживание изменений файловой системы</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">Secure Boot</span><span class="badge">TPM 2.0</span><span class="badge">AppArmor</span></div>
+                    </div>
+                    <div class="runget2-card">
+                        <div class="runget2-card-icon"><i class="fas fa-palette"></i></div>
+                        <h3>Обновлённый UI/UX</h3>
+                        <p>Новые виджеты, анимации и поддержка HiDPI‑дисплеев.</p>
+                        <ul>
+                            <li>Тёмная тема с динамическими обоями</li>
+                            <li>Произвольные виджеты KDE Plasma</li>
+                            <li>Скоростные анимации OpenGL</li>
+                            <li>Поддержка нескольких мониторов</li>
+                            <li>Скорректированные скейлы для Retina‑дисплеев</li>
+                        </ul>
+                        <div class="badges-row"><span class="badge">UI/UX</span><span class="badge">HiDPI</span><span class="badge">KDE</span></div>
+                    </div>
+                </div>
+                <div class="runget2-note">
+                    <p><i class="fas fa-info-circle"></i> Neon — ранний релиз, предвещающий Runget 2.0 Big Brain. Следите за обновлениями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:var(--accent-purple);">@runget_rt</a>.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- FEATURES -->
         <section class="section" id="features">
             <div class="features">
                 <h2 class="section-title">Почему именно Runget?</h2>
-                <p class="section-subtitle">Современный интерфейс в стиле KDE, запуск Windows и Android-приложений, поддержка приложений разных Linux-дистрибутивов и высокая производительность даже на старом железе.</p>
+                <p class="section-subtitle">Современный интерфейс в стиле KDE, запуск Windows и Android‑приложений, поддержка приложений разных Linux‑дистрибутивов и высокая производительность даже на старом железе.</p>
                 <div class="features-grid">
                     <a class="feature-card" href="https://www.debian.org" target="_blank" rel="noopener">
                         <div class="feature-icon"><i class="fab fa-linux"></i></div>
                         <h3>На базе Debian</h3>
                         <p>Runget использует стабильную платформу Debian, что даёт предсказуемые обновления, безопасность и совместимость с огромным количеством пакетов.</p>
-                        <p class="feature-detail">Debian — один из старейших и наиболее проверенных Linux-дистрибутивов. Runget наследует эту стабильную базу и добавляет собственные репозитории.</p>
+                        <p class="feature-detail">Debian — один из старейших и наиболее проверенных Linux‑дистрибутивов. Runget наследует эту стабильную базу и добавляет собственные репозитории.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
                         <div class="badges-row"><span class="badge">Debian</span><span class="badge">APT</span><span class="badge">Stable</span><span class="badge">dpkg</span><span class="badge">systemd</span></div>
                     </a>
                     <a class="feature-card" href="https://www.winehq.org" target="_blank" rel="noopener">
                         <div class="feature-icon"><i class="fab fa-windows"></i></div>
-                        <h3>Поддержка Windows-приложений</h3>
-                        <p>Запускайте Windows-программы и игры через совместимый слой (Wine/Proton), чтобы использовать привычный софт без переустановки системы.</p>
-                        <p class="feature-detail">Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других Windows-приложений через Wine.</p>
+                        <h3>Поддержка Windows‑приложений</h3>
+                        <p>Запускайте Windows‑программы и игры через совместимый слой (Wine/Proton), чтобы использовать привычный софт без переустановки системы.</p>
+                        <p class="feature-detail">Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других Windows‑приложений через Wine.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
                         <div class="badges-row"><span class="badge">Игры</span><span class="badge">Офис</span><span class="badge">Wine</span><span class="badge">Proton</span><span class="badge">.exe</span></div>
                     </a>
                     <a class="feature-card" href="https://github.com/Kolyadual/Andryemu" target="_blank" rel="noopener">
                         <div class="feature-icon"><i class="fab fa-android"></i></div>
-                        <h3>Android-приложения</h3>
-                        <p>Andryemu — Android-эмулятор и подсистема для Runget, позволяющая запускать Android-приложения прямо на рабочем столе.</p>
-                        <p class="feature-detail">Устанавливайте APK-файлы напрямую, используйте мобильные приложения и игры. Andryemu обеспечивает аппаратное ускорение графики.</p>
+                        <h3>Android‑приложения</h3>
+                        <p>Andryemu — Android‑эмулятор и подсистема для Runget, позволяющая запускать Android‑приложения прямо на рабочем столе.</p>
+                        <p class="feature-detail">Устанавливайте APK‑файлы напрямую, используйте мобильные приложения и игры. Andryemu обеспечивает аппаратное ускорение графики.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
-                        <div class="badges-row"><span class="badge">Andryemu</span><span class="badge">APK</span><span class="badge">Google Play</span><span class="badge">ARM-трансляция</span></div>
+                        <div class="badges-row"><span class="badge">Andryemu</span><span class="badge">APK</span><span class="badge">Google Play</span><span class="badge">ARM‑трансляция</span></div>
                     </a>
                     <a class="feature-card" href="#advantages">
                         <div class="feature-icon"><i class="fas fa-random"></i></div>
                         <h3>Приложения других дистрибутивов</h3>
                         <p>Runget нацелен на запуск приложений, созданных для Debian, Ubuntu, Fedora, Arch и других дистрибутивов.</p>
-                        <p class="feature-detail">Flatpak и AppImage работают «из коробки», а Snap-пакеты можно установить дополнительно.</p>
+                        <p class="feature-detail">Flatpak и AppImage работают «из коробки», а Snap‑пакеты можно установить дополнительно.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
                         <div class="badges-row"><span class="badge">.deb</span><span class="badge">Flatpak</span><span class="badge">AppImage</span><span class="badge">Snap</span></div>
                     </a>
@@ -641,13 +736,13 @@
                         <p>Интерфейс с тёмной темой вдохновлён KDE Plasma и Breeze Dark. Плавные анимации, виджеты и полная кастомизация.</p>
                         <p class="feature-detail">Настраиваемые виджеты, панели и рабочие столы. Полная кастомизация внешнего вида.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
-                        <div class="badges-row"><span class="badge">KDE-стиль</span><span class="badge">Тёмная тема</span><span class="badge">Виджеты</span></div>
+                        <div class="badges-row"><span class="badge">KDE‑стиль</span><span class="badge">Тёмная тема</span><span class="badge">Виджеты</span></div>
                     </a>
                     <a class="feature-card" href="#devices">
                         <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
                         <h3>Высокая производительность</h3>
-                        <p>Оптимизация под слабые и старые ПК. Минимальное потребление RAM (от 512 МБ), быстрая загрузка.</p>
-                        <p class="feature-detail">Отзывчивый интерфейс даже на процессорах 10-летней давности. Runget Core потребляет ещё меньше ресурсов.</p>
+                        <p>Оптимизация под слабые и старые ПК. Минимальное потребление RAM (от 512 МБ), быстрая загрузка.</p>
+                        <p class="feature-detail">Отзывчивый интерфейс даже на процессорах 10‑летней давности. Runget Core потребляет ещё меньше ресурсов.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
                         <div class="badges-row"><span class="badge">Старые ПК</span><span class="badge">Оптимизация</span><span class="badge">Быстрая загрузка</span></div>
                     </a>
@@ -663,7 +758,7 @@
                         <div class="feature-icon"><i class="fas fa-code-branch"></i></div>
                         <h3>Открытый исходный код</h3>
                         <p>Runget полностью открыт — исходный код доступен на GitHub. Каждый может изучить и модифицировать систему.</p>
-                        <p class="feature-detail">Прозрачная разработка, открытый баг-трекер, возможность внести свой вклад через pull-request.</p>
+                        <p class="feature-detail">Прозрачная разработка, открытый баг‑трекер, возможность внести свой вклад через pull‑request.</p>
                         <button class="m-expand-btn" onclick="event.preventDefault();this.previousElementSibling.classList.toggle('m-expanded');this.textContent=this.previousElementSibling.classList.contains('m-expanded')?'Скрыть ▲':'Подробнее ▼'">Подробнее ▼</button>
                         <div class="badges-row"><span class="badge">GitHub</span><span class="badge">Open Source</span><span class="badge">GPL</span><span class="badge">Community</span></div>
                     </a>
@@ -690,29 +785,29 @@
                     <div class="runget2-card">
                         <div class="runget2-card-icon"><i class="fab fa-windows"></i></div>
                         <h3>Улучшенная поддержка Windows</h3>
-                        <p>Расширенная совместимость с Windows-приложениями и играми.</p>
-                        <ul><li>Автоопределение Windows-приложений</li><li>Профили для популярных программ</li><li>DirectX 11/12 через DXVK/VKD3D</li><li>Интеграция .exe в файловый менеджер</li><li>.NET Framework и Visual C++ Runtime</li></ul>
-                        <div class="badges-row"><span class="badge">Wine 9+</span><span class="badge">Proton</span><span class="badge">DXVK</span></div>
+                        <p>Расширенная совместимость с Windows‑приложениями и играми.</p>
+                        <ul><li>Автоопределение Windows‑приложений</li><li>Профили для популярных программ</li><li>DirectX 11/12 через DXVK/VKD3D</li><li>Интеграция .exe в файловый менеджер</li><li>.NET Framework и Visual C++ Runtime</li></ul>
+                        <div class="badges-row"><span class="badge">Wine 9+</span><span class="badge">Proton</span><span class="badge">DXVK</span></div>
                     </div>
                     <div class="runget2-card">
                         <div class="runget2-card-icon"><i class="fab fa-android"></i></div>
                         <h3>Улучшенная поддержка Android</h3>
                         <p>Доработанная подсистема Andryemu с лучшей производительностью.</p>
-                        <ul><li>Andryemu 2.0</li><li>Улучшенная трансляция ARM → x86</li><li>Уведомления в системном трее</li><li>Общий буфер обмена</li><li>GPU-ускорение для мобильных игр</li></ul>
-                        <div class="badges-row"><span class="badge">Andryemu 2.0</span><span class="badge">APK</span><span class="badge">GPU</span></div>
+                        <ul><li>Andryemu 2.0</li><li>Улучшенная трансляция ARM → x86</li><li>Уведомления в системном трее</li><li>Общий буфер обмена</li><li>GPU‑ускорение для мобильных игр</li></ul>
+                        <div class="badges-row"><span class="badge">Andryemu 2.0</span><span class="badge">APK</span><span class="badge">GPU</span></div>
                     </div>
                     <div class="runget2-card">
                         <div class="runget2-card-icon"><i class="fas fa-lock"></i></div>
-                        <h3>Secure Boot и TPM 2.0</h3>
-                        <p>Полная поддержка Secure Boot и TPM/fTPM 2.0 для повышенной безопасности.</p>
-                        <ul><li>Подписанный загрузчик UEFI</li><li>Интеграция с TPM 2.0</li><li>Поддержка fTPM (AMD/Intel)</li><li>Верификация ядра при загрузке</li><li>Корпоративные политики</li></ul>
-                        <div class="badges-row"><span class="badge">Secure Boot</span><span class="badge">TPM 2.0</span><span class="badge">fTPM</span><span class="badge">UEFI</span></div>
+                        <h3>Secure Boot и TPM 2.0</h3>
+                        <p>Полная поддержка Secure Boot и TPM/fTPM 2.0 для повышенной безопасности.</p>
+                        <ul><li>Подписанный загрузчик UEFI</li><li>Интеграция с TPM 2.0</li><li>Поддержка fTPM (AMD/Intel)</li><li>Верификация ядра при загрузке</li><li>Корпоративные политики</li></ul>
+                        <div class="badges-row"><span class="badge">Secure Boot</span><span class="badge">TPM 2.0</span><span class="badge">fTPM</span><span class="badge">UEFI</span></div>
                     </div>
                     <div class="runget2-card">
                         <div class="runget2-card-icon"><i class="fas fa-palette"></i></div>
                         <h3>Обновлённый интерфейс</h3>
                         <p>Новые виджеты, улучшенные анимации и расширенная кастомизация.</p>
-                        <ul><li>Новые темы и иконки</li><li>Улучшенный центр уведомлений</li><li>Переработанное меню приложений</li><li>Динамические обои</li><li>HiDPI и мульти-мониторы</li></ul>
+                        <ul><li>Новые темы и иконки</li><li>Улучшенный центр уведомлений</li><li>Переработанное меню приложений</li><li>Динамические обои</li><li>HiDPI и мульти‑мониторы</li></ul>
                         <div class="badges-row"><span class="badge">UI/UX</span><span class="badge">HiDPI</span><span class="badge">Темы</span></div>
                     </div>
                     <div class="runget2-card">
@@ -720,7 +815,7 @@
                         <h3>Улучшенный установщик</h3>
                         <p>Переработанный процесс установки с графическим интерфейсом.</p>
                         <ul><li>Пошаговый графический мастер</li><li>Автоматическая разметка диска</li><li>Определение драйверов</li><li>Выбор пакетов и конфигураций</li><li>NVMe, SSD, HDD, USB</li></ul>
-                        <div class="badges-row"><span class="badge">GUI-установщик</span><span class="badge">Dual-boot</span><span class="badge">Auto-detect</span></div>
+                        <div class="badges-row"><span class="badge">GUI‑установщик</span><span class="badge">Dual‑boot</span><span class="badge">Auto‑detect</span></div>
                     </div>
                 </div>
                 <div class="runget2-note">
@@ -748,35 +843,35 @@
                         <div class="arm-card-header"><div class="arm-card-icon raspberry-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3></div>
                         <p>Официальная сборка для семейства Raspberry Pi. Оптимизирована для максимальной производительности.</p>
                         <h4>Модели (планировалось):</h4>
-                        <ul><li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li><li>Raspberry Pi 4 Model B (8GB/4GB/2GB)</li><li>Raspberry Pi 3 Model B+</li><li>Raspberry Pi Zero 2 W — CLI-сборка</li><li>Raspberry Pi 400</li><li>Compute Module 4</li></ul>
+                        <ul><li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li><li>Raspberry Pi 4 Model B (8GB/4GB/2GB)</li><li>Raspberry Pi 3 Model B+</li><li>Raspberry Pi Zero 2 W — CLI‑сборка</li><li>Raspberry Pi 400</li><li>Compute Module 4</li></ul>
                         <h4>Особенности:</h4>
-                        <ul><li>GPIO (40-pin) для электроники</li><li>Драйверы Pi Camera</li><li>Поддержка сенсорного дисплея</li><li>VideoCore GPU с аппаратным декодированием</li><li>Wi-Fi и Bluetooth</li></ul>
+                        <ul><li>GPIO (40‑pin) для электроники</li><li>Драйверы Pi Camera</li><li>Поддержка сенсорного дисплея</li><li>VideoCore GPU с аппаратным декодированием</li><li>Wi‑Fi и Bluetooth</li></ul>
                         <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Broadcom</span><span class="badge">GPIO</span><span class="badge">Заморожено</span></div>
                     </div>
                     <div class="arm-card orange">
                         <div class="arm-card-header"><div class="arm-card-icon orange-icon"><i class="fas fa-microchip"></i></div><h3>Orange Pi</h3></div>
                         <p>Сборка для линейки Orange Pi — мощных альтернатив Raspberry Pi на процессорах Rockchip и Allwinner.</p>
                         <h4>Модели (планировалось):</h4>
-                        <ul><li>Orange Pi 5 Plus (RK3588) — до 32GB RAM</li><li>Orange Pi 5 (RK3588S) — NPU 6 TOPS</li><li>Orange Pi 4 LTS (RK3399)</li><li>Orange Pi 3 LTS (H6)</li><li>Orange Pi Zero 2/3 — для IoT</li></ul>
+                        <ul><li>Orange Pi 5 Plus (RK3588) — до 32 GB RAM</li><li>Orange Pi 5 (RK3588S) — NPU 6 TOPS</li><li>Orange Pi 4 LTS (RK3399)</li><li>Orange Pi 3 LTS (H6)</li><li>Orange Pi Zero 2/3 — для IoT</li></ul>
                         <h4>Особенности:</h4>
-                        <ul><li>NPU для машинного обучения</li><li>NVMe SSD через M.2</li><li>До 32GB LPDDR4X RAM</li><li>8K через HDMI 2.1</li><li>USB 3.0/3.1</li></ul>
+                        <ul><li>NPU для машинного обучения</li><li>NVMe SSD через M.2</li><li>До 32 GB LPDDR4X RAM</li><li>8K через HDMI 2.1</li><li>USB 3.0/3.1</li></ul>
                         <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Rockchip</span><span class="badge">Allwinner</span><span class="badge">NPU</span><span class="badge">Заморожено</span></div>
                     </div>
                 </div>
                 <div class="arm-features-grid">
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-home"></i></div><h4>Умный дом</h4><p>Home Assistant, openHAB. Zigbee, Z-Wave, Wi-Fi.</p></div>
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-photo-video"></i></div><h4>Медиа-центр</h4><p>Kodi, Jellyfin, Plex. 4K/8K декодирование.</p></div>
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-network-wired"></i></div><h4>Сетевые сервисы</h4><p>Pi-hole, VPN, NAS. WireGuard, Samba.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-home"></i></div><h4>Умный дом</h4><p>Home Assistant, openHAB. Zigbee, Z‑Wave, Wi‑Fi.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-photo-video"></i></div><h4>Медиа‑центр</h4><p>Kodi, Jellyfin, Plex. 4K/8K декодирование.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-network-wired"></i></div><h4>Сетевые сервисы</h4><p>Pi‑hole, VPN, NAS. WireGuard, Samba.</p></div>
                     <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-robot"></i></div><h4>Робототехника</h4><p>GPIO, I2C, SPI, UART. Совместимость с ROS.</p></div>
                     <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-graduation-cap"></i></div><h4>Обучение</h4><p>Python, Scratch, C/C++ из коробки.</p></div>
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-gamepad"></i></div><h4>Ретро-игры</h4><p>RetroPie, Lakka. NES, SNES, PS1, N64.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-gamepad"></i></div><h4>Ретро‑игры</h4><p>RetroPie, Lakka. NES, SNES, PS1, N64.</p></div>
                     <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-cloud"></i></div><h4>Edge Computing</h4><p>K3s, Docker, Grafana, InfluxDB.</p></div>
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-bolt"></i></div><h4>Энергоэффективность</h4><p>От 2W до 15W. Бесшумная работа 24/7.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-bolt"></i></div><h4>Энергоэффективность</h4><p>От 2 W до 15 W. Бесшумная работа 24/7.</p></div>
                     <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-video"></i></div><h4>Видеонаблюдение</h4><p>MotionEye, Frigate. USB и CSI камеры.</p></div>
-                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-print"></i></div><h4>3D-печать</h4><p>OctoPrint, Klipper. Веб-интерфейс, мониторинг.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-print"></i></div><h4>3D‑печать</h4><p>OctoPrint, Klipper. Веб‑интерфейс, мониторинг.</p></div>
                 </div>
                 <div class="runget-arm-note">
-                    <p><i class="fas fa-snowflake"></i> <strong>Разработка заморожена.</strong> ARM-версии Runget временно приостановлены. Дата возобновления пока неизвестна. Следите за новостями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:#888;">@runget_rt</a>.</p>
+                    <p><i class="fas fa-snowflake"></i> <strong>Разработка заморожена.</strong> ARM‑версии Runget временно приостановлены. Дата возобновления пока неизвестна. Следите за новостями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:#888;">@runget_rt</a>.</p>
                 </div>
             </div>
         </section>
@@ -784,17 +879,17 @@
         <!-- ADVANTAGES -->
         <section class="section section-alt" id="advantages">
             <div class="os-advantages">
-                <h2 class="section-title">Плюсы Runget и Debian-based систем</h2>
-                <p class="section-subtitle">Runget наследует сильные стороны Debian-семейства и добавляет свои фишки: акцент на совместимость и восстановление систем.</p>
+                <h2 class="section-title">Плюсы Runget и Debian‑based систем</h2>
+                <p class="section-subtitle">Runget наследует сильные стороны Debian‑семейства и добавляет свои фишки: акцент на совместимость и восстановление систем.</p>
                 <div class="advantages-grid">
-                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian-based дистрибутивы известны стабильностью и строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
-                    <a class="adv-card" href="https://packages.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-box-open"></i><h3>Огромный выбор пакетов</h3></div><p>APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Более 59 000 пакетов в репозиториях Debian.</p></a>
+                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian‑based дистрибутивы известны стабильностью Debian‑семейства с строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
+                    <a class="adv-card" href="https://packages.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-box-open"></i><h3>Огромный выбор пакетов</h3></div><p>APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Более 59 000 пакетов в репозиториях Debian.</p></a>
                     <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-sync-alt"></i><h3>Простые обновления</h3></div><p>Обновление через apt или графические утилиты.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sudo apt update && sudo apt upgrade</code></p></a>
-                    <a class="adv-card" href="https://dzen.ru/video/watch/690a15ec93cc0216e183ee80" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-project-diagram"></i><h3>Восстановление систем</h3></div><p>Runget может использоваться для восстановления Debian/Ubuntu-систем.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Восстановление GRUB, fstab, сброс пароля root.</p></a>
+                    <a class="adv-card" href="https://dzen.ru/video/watch/690a15ec93cc0216e183ee80" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-project-diagram"></i><h3>Восстановление систем</h3></div><p>Runget может использоваться для восстановления Debian/Ubuntu‑систем.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Восстановление GRUB, fstab, сброс пароля root.</p></a>
                     <a class="adv-card" href="#community"><div class="adv-title"><i class="fas fa-users"></i><h3>Сообщество</h3></div><p>Большое сообщество Debian и формирующаяся база Runget.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Инструкции для Debian/Ubuntu применимы напрямую.</p></a>
                     <a class="adv-card" href="https://t.me/runget_rt" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-life-ring"></i><h3>Удобство для новичков</h3></div><p>Дружественный интерфейс и подсказки для лёгкой адаптации.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Панель задач, меню «Пуск» — как в Windows.</p></a>
                     <a class="adv-card" href="#features"><div class="adv-title"><i class="fas fa-puzzle-piece"></i><h3>Универсальная совместимость</h3></div><p>Три экосистемы одновременно: Linux, Windows и Android.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> LibreOffice + 1С через Wine + Telegram через Andryemu.</p></a>
-                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-feather-alt"></i><h3>Лёгкость и скорость</h3></div><p>Потребляет меньше ресурсов, чем Windows 10/11 или macOS.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> 1GB RAM и 10GB диска vs 4GB RAM и 64GB для Windows 11.</p></a>
+                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-feather-alt"></i><h3>Лёгкость и скорость</h3></div><p>Потребляет меньше ресурсов, чем Windows 10/11 или macOS.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> 1 GB RAM и 10 GB диска vs 4 GB RAM и 64 GB для Windows 11.</p></a>
                 </div>
             </div>
         </section>
@@ -805,9 +900,9 @@
                 <h2 class="section-title">Системные требования</h2>
                 <p class="section-subtitle">Runget оптимизирован для широкого спектра оборудования.</p>
                 <div class="sysreq-grid">
-                    <div class="sysreq-card"><h3><i class="fas fa-desktop"></i> Runget 1.0</h3><table><tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr><tr><td>Видео</td><td>X11/Wayland</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet или Wi-Fi</td></tr></table></div>
-                    <div class="sysreq-card"><h3><i class="fas fa-server"></i> Runget 1.0 Core</h3><table><tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr><tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr><tr><td>Видео</td><td>Не требуется (CLI)</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr></table></div>
-                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5V/3A USB-C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
+                    <div class="sysreq-card"><h3><i class="fas fa-desktop"></i> Runget 1.0</h3><table><tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr><tr><td>Видео</td><td>X11/Wayland</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet или Wi‑Fi</td></tr></table></div>
+                    <div class="sysreq-card"><h3><i class="fas fa-server"></i> Runget 1.0 Core</h3><table><tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr><tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr><tr><td>Видео</td><td>Не требуется (CLI)</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr></table></div>
+                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5 V/3 A USB‑C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
                 </div>
             </div>
         </section>
@@ -818,14 +913,15 @@
                 <h2 class="section-title">Новости Runget</h2>
                 <p class="section-subtitle">Следите за развитием системы и новыми возможностями.</p>
                 <div class="news-list">
-                    <a class="news-item news-highlight" href="#runget2"><span class="news-date"><i class="fas fa-rocket"></i> Анонс</span><span class="news-text">Runget 2.0 Big Brain — следующее поколение системы уже в разработке!</span><span class="news-detail">Улучшенная стабильность, Secure Boot, TPM 2.0, новый установщик.</span></a>
+                    <a class="news-item news-highlight" href="#runget2"><span class="news-date"><i class="fas fa-rocket"></i> Анонс</span><span class="news-text">Runget 2.0 Big Brain — следующее поколение системы уже в разработке!</span><span class="news-detail">Улучшенная стабильность, Secure Boot, TPM 2.0, новый установщик.</span></a>
+                    <a class="news-item news-highlight" href="#runget-neon"><span class="news-date"><i class="fas fa-star"></i> Neon</span><span class="news-text">Runget 2.0 Neon — первая экспериментальная версия уже доступна для тестирования.</span><span class="news-detail">Собственное ядро, интеграция AOSP, Debian + Arch.</span></a>
                     <div class="news-item news-frozen"><span class="news-date"><i class="fas fa-snowflake"></i> ARM — заморожено</span><span class="news-text">Разработка версий для Raspberry Pi и Orange Pi приостановлена.</span><span class="news-detail">Дата возобновления пока неизвестна.</span></div>
                     <div class="news-item"><span class="news-date">[07.05.2025]</span><span class="news-text">Runget 1.0 Anythink Anywhere is coming soon!</span><span class="news-detail">Полноценная настольная версия с предустановленными приложениями.</span></div>
                     <a class="news-item" href="https://t.me/runget_rt" target="_blank" rel="noopener"><span class="news-date">[09.04.2025]</span><span class="news-text">Новый официальный канал: @runget_rt.</span><span class="news-detail">Все новости и обновления теперь в @runget_rt.</span></a>
                     <div class="news-item"><span class="news-date">[01.09.2025]</span><span class="news-text">Runget 1.0 Core доступен для загрузки.</span></div>
                     <div class="news-item"><span class="news-date">[03.11.2025]</span><span class="news-text">Релиз Runget 1.0 — первая стабильная версия.</span></div>
                     <div class="news-item"><span class="news-date">[05.11.2025]</span><span class="news-text">Протестирован в QEMU с Core2Duo — отличные результаты.</span></div>
-                    <div class="news-item"><span class="news-date">[06.11.2025]</span><span class="news-text">Windows и Android-приложения работают успешно.</span></div>
+                    <div class="news-item"><span class="news-date">[06.11.2025]</span><span class="news-text">Windows и Android‑приложения работают успешно.</span></div>
                     <div class="news-item"><span class="news-date">[07.11.2025]</span><span class="news-text">Приложения Debian, Ubuntu, Arch, Gentoo, Fedora работают корректно.</span></div>
                 </div>
             </div>
@@ -837,8 +933,8 @@
                 <h2 class="section-title">Runget на любом устройстве</h2>
                 <p class="section-subtitle">Универсальная система для компьютеров, ноутбуков, серверов и экспериментальных платформ.</p>
                 <div class="devices-grid">
-                    <div class="device-card"><div class="device-icon"><i class="fas fa-desktop"></i></div><h3>Компьютеры</h3><p>Полноценная замена Windows. Поддержка NVIDIA, AMD, Intel GPU.</p><div class="device-specs">Intel/AMD x86_64 • 1+ ГБ RAM</div></div>
-                    <div class="device-card"><div class="device-icon"><i class="fas fa-laptop"></i></div><h3>Ноутбуки</h3><p>Оптимизация питания и драйверов. Гибернация и спящий режим.</p><div class="device-specs">TLP • Wi-Fi/BT • Тачпад</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-desktop"></i></div><h3>Компьютеры</h3><p>Полноценная замена Windows. Поддержка NVIDIA, AMD, Intel GPU.</p><div class="device-specs">Intel/AMD x86_64 • 1+ GB RAM</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-laptop"></i></div><h3>Ноутбуки</h3><p>Оптимизация питания и драйверов. Гибернация и спящий режим.</p><div class="device-specs">TLP • Wi‑Fi/BT • Тачпад</div></div>
                     <div class="device-card"><div class="device-icon"><i class="fas fa-server"></i></div><h3>Серверы</h3><p>Runget Core для серверных сценариев. Docker и KVM из коробки.</p><div class="device-specs">SSH • Docker • KVM/QEMU</div></div>
                     <div class="device-card"><div class="device-icon"><i class="fas fa-mobile-alt"></i></div><h3>Телефоны</h3><p>Экспериментальная поддержка смартфонов и планшетов.</p><div class="device-specs">Экспериментально • Сенсорный UI</div></div>
                     <div class="device-card device-frozen"><div class="device-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3><p>Специальная сборка для одноплатных компьютеров. <em>(Заморожено)</em></p><div class="device-specs">ARM64 • Broadcom • GPIO</div></div>
@@ -857,28 +953,28 @@
                     <div class="download-card">
                         <h3>Runget 1.0</h3>
                         <p>Полная настольная версия с графическим интерфейсом.</p>
-                        <div class="download-requirements"><h4>Включает:</h4><ul><li>KDE Plasma с тёмной темой</li><li>Браузер, файловый менеджер, терминал</li><li>Wine для Windows-приложений</li><li>Andryemu для Android</li><li>Мультимедиа-кодеки</li></ul></div>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>KDE Plasma с тёмной темой</li><li>Браузер, файловый менеджер, терминал</li><li>Wine для Windows‑приложений</li><li>Andryemu для Android</li><li>Мультимедиа‑кодеки</li></ul></div>
                         <div class="download-meta"><span class="download-chip">x86_64</span><span class="download-chip">ISO</span><span class="download-chip">UEFI+BIOS</span></div>
                         <a href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
                     </div>
                     <div class="download-card">
                         <h3>Runget 1.0 Core</h3>
-                        <p>Облегченная версия для серверов и продвинутых пользователей.</p>
-                        <div class="download-requirements"><h4>Включает:</h4><ul><li>CLI-установка без GUI</li><li>SSH-сервер</li><li>Базовые утилиты и APT</li><li>Docker</li><li>Опциональный рабочий стол</li></ul></div>
+                        <p>Облегчённая версия для серверов и продвинутых пользователей.</p>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>CLI‑установка без GUI</li><li>SSH‑сервер</li><li>Базовые утилиты и APT</li><li>Docker</li><li>Опциональный рабочий стол</li></ul></div>
                         <div class="download-meta"><span class="download-chip">CLI</span><span class="download-chip">x86_64</span><span class="download-chip">UEFI+BIOS</span></div>
                         <a href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
                     </div>
                     <div class="download-card download-frozen">
                         <h3>Raspberry Pi</h3>
-                        <p>Сборка для Raspberry Pi 3/4/5, Zero 2 W и Pi 400.</p>
-                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD</li><li>Pi 3, 4, 5, 400, Zero 2 W</li><li>GPIO-библиотеки</li><li>VideoCore GPU</li></ul></div>
+                        <p>Сборка для Raspberry Pi 3/4/5, Zero 2 W и Pi 400.</p>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD</li><li>Pi 3, 4, 5, 400, Zero 2 W</li><li>GPIO‑библиотеки</li><li>VideoCore GPU</li></ul></div>
                         <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
                         <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
                     </div>
                     <div class="download-card download-frozen">
                         <h3>Orange Pi</h3>
                         <p>Сборка для Orange Pi 3/4/5 на Rockchip и Allwinner.</p>
-                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD/eMMC</li><li>Rockchip RK3588/RK3399</li><li>Allwinner H6/H616/H618</li><li>NPU-драйверы</li></ul></div>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD/eMMC</li><li>Rockchip RK3588/RK3399</li><li>Allwinner H6/H616/H618</li><li>NPU‑драйверы</li></ul></div>
                         <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
                         <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
                     </div>
@@ -909,14 +1005,14 @@
         <div class="footer-container">
             <div class="footer-about">
                 <div class="footer-logo"><img src="Runget.jpg" alt="Runget Logo"><span>Runget OS</span></div>
-                <p>Универсальная операционная система для всех ваших устройств. Бесплатная, с открытым исходным кодом.</p>
+                <p>Универсальная операционная система для всех ваших устройств. Бесплатная, с открытым кодом.</p>
                 <div class="social-links">
                     <a href="https://t.me/runget_rt" target="_blank" rel="noopener" title="Telegram"><i class="fab fa-telegram"></i></a>
                     <a href="404.html" title="ВКонтакте"><i class="fab fa-vk"></i></a>
                     <a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
                     <a href="404.html" title="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
-                <div class="footer-version"><strong>Текущая:</strong> Runget 1.0 Anythink Anywhere<br><strong>В разработке:</strong> Runget 2.0 Big Brain<br><strong>Заморожено:</strong> ARM-версии</div>
+                <div class="footer-version"><strong>Текущая:</strong> Runget 1.0 Anythink Anywhere<br><strong>В разработке:</strong> Runget 2.0 Big Brain &amp; Runget 2.0 Neon<br><strong>Заморожено:</strong> ARM‑версии</div>
             </div>
             <div class="footer-links"><h3>Ресурсы</h3><ul><li><a href="404.html">Документация</a></li><li><a href="404.html">Руководство по установке</a></li><li><a href="404.html">FAQ</a></li><li><a href="404.html">Форум</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Блог</a></li><li><a href="#gallery">Галерея</a></li><li><a href="#sysreq">Системные требования</a></li></ul></div>
             <div class="footer-links"><h3>Поддержка</h3><ul><li><a href="mailto:runget.feedback.kirilldual@gmail.com">Email: runget.feedback.kirilldual@gmail.com</a></li><li><a href="https://t.me/kirilldual" target="_blank" rel="noopener">Telegram: @kirilldual</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Канал: @runget_rt</a></li><li><a href="404.html">Сообщить об ошибке</a></li><li><a href="404.html">Пожертвования</a></li></ul><h3 style="margin-top:1.5rem;">Совместимые проекты</h3><ul><li><a href="https://github.com/Kolyadual/Andryemu" target="_blank" rel="noopener">Andryemu</a></li><li><a href="https://www.winehq.org" target="_blank" rel="noopener">Wine</a></li><li><a href="https://www.debian.org" target="_blank" rel="noopener">Debian</a></li></ul></div>
