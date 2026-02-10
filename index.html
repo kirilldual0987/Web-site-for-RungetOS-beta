@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Runget 2.0 Neon — экспериментальная версия в активной разработке</title>
-    <meta name="description" content="Runget 2.0 Neon — экспериментальная версия в активной разработке, быстрее, чем обычный 2.0. Сочетает собственное ядро, AOSP‑слой, репозитории Debian + Arch и наши утилиты.">
+    <meta name="description" content="Runget 2.0 Neon — экспериментальная версия в активной разработке, быстрее выходящая, чем обычный 2.0. Сочетает собственное ядро, AOSP, Debian + Arch и наши утилиты.">
     <meta name="keywords" content="Runget, Neon, экспериментальная версия, Linux, ядро, AOSP, Debian, Arch, быстрый релиз">
     <meta name="author" content="Kolyadual and Runget team">
     <meta property="og:title" content="Runget 2.0 Neon — экспериментальная версия">
@@ -12,28 +12,28 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root{
-            --bg-primary:#232629;
-            --bg-secondary:#2a2e32;
-            --bg-card:#31363b;
-            --bg-hover:#3a3f44;
-            --text-primary:#eff0f1;
-            --text-secondary:#bdc3c7;
-            --accent-primary:#3daee9;
-            --accent-secondary:#16a085;
-            --accent-purple:#9b59b6;
-            --accent-orange:#e67e22;
-            --accent-raspberry:#c51a4a;
-            --success:#2ecc71;
-            --warning:#f67400;
-            --danger:#da4453;
-            --border-radius:8px;
-            --transition:all .3s ease;
+        :root {
+            --bg-primary: #232629;
+            --bg-secondary: #2a2e32;
+            --bg-card: #31363b;
+            --bg-hover: #3a3f44;
+            --text-primary: #eff0f1;
+            --text-secondary: #bdc3c7;
+            --accent-primary: #3daee9;
+            --accent-secondary: #16a085;
+            --accent-purple: #9b59b6;
+            --accent-orange: #e67e22;
+            --accent-raspberry: #c51a4a;
+            --success: #2ecc71;
+            --warning: #f67400;
+            --danger: #da4453;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
         }
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-        html{scroll-behavior:smooth;}
-        body{background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;}
-        a{color:var(--accent-primary);text-decoration:none;}
+        * {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+        html {scroll-behavior:smooth;}
+        body {background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;}
+        a {color:var(--accent-primary);text-decoration:none;}
 
         /* ==== VERSION SELECTOR ==== */
         .version-selector{
@@ -353,7 +353,8 @@
         .news-date{color:var(--accent-primary);font-weight:bold;font-size:.85rem;}
         .news-text{color:var(--text-secondary);font-size:.95rem;}
         .news-detail{
-            color:var(--text-secondary);font-size:.8rem;opacity:.7;font-style:italic;margin-top:.2rem;
+            color:var(--text-secondary);font-size:.8rem;opacity:.7;
+            font-style:italic;margin-top:.2rem;
         }
         .news-item.news-highlight{
             border-color:var(--accent-purple);
@@ -715,11 +716,11 @@
         body.mode-mobile .footer-links h3{font-size:1rem;}
 
         body.mode-mobile .runget2-header,
-        body.mode-mobile .runget-arm-header{ text-align:left; }
+        body.mode-mobile .runget-arm-header{text-align:left;}
         body.mode-mobile .runget2-badge,
-        body.mode-mobile .runget-arm-badge{ font-size:.75rem; }
+        body.mode-mobile .runget-arm-badge{font-size:.75rem;}
         body.mode-mobile .runget2-note,
-        body.mode-mobile .runget-arm-note{ text-align:left;padding:1rem;font-size:.85rem; }
+        body.mode-mobile .runget-arm-note{text-align:left;padding:1rem;font-size:.85rem;}
     </style>
 </head>
 <body>
@@ -792,8 +793,6 @@
                 <li><a href="#download">Скачать</a></li>
                 <li><a href="#gallery">Галерея</a></li>
                 <li><a href="#community">Сообщество</a></li>
-                <!-- Добавляем ссылку на пользовательское соглашение -->
-                <li><a href="#user-agreement">Пользовательское соглашение</a></li>
             </ul>
         </div>
     </nav>
@@ -834,12 +833,12 @@
         <section class="section runget2" id="runget-neon">
             <div class="runget2-container">
                 <div class="runget2-header">
-                    <!-- Обновлённый статус, подчёркивающий более быструю разработку -->
+                    <!-- NOTE: изменён статус и добавлена информация о более быстрой разработке -->
                     <div class="runget2-badge"><i class="fas fa-flask"></i><span>В разработке (быстрее, чем 2.0)</span></div>
                     <h2 class="section-title purple">Runget 2.0 Neon</h2>
                     <p class="section-subtitle">
                         Первичная экспериментальная версия, разрабатываемая быстрее, чем обычный 2.0.
-                        Объединяет собственное ядро, AOSP‑слой, репозитории Debian + Arch и наши утилиты.
+                        Объединяет собственное ядро, AOSP‑слой, репозитории Debian + Arch и наши кастомные утилиты.
                     </p>
                 </div>
                 <div class="runget2-grid">
@@ -930,46 +929,6 @@
                 <div class="runget2-note">
                     <p><i class="fas fa-info-circle"></i> Neon‑версия находится в активной разработке и выходит быстрее, чем обычный 2.0. Следите за новостями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:var(--accent-purple);">@runget_rt</a>.</p>
                 </div>
-            </div>
-        </section>
-
-        <!-- USER AGREEMENT (Только для Neon) -->
-        <section class="section section-alt" id="user-agreement">
-            <h2 class="section-title">Пользовательское соглашение (Neon)</h2>
-            <p class="section-subtitle">Важно: данное соглашение относится только к экспериментальной версии Runget 2.0 Neon.</p>
-            <div class="os-advantages">
-                <p>
-                    Используя <strong>Runget 2.0 Neon</strong>, вы соглашаетесь с тем, что разработчики и со‑сообщества
-                    <strong>не несут ответственности</strong> за любые риски, связанные с безопасностью, сохранностью
-                    данных, совместимостью аппаратного обеспечения, утратой доступа к системам, или другими
-                    нежелательными последствиями, которые могут возникнуть в процессе установки, эксплуатации
-                    или модификации данной экспериментальной версии.
-                </p>
-                <p>
-                    Вы берёте на себя всю ответственность за:
-                    <ul>
-                        <li>Действия, связанные с загрузкой, установкой и использованием образов Neon.</li>
-                        <li>Создание, изменение и удаление данных, а также любые изменения в системе.</li>
-                        <li>Использование функций, связанных с интеграцией AOSP, новым ядром, репозиториями Debian + Arch,
-                            а также любых сторонних утилит, включённых в Neon.</li>
-                        <li>Любые потенциальные конфликтные ситуации с драйверами, прошивками, прошивками BIOS/UEFI,
-                            Secure Boot, TPM и другими механизмами защиты.</li>
-                    </ul>
-                </p>
-                <p>
-                    Ни один компонент проекта (включая, но не ограничиваясь, ядром, Andryemu, Wine/Proton,
-                    Flatpak, AppImage, пакетами Debian/Arch) не гарантирует отсутствие ошибок,
-                    уязвимостей или несовместимости с вашим оборудованием.
-                </p>
-                <p>
-                    <strong>Запуск, тестирование и использование Neon осуществляются на ваш собственный риск.</strong>
-                    При возникновении проблем вы можете обратиться в сообщество <a href="https://t.me/runget_rt" target="_blank" rel="noopener">Telegram</a>,
-                    но разработчики не обязаны предоставлять поддержку, исправления или компенсацию.
-                </p>
-                <p>
-                    Принимая данное соглашение, вы подтверждаете, что ознакомились с ним и согласны с изложенными условиями.
-                </p>
-                <p style="text-align:right;font-style:italic;">Обновлено: 2026‑04‑10</p>
             </div>
         </section>
 
@@ -1118,4 +1077,305 @@
             <div class="runget-arm-container">
                 <div class="runget-arm-header">
                     <div class="frozen-banner"><i class="fas fa-snowflake"></i><span>Разработка заморожена</span></div>
-                    <div class="runget-arm-badge"><i class="fas fa-pause-circle"></i><span>Проект приостановлен
+                    <div class="runget-arm-badge"><i class="fas fa-pause-circle"></i><span>Проект приостановлен</span></div>
+                    <h2 class="section-title frozen">Runget для Raspberry Pi и Orange Pi</h2>
+                    <p class="section-subtitle" style="color:#888;">Специальные сборки для одноплатных компьютеров на базе ARM-архитектуры. Разработка временно заморожена.</p>
+                    <div class="arm-status">
+                        <div class="arm-status-item"><i class="fas fa-snowflake"></i><span>Статус: Заморожено</span></div>
+                        <div class="arm-status-item"><i class="fas fa-pause-circle"></i><span>Разработка приостановлена</span></div>
+                        <div class="arm-status-item"><i class="fas fa-question-circle"></i><span>Дата возобновления: неизвестна</span></div>
+                    </div>
+                </div>
+                <div class="runget-arm-grid">
+                    <div class="arm-card raspberry">
+                        <div class="arm-card-header"><div class="arm-card-icon raspberry-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3></div>
+                        <p>Официальная сборка для семейства Raspberry Pi. Оптимизирована для максимальной производительности.</p>
+                        <h4>Модели (планировалось):</h4>
+                        <ul><li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li><li>Raspberry Pi 4 Model B (8GB/4GB/2GB)</li><li>Raspberry Pi 3 Model B+</li><li>Raspberry Pi Zero 2 W — CLI‑сборка</li><li>Raspberry Pi 400</li><li>Compute Module 4</li></ul>
+                        <h4>Особенности:</h4>
+                        <ul><li>GPIO (40‑pin) для электроники</li><li>Драйверы Pi Camera</li><li>Поддержка сенсорного дисплея</li><li>VideoCore GPU с аппаратным декодированием</li><li>Wi‑Fi и Bluetooth</li></ul>
+                        <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Broadcom</span><span class="badge">GPIO</span><span class="badge">Заморожено</span></div>
+                    </div>
+                    <div class="arm-card orange">
+                        <div class="arm-card-header"><div class="arm-card-icon orange-icon"><i class="fas fa-microchip"></i></div><h3>Orange Pi</h3></div>
+                        <p>Сборка для линейки Orange Pi — мощных альтернатив Raspberry Pi на процессорах Rockchip и Allwinner.</p>
+                        <h4>Модели (планировалось):</h4>
+                        <ul><li>Orange Pi 5 Plus (RK3588) — до 32 GB RAM</li><li>Orange Pi 5 (RK3588S) — NPU 6 TOPS</li><li>Orange Pi 4 LTS (RK3399)</li><li>Orange Pi 3 LTS (H6)</li><li>Orange Pi Zero 2/3 — для IoT</li></ul>
+                        <h4>Особенности:</h4>
+                        <ul><li>NPU для машинного обучения</li><li>NVMe SSD через M.2</li><li>До 32 GB LPDDR4X RAM</li><li>8K через HDMI 2.1</li><li>USB 3.0/3.1</li></ul>
+                        <div class="badges-row"><span class="badge">ARM64</span><span class="badge">Rockchip</span><span class="badge">Allwinner</span><span class="badge">NPU</span><span class="badge">Заморожено</span></div>
+                    </div>
+                </div>
+                <div class="arm-features-grid">
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-home"></i></div><h4>Умный дом</h4><p>Home Assistant, openHAB. Zigbee, Z‑Wave, Wi‑Fi.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-photo-video"></i></div><h4>Медиа‑центр</h4><p>Kodi, Jellyfin, Plex. 4K/8K декодирование.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-network-wired"></i></div><h4>Сетевые сервисы</h4><p>Pi‑hole, VPN, NAS. WireGuard, Samba.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-robot"></i></div><h4>Робототехника</h4><p>GPIO, I2C, SPI, UART. Совместимость с ROS.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-graduation-cap"></i></div><h4>Обучение</h4><p>Python, Scratch, C/C++ из коробки.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-gamepad"></i></div><h4>Ретро‑игры</h4><p>RetroPie, Lakka. NES, SNES, PS1, N64.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-cloud"></i></div><h4>Edge Computing</h4><p>K3s, Docker, Grafana, InfluxDB.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-bolt"></i></div><h4>Энергоэффективность</h4><p>От 2 W до 15 W. Бесшумная работа 24/7.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-video"></i></div><h4>Видеонаблюдение</h4><p>MotionEye, Frigate. USB и CSI камеры.</p></div>
+                    <div class="arm-feature"><div class="arm-feature-icon"><i class="fas fa-print"></i></div><h4>3D‑печать</h4><p>OctoPrint, Klipper. Веб‑интерфейс, мониторинг.</p></div>
+                </div>
+                <div class="runget-arm-note">
+                    <p><i class="fas fa-snowflake"></i> <strong>Разработка заморожена.</strong> ARM‑версии Runget временно приостановлены. Дата возобновления пока неизвестна. Следите за новостями в <a href="https://t.me/runget_rt" target="_blank" rel="noopener" style="color:#888;">@runget_rt</a>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADVANTAGES -->
+        <section class="section section-alt" id="advantages">
+            <div class="os-advantages">
+                <h2 class="section-title">Плюсы Runget и Debian‑based систем</h2>
+                <p class="section-subtitle">Runget наследует сильные стороны Debian‑семейства и добавляет свои фишки: акцент на совместимость и восстановление систем.</p>
+                <div class="advantages-grid">
+                    <a class="adv-card" href="https://www.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-shield-alt"></i><h3>Стабильность и безопасность</h3></div><p>Debian‑based дистрибутивы известны стабильностью Debian‑семейства с строгим подходом к обновлениям.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Обновления безопасности — обычно в течение 48 часов.</p></a>
+                    <a class="adv-card" href="https://packages.debian.org" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-box-open"></i><h3>Огромный выбор пакетов</h3></div><p>APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Более 59 000 пакетов в репозиториях Debian.</p></a>
+                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-sync-alt"></i><h3>Простые обновления</h3></div><p>Обновление через apt или графические утилиты.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> <code style="background:rgba(0,0,0,0.3);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sudo apt update && sudo apt upgrade</code></p></a>
+                    <a class="adv-card" href="https://dzen.ru/video/watch/690a15ec93cc0216e183ee80" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-project-diagram"></i><h3>Восстановление систем</h3></div><p>Runget может использоваться для восстановления Debian/Ubuntu‑систем.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Восстановление GRUB, fstab, сброс пароля root.</p></a>
+                    <a class="adv-card" href="#community"><div class="adv-title"><i class="fas fa-users"></i><h3>Сообщество</h3></div><p>Большое сообщество Debian и формирующаяся база Runget.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Инструкции для Debian/Ubuntu применимы напрямую.</p></a>
+                    <a class="adv-card" href="https://t.me/runget_rt" target="_blank" rel="noopener"><div class="adv-title"><i class="fas fa-life-ring"></i><h3>Удобство для новичков</h3></div><p>Дружественный интерфейс и подсказки для лёгкой адаптации.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> Панель задач, меню «Пуск» — как в Windows.</p></a>
+                    <a class="adv-card" href="#features"><div class="adv-title"><i class="fas fa-puzzle-piece"></i><h3>Универсальная совместимость</h3></div><p>Три экосистемы одновременно: Linux, Windows и Android.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> LibreOffice + 1С через Wine + Telegram через Andryemu.</p></a>
+                    <a class="adv-card" href="#download"><div class="adv-title"><i class="fas fa-feather-alt"></i><h3>Лёгкость и скорость</h3></div><p>Потребляет меньше ресурсов, чем Windows 10/11 или macOS.</p><p class="adv-detail"><i class="fas fa-info-circle" style="color:var(--accent-primary);margin-right:0.3rem;"></i> 1 GB RAM и 10 GB диска vs 4 GB RAM и 64 GB для Windows 11.</p></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYSTEM REQUIREMENTS -->
+        <section class="section" id="sysreq">
+            <div class="sysreq">
+                <h2 class="section-title">Системные требования</h2>
+                <p class="section-subtitle">Runget оптимизирован для широкого спектра оборудования.</p>
+                <div class="sysreq-grid">
+                    <div class="sysreq-card"><h3><i class="fas fa-desktop"></i> Runget 1.0</h3><table><tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Диск</td><td>Мин. 10 ГБ / Рекоменд. 20+ ГБ</td></tr><tr><td>Видео</td><td>X11/Wayland</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet или Wi‑Fi</td></tr></table></div>
+                    <div class="sysreq-card"><h3><i class="fas fa-server"></i> Runget 1.0 Core</h3><table><tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr><tr><td>Диск</td><td>Мин. 4 ГБ / Рекоменд. 8+ ГБ</td></tr><tr><td>Видео</td><td>Не требуется (CLI)</td></tr><tr><td>Загрузка</td><td>UEFI или Legacy BIOS</td></tr><tr><td>Сеть</td><td>Ethernet (рекоменд.)</td></tr></table></div>
+                    <div class="sysreq-card sysreq-frozen"><h3 style="color:#666;"><i class="fas fa-snowflake"></i> ARM (заморожено)</h3><table><tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr><tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr><tr><td>Хранение</td><td>microSD 8+ ГБ (Class 10)</td></tr><tr><td>Видео</td><td>VideoCore / Mali GPU</td></tr><tr><td>Питание</td><td>5 V/3 A USB‑C</td></tr><tr><td>Охлаждение</td><td>Пассивный радиатор</td></tr></table></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEWS -->
+        <section class="section section-alt" id="news">
+            <div class="news">
+                <h2 class="section-title">Новости Runget</h2>
+                <p class="section-subtitle">Следите за развитием системы и новыми возможностями.</p>
+                <div class="news-list">
+                    <a class="news-item news-highlight" href="#runget2"><span class="news-date"><i class="fas fa-rocket"></i> Анонс</span><span class="news-text">Runget 2.0 Big Brain — следующее поколение системы уже в разработке!</span><span class="news-detail">Улучшенная стабильность, Secure Boot, TPM 2.0, новый установщик.</span></a>
+                    <a class="news-item news-highlight" href="#runget-neon"><span class="news-date"><i class="fas fa-star"></i> Neon</span><span class="news-text">Runget 2.0 Neon — первая экспериментальная версия уже доступна для тестирования.</span><span class="news-detail">Собственное ядро, интеграция AOSP, Debian + Arch.</span></a>
+                    <div class="news-item news-frozen"><span class="news-date"><i class="fas fa-snowflake"></i> ARM — заморожено</span><span class="news-text">Разработка версий для Raspberry Pi и Orange Pi приостановлена.</span><span class="news-detail">Дата возобновления пока неизвестна.</span></div>
+                    <div class="news-item"><span class="news-date">[07.05.2025]</span><span class="news-text">Runget 1.0 Anythink Anywhere is coming soon!</span><span class="news-detail">Полноценная настольная версия с предустановленными приложениями.</span></div>
+                    <a class="news-item" href="https://t.me/runget_rt" target="_blank" rel="noopener"><span class="news-date">[09.04.2025]</span><span class="news-text">Новый официальный канал: @runget_rt.</span><span class="news-detail">Все новости и обновления теперь в @runget_rt.</span></a>
+                    <div class="news-item"><span class="news-date">[01.09.2025]</span><span class="news-text">Runget 1.0 Core доступен для загрузки.</span></div>
+                    <div class="news-item"><span class="news-date">[03.11.2025]</span><span class="news-text">Релиз Runget 1.0 — первая стабильная версия.</span></div>
+                    <div class="news-item"><span class="news-date">[05.11.2025]</span><span class="news-text">Протестирован в QEMU с Core2Duo — отличные результаты.</span></div>
+                    <div class="news-item"><span class="news-date">[06.11.2025]</span><span class="news-text">Windows и Android‑приложения работают успешно.</span></div>
+                    <div class="news-item"><span class="news-date">[07.11.2025]</span><span class="news-text">Приложения Debian, Ubuntu, Arch, Gentoo, Fedora работают корректно.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEVICES -->
+        <section class="section devices" id="devices">
+            <div class="devices-container">
+                <h2 class="section-title">Runget на любом устройстве</h2>
+                <p class="section-subtitle">Универсальная система для компьютеров, ноутбуков, серверов и экспериментальных платформ.</p>
+                <div class="devices-grid">
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-desktop"></i></div><h3>Компьютеры</h3><p>Полноценная замена Windows. Поддержка NVIDIA, AMD, Intel GPU.</p><div class="device-specs">Intel/AMD x86_64 • 1+ GB RAM</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-laptop"></i></div><h3>Ноутбуки</h3><p>Оптимизация питания и драйверов. Гибернация и спящий режим.</p><div class="device-specs">TLP • Wi‑Fi/BT • Тачпад</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-server"></i></div><h3>Серверы</h3><p>Runget Core для серверных сценариев. Docker и KVM из коробки.</p><div class="device-specs">SSH • Docker • KVM/QEMU</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-mobile-alt"></i></div><h3>Телефоны</h3><p>Экспериментальная поддержка смартфонов и планшетов.</p><div class="device-specs">Экспериментально • Сенсорный UI</div></div>
+                    <div class="device-card device-frozen"><div class="device-icon"><i class="fab fa-raspberry-pi"></i></div><h3>Raspberry Pi</h3><p>Специальная сборка для одноплатных компьютеров. <em>(Заморожено)</em></p><div class="device-specs">ARM64 • Broadcom • GPIO</div></div>
+                    <div class="device-card device-frozen"><div class="device-icon"><i class="fas fa-microchip"></i></div><h3>Orange Pi</h3><p>Сборки для Orange Pi 3/4/5 с NPU. <em>(Заморожено)</em></p><div class="device-specs">ARM64 • Rockchip • Allwinner</div></div>
+                    <div class="device-card"><div class="device-icon"><i class="fas fa-hdd"></i></div><h3>Виртуальные машины</h3><p>QEMU/KVM, VirtualBox и VMware.</p><div class="device-specs">QEMU • VirtualBox • VMware</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DOWNLOAD -->
+        <section class="section section-alt download" id="download">
+            <div class="download-container">
+                <h2 class="section-title">Скачать Runget</h2>
+                <p class="section-subtitle">Выберите сборку под ваши задачи. Все образы бесплатны и с открытым исходным кодом.</p>
+                <div class="download-options">
+                    <div class="download-card">
+                        <h3>Runget 1.0</h3>
+                        <p>Полная настольная версия с графическим интерфейсом.</p>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>KDE Plasma с тёмной темой</li><li>Браузер, файловый менеджер, терминал</li><li>Wine для Windows‑приложений</li><li>Andryemu для Android</li><li>Мультимедиа‑кодеки</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">x86_64</span><span class="download-chip">ISO</span><span class="download-chip">UEFI+BIOS</span></div>
+                        <a href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
+                    </div>
+                    <div class="download-card">
+                        <h3>Runget 1.0 Core</h3>
+                        <p>Облегчённая версия для серверов и продвинутых пользователей.</p>
+                        <div class="download-requirements"><h4>Включает:</h4><ul><li>CLI‑установка без GUI</li><li>SSH‑сервер</li><li>Базовые утилиты и APT</li><li>Docker</li><li>Опциональный рабочий стол</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">CLI</span><span class="download-chip">x86_64</span><span class="download-chip">UEFI+BIOS</span></div>
+                        <a href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
+                    </div>
+                    <div class="download-card download-frozen">
+                        <h3>Raspberry Pi</h3>
+                        <p>Сборка для Raspberry Pi 3/4/5, Zero 2 W и Pi 400.</p>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD</li><li>Pi 3, 4, 5, 400, Zero 2 W</li><li>GPIO‑библиотеки</li><li>VideoCore GPU</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
+                        <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                    </div>
+                    <div class="download-card download-frozen">
+                        <h3>Orange Pi</h3>
+                        <p>Сборка для Orange Pi 3/4/5 на Rockchip и Allwinner.</p>
+                        <div class="download-requirements"><h4>Планировалось:</h4><ul><li>Образ img.xz для microSD/eMMC</li><li>Rockchip RK3588/RK3399</li><li>Allwinner H6/H616/H618</li><li>NPU‑драйверы</li></ul></div>
+                        <div class="download-meta"><span class="download-chip">ARM64</span><span class="download-chip">Заморожено</span></div>
+                        <span class="btn btn-frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="section gallery" id="gallery">
+            <h2 class="section-title">Галерея Runget</h2>
+            <p class="section-subtitle">Runget 1.0 Anythink Anywhere.</p>
+            <div class="gallery-grid">
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/7296ed95-d2d0-4693-8b65-a0193eaeb880" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/7296ed95-d2d0-4693-8b65-a0193eaeb880" alt="Рабочий стол" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/8daac9e6-442a-45ea-a9c8-a8da8293cdbf" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/8daac9e6-442a-45ea-a9c8-a8da8293cdbf" alt="Интерфейс системы" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/cd00d85f-887d-4c61-bf02-9cbaf823eeac" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/cd00d85f-887d-4c61-bf02-9cbaf823eeac" alt="Файловый менеджер" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/fc973a90-011e-40a7-a548-d1cc392e798e" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/fc973a90-011e-40a7-a548-d1cc392e798e" alt="Настройки системы" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/0b5a2fa2-f7ac-40c8-bc46-1481568e4842" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/0b5a2fa2-f7ac-40c8-bc46-1481568e4842" alt="Терминал" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/b4306b28-e013-4e0e-9e30-1292b8f6f876" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/b4306b28-e013-4e0e-9e30-1292b8f6f876" alt="Панель задач" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/ca25da02-9359-47bf-893d-fb24757d66d8" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/ca25da02-9359-47bf-893d-fb24757d66d8" alt="Тестирование" loading="lazy"></a>
+                <a class="gallery-item" href="https://github.com/user-attachments/assets/e22b9726-2ed9-4828-9b2e-2d35161a1590" target="_blank" rel="noopener"><img src="https://github.com/user-attachments/assets/e22b9726-2ed9-4828-9b2e-2d35161a1590" alt="Обои Runget" loading="lazy"></a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="community">
+        <div class="footer-container">
+            <div class="footer-about">
+                <div class="footer-logo"><img src="Runget-beta.jpg" alt="Runget Logo"><span>Runget OS</span></div>
+                <p>Универсальная операционная система для всех ваших устройств. Бесплатная, с открытым кодом.</p>
+                <div class="social-links">
+                    <a href="https://t.me/runget_rt" target="_blank" rel="noopener" title="Telegram"><i class="fab fa-telegram"></i></a>
+                    <a href="404.html" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+                    <a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="404.html" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="footer-version"><strong>Текущая:</strong> Runget 1.0 Anythink Anywhere<br><strong>В разработке:</strong> Runget 2.0 Big Brain &amp; Runget 2.0 Neon<br><strong>Заморожено:</strong> ARM‑версии</div>
+            </div>
+            <div class="footer-links"><h3>Ресурсы</h3><ul><li><a href="404.html">Документация</a></li><li><a href="404.html">Руководство по установке</a></li><li><a href="404.html">FAQ</a></li><li><a href="404.html">Форум</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Блог</a></li><li><a href="#gallery">Галерея</a></li><li><a href="#sysreq">Системные требования</a></li></ul></div>
+            <div class="footer-links"><h3>Поддержка</h3><ul><li><a href="mailto:runget.feedback.kirilldual@gmail.com">Email: runget.feedback.kirilldual@gmail.com</a></li><li><a href="https://t.me/kirilldual" target="_blank" rel="noopener">Telegram: @kirilldual</a></li><li><a href="https://t.me/runget_rt" target="_blank" rel="noopener">Канал: @runget_rt</a></li><li><a href="404.html">Сообщить об ошибке</a></li><li><a href="404.html">Пожертвования</a></li></ul><h3 style="margin-top:1.5rem;">Совместимые проекты</h3><ul><li><a href="https://github.com/Kolyadual/Andryemu" target="_blank" rel="noopener">Andryemu</a></li><li><a href="https://www.winehq.org" target="_blank" rel="noopener">Wine</a></li><li><a href="https://www.debian.org" target="_blank" rel="noopener">Debian</a></li></ul></div>
+            <div class="footer-links"><h3>Разработка</h3><ul><li><a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" rel="noopener">Исходный код на GitHub</a></li><li><a href="https://github.com/Kolyadual" target="_blank" rel="noopener">Профиль Kolyadual</a></li><li><a href="404.html">Баги и предложения</a></li><li><a href="404.html">Contributing</a></li><li><a href="404.html">Roadmap</a></li><li><a href="404.html">Changelog</a></li></ul><h3 style="margin-top:1.5rem;">Команда</h3><ul><li><strong>Kolyadual</strong> — Основатель, Архитектор</li><li><strong>Kirilldual</strong> — Дизайнер, Тестировщик</li><li><strong>Seregaosm</strong> — Дизайнер №2, UI/UX</li><li><strong>Neeby</strong> — Создатель ПО</li></ul></div>
+        </div>
+        <div class="copyright">
+            <p>© 2026 Kolyadual & kirilldual. Все права защищены.</p>
+            <p>Runget OS — свободное ПО. Лицензия GPL.</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop" title="Наверх"><i class="fas fa-arrow-up"></i></button>
+
+    <script>
+    (function() {
+        const selector = document.getElementById('versionSelector');
+        const body = document.body;
+        const backToTopBtn = document.getElementById('backToTop');
+
+        // Desktop choice
+        document.getElementById('vsDesktop').addEventListener('click', function() {
+            activateMode('mode-desktop');
+        });
+
+        // Mobile choice
+        document.getElementById('vsMobile').addEventListener('click', function() {
+            activateMode('mode-mobile');
+        });
+
+        function activateMode(mode) {
+            body.classList.remove('mode-desktop', 'mode-mobile');
+            body.classList.add(mode);
+            selector.classList.add('hidden');
+            setTimeout(function() { selector.style.display = 'none'; }, 500);
+        }
+
+        // Switch mode buttons
+        document.getElementById('switchToDesktop').addEventListener('click', function() {
+            body.classList.remove('mode-mobile');
+            body.classList.add('mode-desktop');
+        });
+
+        // Back to top
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) backToTopBtn.classList.add('visible');
+            else backToTopBtn.classList.remove('visible');
+        });
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Smooth scroll for internal links only
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (href && href !== '#' && href.startsWith('#')) {
+                    e.preventDefault();
+                    var target = document.querySelector(href);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mobile bottom nav active state
+        var mobileNavLinks = document.querySelectorAll('.mobile-bottom-nav a');
+        mobileNavLinks.forEach(function(link) {
+            link.addEventListener('click', function() {
+                mobileNavLinks.forEach(function(l) { l.classList.remove('active'); });
+                this.classList.add('active');
+            });
+        });
+
+        // Scroll spy for mobile nav
+        var sections = ['top', 'features', 'download', 'news', 'community'];
+        window.addEventListener('scroll', function() {
+            if (!body.classList.contains('mode-mobile')) return;
+            var scrollPos = window.scrollY + 100;
+            sections.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el && el.offsetTop <= scrollPos && (el.offsetTop + el.offsetHeight) > scrollPos) {
+                    mobileNavLinks.forEach(function(l) {
+                        l.classList.remove('active');
+                        if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+                    });
+                }
+            });
+        });
+
+        // DCS Easter Egg — type Shift+D, Shift+C, Shift+S quickly on version selector
+        (function() {
+            var dcsSeq = '';
+            var dcsTimer = null;
+            document.addEventListener('keydown', function(e) {
+                if (selector.classList.contains('hidden') || selector.style.display === 'none') return;
+                if (e.key === 'Shift') return;
+                if (!e.shiftKey) { dcsSeq = ''; clearTimeout(dcsTimer); return; }
+                var k = e.key.toLowerCase();
+                if (k === 'd' && dcsSeq === '') { dcsSeq = 'd'; clearTimeout(dcsTimer); dcsTimer = setTimeout(function(){ dcsSeq=''; }, 2000); }
+                else if (k === 'c' && dcsSeq === 'd') { dcsSeq = 'dc'; }
+                else if (k === 's' && dcsSeq === 'dc') { dcsSeq = ''; clearTimeout(dcsTimer); window.location.href = 'dcs.html'; }
+                else { dcsSeq = ''; clearTimeout(dcsTimer); }
+            });
+        })();
+
+        // Animate on scroll
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.feature-card,.runget2-card,.arm-card,.arm-feature,.adv-card,.device-card,.download-card,.news-item,.sysreq-card').forEach(function(el) {
+            el.classList.add('animate-on-scroll');
+            observer.observe(el);
+        });
+    })();
+    </script>
+</body>
+</html>
