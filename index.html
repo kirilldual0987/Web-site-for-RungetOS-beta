@@ -699,7 +699,7 @@
     <!-- ============ VERSION SELECTOR ============ -->
     <div class="version-selector" id="versionSelector">
         <div class="vs-logo">
-            <img src="Runget-beta.jpg" alt="Runget">
+            <img src="Runget-beta.jpg" alt="Runge">
             <span>Runget OS</span>
         </div>
         <p class="vs-subtitle">Легкая, быстрая, простая и красивая Debian-based ОС</p>
@@ -805,7 +805,6 @@
         <section class="section runget2" id="runget-neon">
             <div class="runget2-container">
                 <div class="runget2-header">
-                    <!-- NOTE: изменён статус и добавлена информация о более быстрой разработке -->
                     <div class="runget2-badge"><i class="fas fa-flask"></i><span>В разработке (быстрее, чем 2.0)</span></div>
                     <h2 class="section-title purple">Runget 2.0 Neon</h2>
                     <p class="section-subtitle">
@@ -1080,7 +1079,7 @@
                     <div class="frozen-banner"><i class="fas fa-snowflake"></i><span>Разработка заморожена</span></div>
                     <div class="runget-arm-badge"><i class="fas fa-pause-circle"></i><span>Проект приостановлен</span></div>
                     <h2 class="section-title frozen">Runget для Raspberry Pi и Orange Pi</h2>
-                    <p class="section-subtitle" style="color:#888;">Специальные сборки для одноплатных компьютеров на базе ARM-архитектуры. Разработка временно заморожена.</p>
+                    <p class="section-subtitle" style="color:#888;">Специальные сборки для одноплатных компьютеров на базе ARM‑архитектуры. Разработка временно заморожена.</p>
                     <div class="arm-status">
                         <div class="arm-status-item"><i class="fas fa-snowflake"></i><span>Статус: Заморожено</span></div>
                         <div class="arm-status-item"><i class="fas fa-pause-circle"></i><span>Разработка приостановлена</span></div>
@@ -1272,12 +1271,6 @@
         </div>
     </footer>
 
-    <!-- COOKIE NOTICE (показывается в нижней части экрана) -->
-    <div id="cookie-notice" style="position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.85);color:#fff;padding:0.8rem 1rem;text-align:center;z-index:10000;display:none;">
-        Мы используем cookie для улучшения работы сайта. <a href="#privacy" style="color:#3daee9;">Подробнее</a>
-        <button id="cookie-accept" style="margin-left:1rem;background:#3daee9;color:#fff;border:none;padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;">OK</button>
-    </div>
-
     <button class="back-to-top" id="backToTop" title="Наверх"><i class="fas fa-arrow-up"></i></button>
 
     <script>
@@ -1303,13 +1296,13 @@
             setTimeout(function() { selector.style.display = 'none'; }, 500);
         }
 
-        // Switch mode buttons
+        // Switch mode button (mobile top‑bar)
         document.getElementById('switchToDesktop').addEventListener('click', function() {
             body.classList.remove('mode-mobile');
             body.classList.add('mode-desktop');
         });
 
-        // Back to top
+        // Back to top visibility
         window.addEventListener('scroll', function() {
             if (window.scrollY > 500) backToTopBtn.classList.add('visible');
             else backToTopBtn.classList.remove('visible');
@@ -1355,23 +1348,29 @@
             });
         });
 
-        // DCS Easter Egg — type Shift+D, Shift+C, Shift+S quickly on version selector
+        // DCS Easter Egg – Shift+D, Shift+C, Shift+S on version selector
         (function() {
             var dcsSeq = '';
             var dcsTimer = null;
             document.addEventListener('keydown', function(e) {
                 if (selector.classList.contains('hidden') || selector.style.display === 'none') return;
-                if (e.key === 'Shift') return;
                 if (!e.shiftKey) { dcsSeq = ''; clearTimeout(dcsTimer); return; }
                 var k = e.key.toLowerCase();
-                if (k === 'd' && dcsSeq === '') { dcsSeq = 'd'; clearTimeout(dcsTimer); dcsTimer = setTimeout(function(){ dcsSeq=''; }, 2000); }
-                else if (k === 'c' && dcsSeq === 'd') { dcsSeq = 'dc'; }
-                else if (k === 's' && dcsSeq === 'dc') { dcsSeq = ''; clearTimeout(dcsTimer); window.location.href = 'dcs.html'; }
-                else { dcsSeq = ''; clearTimeout(dcsTimer); }
+                if (k === 'd' && dcsSeq === '') {
+                    dcsSeq = 'd'; clearTimeout(dcsTimer);
+                    dcsTimer = setTimeout(function(){ dcsSeq=''; }, 2000);
+                } else if (k === 'c' && dcsSeq === 'd') {
+                    dcsSeq = 'dc';
+                } else if (k === 's' && dcsSeq === 'dc') {
+                    dcsSeq = ''; clearTimeout(dcsTimer);
+                    window.location.href = 'dcs.html';
+                } else {
+                    dcsSeq = ''; clearTimeout(dcsTimer);
+                }
             });
         })();
 
-        // Animate on scroll
+        // Animate on scroll with IntersectionObserver
         var observer = new IntersectionObserver(function(entries) {
             entries.forEach(function(entry) {
                 if (entry.isIntersecting) entry.target.classList.add('visible');
@@ -1383,18 +1382,9 @@
             observer.observe(el);
         });
 
-        // ==== COOKIE NOTICE LOGIC ====
-        var cookieNotice = document.getElementById('cookie-notice');
-        var cookieAcceptBtn = document.getElementById('cookie-accept');
-
-        // Show notice if not accepted yet
-        if (!localStorage.getItem('runget-cookie-accepted')) {
-            cookieNotice.style.display = 'block';
-        }
-
-        cookieAcceptBtn.addEventListener('click', function () {
-            localStorage.setItem('runget-cookie-accepted', '1');
-            cookieNotice.style.display = 'none';
+        // Force page to start at top on load (no saved scroll position)
+        window.addEventListener('load', function() {
+            window.scrollTo(0, 0);
         });
     })();
     </script>
