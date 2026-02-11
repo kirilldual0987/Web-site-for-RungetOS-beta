@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCS-recovery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <!-- ВСЕ РЕСУРСЫ ЛОКАЛЬНЫЕ -->
     <style>
         @font-face { font-family: 'MS Sans Serif'; src: local('Tahoma'), local('Arial'); }
         * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
@@ -19,7 +17,94 @@
         }
         body { font-family:'Tahoma','Arial',sans-serif; font-size:11px; background:var(--bg-black); color:var(--text-primary); overflow:hidden; height:100vh; }
 
-        /* Boot Console */
+        /* GLOBAL GLITCH TEXT EFFECT */
+        body *:not(.terminal-input):not(.app-input):not(.window-btn):not(.taskbar-btn):not(.shutdown-dialog-btn):not(.dcs-msg-btn):not(.rg-dl-btn):not(.game-download-item):not(.window-controls *):not(.game-container *):not(.game-canvas *):not(iframe):not(video):not(canvas):not(img) {
+            position: relative;
+            animation: text-glitch 8s infinite linear alternate-reverse;
+            text-shadow: 
+                0.5px 0 0 rgba(255, 0, 0, 0.7),
+                -0.5px 0 0 rgba(0, 255, 255, 0.7),
+                0 0.5px 0 rgba(255, 255, 0, 0.5),
+                0 -0.5px 0 rgba(0, 255, 0, 0.5);
+        }
+        @keyframes text-glitch {
+            0%, 100% { transform: translate(0, 0); opacity: 1; }
+            1%, 3%, 5%, 7%, 9% { transform: translate(0.7px, -0.7px); opacity: 0.9; }
+            2%, 4%, 6%, 8%, 10% { transform: translate(-0.7px, 0.7px); opacity: 0.85; }
+            15% { transform: translate(0.3px, 0.3px) skewX(1deg); opacity: 0.95; }
+            25% { transform: translate(-0.4px, -0.2px) skewY(-0.5deg); opacity: 0.9; }
+            35% { transform: translate(0.2px, -0.3px) skewX(-1deg); opacity: 0.92; }
+            45% { transform: translate(-0.1px, 0.4px) skewY(0.8deg); opacity: 0.88; }
+            55% { transform: translate(0.5px, -0.1px); opacity: 0.93; }
+            65% { transform: translate(-0.3px, 0.2px) skewX(0.5deg); opacity: 0.91; }
+            75% { transform: translate(0.1px, -0.4px) skewY(-0.3deg); opacity: 0.94; }
+            85% { transform: translate(-0.2px, 0.3px); opacity: 0.89; }
+            95% { transform: translate(0.4px, -0.2px) skewX(-0.7deg); opacity: 0.92; }
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 9997;
+            mix-blend-mode: overlay;
+            animation: noise 0.2s infinite;
+            opacity: 0.3;
+        }
+        @keyframes noise {
+            0% { transform: translate(0,0); } 10% { transform: translate(-1px,-2px); }
+            20% { transform: translate(-3px,0); } 30% { transform: translate(0,-4px); }
+            40% { transform: translate(-2px,1px); } 50% { transform: translate(1px,3px); }
+            60% { transform: translate(-3px,2px); } 70% { transform: translate(2px,-1px); }
+            80% { transform: translate(-1px,-3px); } 90% { transform: translate(3px,0); }
+            100% { transform: translate(0,0); }
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, rgba(0,255,255,0.3), rgba(0,255,0,0.4), rgba(0,255,255,0.3), transparent);
+            pointer-events: none;
+            z-index: 9998;
+            animation: scanline 8s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .terminal-input, .app-input, .window-btn, .taskbar-btn, .shutdown-dialog-btn,
+        .dcs-msg-btn, .rg-dl-btn, .game-download-item, .window-controls *,
+        .game-container *, .game-canvas, iframe, video, canvas, img {
+            animation: none !important;
+            text-shadow: none !important;
+        }
+        .rg-h1, .rg-h2, .rg-h3, .window-title, .splash-logo, .splash-subtitle,
+        .click-text, .logo, .about-title, .shutdown-dialog-header,
+        .oneshot-dialog-header, .dcs-msg-header {
+            animation: text-glitch 3s infinite linear alternate-reverse !important;
+            text-shadow: 1px 0 0 rgba(255,0,0,0.9), -1px 0 0 rgba(0,255,255,0.9),
+                         0 1px 0 rgba(255,255,0,0.7), 0 -1px 0 rgba(0,255,0,0.7) !important;
+        }
+        .desktop-icon-name {
+            animation: text-glitch 10s infinite linear alternate-reverse !important;
+            text-shadow: 0.4px 0 0 rgba(255,100,0,0.7), -0.4px 0 0 rgba(0,200,255,0.7),
+                         0 0.4px 0 rgba(255,255,100,0.5), 0 -0.4px 0 rgba(100,255,100,0.5) !important;
+        }
+        #clockArea {
+            animation: text-glitch 4s infinite linear alternate-reverse !important;
+            text-shadow: 0.6px 0 0 rgba(255,0,255,0.8), -0.6px 0 0 rgba(0,255,0,0.8),
+                         0 0.6px 0 rgba(255,255,0,0.6), 0 -0.6px 0 rgba(0,255,255,0.6) !important;
+        }
+
+        /* ОРИГИНАЛЬНЫЕ СТИЛИ САЙТА */
         #bootConsole { position:fixed; inset:0; background:#000; z-index:10000; padding:20px; font-family:'Consolas','Courier New',monospace; font-size:14px; overflow:hidden; }
         .console-line { color:var(--purple-bright); margin-bottom:2px; opacity:0; animation:fadeIn 0.1s forwards; }
         .console-line.white { color:#e0e0e0; }
@@ -28,15 +113,11 @@
         @keyframes fadeIn { to { opacity:1; } }
         .cursor { display:inline-block; width:8px; height:14px; background:var(--purple-bright); animation:blink 0.5s infinite; }
         @keyframes blink { 0%,50%{opacity:1;} 51%,100%{opacity:0;} }
-
-        /* Click to Start */
         #clickToStart { position:fixed; inset:0; background:#000; z-index:10001; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; }
         #clickToStart .logo { font-size:80px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark); margin-bottom:40px; font-family:'Consolas',monospace; }
         #clickToStart .click-text { font-size:24px; color:var(--purple-glow); animation:pulse 2s infinite; font-family:'Consolas',monospace; }
         #clickToStart .subtitle { font-size:14px; color:var(--text-secondary); margin-top:15px; }
         @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-
-        /* Desktop */
         #desktop { position:fixed; inset:0; bottom:32px; background:linear-gradient(135deg,#0a0a0a 0%,#1a1020 50%,#0a0a0a 100%); display:none; }
         #desktopIcons { position:absolute; top:10px; left:10px; display:flex; flex-direction:column; gap:5px; }
         .desktop-icon { width:75px; padding:5px; cursor:pointer; text-align:center; border:1px solid transparent; }
@@ -45,8 +126,6 @@
         .desktop-icon-img { width:32px; height:32px; margin:0 auto 4px; display:flex; align-items:center; justify-content:center; background:var(--purple-dark); border:1px solid var(--purple-medium); }
         .desktop-icon-img i { font-size:18px; color:var(--purple-bright); }
         .desktop-icon-name { color:var(--text-primary); font-size:10px; word-wrap:break-word; text-shadow:1px 1px 1px #000; }
-
-        /* Taskbar */
         #taskbar { position:fixed; bottom:0; left:0; right:0; height:32px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-medium) 50%,var(--bg-dark) 100%); border-top:2px solid var(--purple-medium); display:flex; align-items:center; padding:0 4px; z-index:1000; }
         #taskbarWindows { flex:1; display:flex; gap:2px; padding:0 4px; overflow:hidden; }
         .taskbar-item { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:4px; max-width:140px; overflow:hidden; white-space:nowrap; flex-shrink:0; }
@@ -57,8 +136,6 @@
         .taskbar-btn:active { border-style:inset; }
         .taskbar-btn:hover { background:var(--purple-dark); }
         #clockArea { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-dark) 0%,#000 100%); border:2px inset var(--border-light); color:var(--purple-glow); font-size:11px; font-weight:bold; display:flex; align-items:center; font-family:'Consolas',monospace; }
-
-        /* Windows */
         .window { position:absolute; background:var(--bg-medium); border:2px outset var(--border-light); display:flex; flex-direction:column; min-width:300px; min-height:200px; }
         .window.inactive .window-header { background:linear-gradient(180deg,#333 0%,#222 100%); }
         .window-header { height:22px; background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); display:flex; align-items:center; padding:0 3px; cursor:move; flex-shrink:0; }
@@ -70,21 +147,15 @@
         .window-btn:hover { background:var(--purple-dark); }
         .window-content { flex:1; overflow:auto; background:var(--bg-dark); border:2px inset var(--border-light); margin:3px; }
         .window-resize { position:absolute; right:0; bottom:0; width:16px; height:16px; cursor:se-resize; background:linear-gradient(135deg,transparent 50%,var(--purple-dark) 50%); }
-
-        /* Context Menu */
         #contextMenu { position:fixed; background:var(--bg-medium); border:2px outset var(--border-light); display:none; z-index:5000; min-width:180px; padding:2px; }
         .context-item { padding:5px 20px; color:var(--text-primary); font-size:11px; cursor:pointer; display:flex; align-items:center; gap:10px; }
         .context-item:hover { background:var(--purple-dark); }
         .context-item i { width:14px; text-align:center; color:var(--purple-bright); }
         .context-separator { height:1px; background:var(--border-light); margin:3px 2px; }
-
-        /* Scrollbar */
         ::-webkit-scrollbar { width:16px; height:16px; }
         ::-webkit-scrollbar-track { background:var(--bg-dark); border:1px inset var(--border-light); }
         ::-webkit-scrollbar-thumb { background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); }
         ::-webkit-scrollbar-button { background:var(--bg-medium); border:2px outset var(--border-light); height:16px; }
-
-        /* App styles */
         .app-toolbar { background:var(--bg-medium); padding:3px; display:flex; gap:2px; border-bottom:2px groove var(--border-light); flex-wrap:wrap; }
         .app-btn { padding:3px 10px; background:linear-gradient(180deg,var(--bg-light) 0%,var(--bg-dark) 100%); border:2px outset var(--border-light); color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:5px; white-space:nowrap; }
         .app-btn:active { border-style:inset; }
@@ -92,8 +163,6 @@
         .app-btn i { color:var(--purple-bright); }
         .app-btn.tab-active { background:var(--purple-dark); border-style:inset; color:var(--purple-glow); }
         .app-input { padding:3px 5px; background:var(--bg-black); border:2px inset var(--border-light); color:var(--text-primary); font-size:11px; outline:none; }
-
-        /* File Manager */
         .fm-sidebar { width:150px; background:var(--bg-medium); border-right:2px groove var(--border-light); padding:5px; }
         .fm-section-title { color:var(--purple-bright); font-size:10px; font-weight:bold; padding:5px 0; border-bottom:1px solid var(--border-light); margin-bottom:5px; }
         .fm-item { padding:3px 5px; color:var(--text-primary); font-size:10px; cursor:pointer; display:flex; align-items:center; gap:5px; }
@@ -106,37 +175,27 @@
         .fm-file.selected { background:var(--purple-dark); border-color:var(--purple-bright); }
         .fm-file-icon { font-size:28px; margin-bottom:3px; color:var(--purple-bright); }
         .fm-file-name { color:var(--text-primary); font-size:9px; word-break:break-word; }
-
-        /* Terminal */
         .terminal { background:#000; color:var(--purple-bright); font-family:'Consolas','Courier New',monospace; font-size:12px; padding:10px; height:100%; overflow-y:auto; }
         .terminal-line { margin-bottom:2px; white-space:pre-wrap; }
         .terminal-prompt { color:var(--purple-glow); }
         .terminal-path { color:var(--purple-bright); }
         .terminal-input { background:transparent; border:none; color:var(--purple-bright); font-family:inherit; font-size:inherit; outline:none; width:calc(100% - 200px); }
-
-        /* Folder Grid */
         .folder-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:10px; padding:15px; }
         .folder-app { padding:10px 5px; cursor:pointer; text-align:center; border:1px solid transparent; }
         .folder-app:hover { background:rgba(139,92,246,0.2); border-color:var(--purple-medium); }
         .folder-app-icon { width:32px; height:32px; margin:0 auto 5px; display:flex; align-items:center; justify-content:center; background:var(--purple-dark); border:1px solid var(--purple-medium); }
         .folder-app-icon i { font-size:16px; color:var(--purple-bright); }
         .folder-app-name { color:var(--text-primary); font-size:9px; }
-
-        /* Game Container */
         .game-container { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; background:var(--bg-black); padding:10px; }
         .game-canvas { border:2px inset var(--border-light); background:#000; }
         .game-info { display:flex; justify-content:space-between; align-items:center; width:100%; max-width:400px; margin-bottom:10px; }
         .game-score { color:var(--purple-glow); font-size:14px; font-weight:bold; }
-
-        /* Settings */
         .settings-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:15px; }
         .wallpaper-option { border:2px outset var(--border-light); cursor:pointer; }
         .wallpaper-option:hover { border-color:var(--purple-medium); }
         .wallpaper-option.active { border:2px solid var(--purple-bright); }
         .wallpaper-preview { height:60px; }
         .wallpaper-name { padding:5px; background:var(--bg-medium); color:var(--text-primary); font-size:9px; text-align:center; }
-
-        /* About */
         .about-container { padding:20px; text-align:center; }
         .about-logo { font-size:60px; font-weight:bold; color:var(--purple-bright); text-shadow:2px 2px 0 var(--purple-dark); margin-bottom:10px; }
         .about-title { font-size:18px; color:var(--text-primary); margin-bottom:5px; }
@@ -146,8 +205,6 @@
         .about-row:last-child { border-bottom:none; }
         .about-label { color:var(--text-secondary); }
         .about-value { color:var(--purple-bright); }
-
-        /* Shutdown Dialog */
         #shutdownDialog { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:9999; }
         .shutdown-dialog-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:350px; }
         .shutdown-dialog-header { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); padding:5px 10px; color:var(--text-primary); font-weight:bold; font-size:11px; }
@@ -161,31 +218,23 @@
         .shutdown-dialog-btn:active { border-style:inset; }
         .shutdown-dialog-btn:hover { background:var(--purple-dark); }
         .shutdown-dialog-btn.yes { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); }
-
-        /* Game Downloads */
         .game-download-item { background:var(--bg-medium); border:2px outset var(--border-light); padding:10px; cursor:pointer; text-align:center; transition:all 0.1s; }
         .game-download-item:hover { background:var(--purple-dark); border-color:var(--purple-medium); }
         .game-download-item:active { border-style:inset; }
         .game-download-icon { font-size:32px; color:var(--purple-bright); margin-bottom:8px; }
         .game-download-name { color:var(--text-primary); font-size:10px; font-weight:bold; margin-bottom:4px; word-break:break-word; }
         .game-download-size { color:var(--text-secondary); font-size:9px; }
-
-        /* Splash Screen */
         #splashScreen { position:fixed; inset:0; background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 25%,#2d1b4e 50%,#1a0a2e 75%,#0a0a0a 100%); z-index:10002; display:none; align-items:center; justify-content:center; flex-direction:column; }
         .splash-content { text-align:center; }
         .splash-logo { font-size:72px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark),0 0 60px var(--purple-dark); font-family:'Tahoma',sans-serif; letter-spacing:4px; }
         .splash-subtitle { font-size:28px; color:var(--purple-glow); margin-top:10px; letter-spacing:15px; text-transform:uppercase; }
-
         #pixelTransition { position:fixed; inset:0; z-index:10003; display:none; pointer-events:none; }
-
         .desktop-fade-in { animation:fadeInDesktop 0.8s ease-out forwards; }
         .desktop-fade-out { animation:fadeOutDesktop 0.5s ease-out forwards; }
         .taskbar-fade-in { animation:fadeInDesktop 0.8s ease-out forwards; }
         .taskbar-fade-out { animation:fadeOutDesktop 0.5s ease-out forwards; }
         @keyframes fadeInDesktop { from{opacity:0;} to{opacity:1;} }
         @keyframes fadeOutDesktop { from{opacity:1;} to{opacity:0;} }
-
-        /* ====== RUNGET OS VIEWER STYLES ====== */
         .rg-viewer { padding:0; height:100%; display:flex; flex-direction:column; }
         .rg-tabs { display:flex; flex-wrap:wrap; gap:1px; background:var(--bg-medium); padding:3px 3px 0; border-bottom:2px groove var(--border-light); }
         .rg-tab { padding:4px 10px; background:linear-gradient(180deg,var(--bg-light),var(--bg-dark)); border:2px outset var(--border-light); border-bottom:none; color:var(--text-secondary); font-size:10px; cursor:pointer; margin-bottom:-2px; }
@@ -228,8 +277,6 @@
         .rg-gallery-item:hover { border-color:var(--purple-bright); }
         .rg-highlight { background:rgba(139,92,246,0.15); border-color:var(--purple-medium) !important; }
         .rg-warning { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; background:rgba(218,68,83,0.15); border:1px solid rgba(218,68,83,0.4); color:#da4453; font-size:10px; font-weight:bold; margin-bottom:8px; }
-
-        /* Kernel Panic */
         #kernelPanic { position:fixed; inset:0; background:#000; z-index:99999; display:none; padding:20px; font-family:'Consolas','Courier New',monospace; font-size:13px; overflow:hidden; cursor:default; }
         #kernelPanic .kp-line { margin-bottom:1px; opacity:0; animation:fadeIn 0.05s forwards; }
         #kernelPanic .kp-red { color:#ff3333; }
@@ -237,8 +284,6 @@
         #kernelPanic .kp-dim { color:#666; }
         #kernelPanic .kp-yellow { color:#ffaa00; }
         #kernelPanic .kp-bright-red { color:#ff5555; font-weight:bold; }
-
-        /* OneShot Glitch Effect */
         #oneshotGlitch { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; }
         #oneshotGlitch.active { display:block; }
         #oneshotGlitch.active::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,rgba(255,0,0,0.15) 0px,transparent 1px,rgba(0,255,0,0.1) 2px,transparent 3px,rgba(0,0,255,0.08) 4px,transparent 5px); animation:glitchOverlay 0.05s infinite; }
@@ -252,8 +297,6 @@
         body.glitch-frozen #desktop { filter:hue-rotate(270deg) saturate(15) brightness(0.4) contrast(4); transform:skewX(-12deg) skewY(5deg) scale(1.03) translateX(-20px); animation:none !important; }
         body.glitch-frozen #taskbar { filter:hue-rotate(200deg) brightness(0.3); transform:translateX(15px) skewX(-8deg); animation:none !important; }
         body.glitch-frozen #oneshotGlitch::before, body.glitch-frozen #oneshotGlitch::after { animation:none !important; }
-
-        /* GPU Crash Effect */
         #gpuCrashOverlay { position:fixed; inset:0; z-index:99998; display:none; pointer-events:none; }
         #gpuCrashOverlay.active { display:block; background:repeating-linear-gradient(0deg,rgba(255,0,255,0.3) 0px,rgba(0,255,255,0.3) 2px,rgba(255,255,0,0.3) 4px,rgba(255,0,0,0.3) 6px,rgba(0,255,0,0.3) 8px,rgba(0,0,255,0.3) 10px); animation:gpuCrashBg 0.05s infinite; }
         @keyframes gpuCrashBg { 0%{filter:hue-rotate(0deg);} 25%{filter:hue-rotate(90deg);} 50%{filter:hue-rotate(180deg);} 75%{filter:hue-rotate(270deg);} 100%{filter:hue-rotate(360deg);} }
@@ -264,8 +307,6 @@
         body.gpu-frozen #desktop { filter:hue-rotate(270deg) saturate(0.3) brightness(0.6) contrast(0.8); transform:scale(1.02) skewX(-3deg); animation:none !important; }
         body.gpu-frozen #taskbar { filter:hue-rotate(180deg) brightness(0.4) saturate(0.2); animation:none !important; }
         body.gpu-frozen #gpuCrashOverlay { background:repeating-linear-gradient(45deg,rgba(50,50,50,0.8) 0px,rgba(80,80,80,0.6) 3px,rgba(30,30,30,0.9) 6px); animation:none !important; }
-
-        /* OneShot "One" Dialog */
         #oneshotOneDialog { position:fixed; inset:0; background:rgba(0,0,0,0.3); display:none; align-items:center; justify-content:center; z-index:99999; }
         .oneshot-dialog-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:380px; }
         .oneshot-dialog-header { background:linear-gradient(180deg,#4a0000 0%,#2a0000 100%); padding:5px 10px; color:#ff3333; font-weight:bold; font-size:12px; }
@@ -274,8 +315,6 @@
         .oneshot-dialog-btn { padding:8px 35px; background:linear-gradient(180deg,#333 0%,#111 100%); border:2px outset #444; color:#ff3333; font-size:16px; font-weight:bold; cursor:pointer; letter-spacing:5px; }
         .oneshot-dialog-btn:hover { background:#2a0000; }
         .oneshot-dialog-btn:active { border-style:inset; }
-
-        /* DCS Message Dialog */
         #dcsMessageDialog { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:8000; }
         .dcs-msg-box { background:var(--bg-medium); border:2px outset var(--border-light); min-width:320px; max-width:450px; }
         .dcs-msg-header { background:linear-gradient(180deg,var(--purple-medium) 0%,var(--purple-dark) 100%); padding:4px 8px; color:var(--text-primary); font-weight:bold; font-size:11px; display:flex; justify-content:space-between; align-items:center; }
@@ -291,6 +330,9 @@
         .dcs-msg-btn:active { border-style:inset; }
         .dcs-msg-btn:hover { background:var(--purple-dark); }
     </style>
+    <!-- ЛОКАЛЬНЫЕ РЕСУРСЫ (замените пути на свои) -->
+    <link rel="stylesheet" href="assets/font-awesome/css/all.min.css">
+    <script src="assets/scripts/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="clickToStart">
@@ -794,7 +836,7 @@
             {icon:'fa-android',t:'Android-приложения (Andryemu)',d:'Andryemu — Android-эмулятор и подсистема для Runget. Устанавливайте APK-файлы, используйте мобильные приложения и игры с аппаратным ускорением.',b:['Andryemu','APK','Google Play','ARM-трансляция'],fab:true},
             {icon:'fa-random',t:'Приложения других дистрибутивов',d:'Запуск приложений для Debian, Ubuntu, Fedora, Arch и других. Flatpak и AppImage из коробки, Snap дополнительно.',b:['.deb','Flatpak','AppImage','Snap']},
             {icon:'fa-gamepad',t:'Игровая платформа',d:'Steam, Proton и другие лаунчеры. Тысячи игр нативно или через Proton. Vulkan и OpenGL обеспечивают высокую производительность.',b:['Steam','Proton','Lutris','Vulkan']},
-            {icon:'fa-magic',t:'Красивый интерфейс',d:'Тёмная тема вдохновлена KDE Plasma и Breeze Dark. Плавные анимации, настраиваемые виджеты, панели и рабочие столы.',b:['KDE-стиль','Тёмная тема','Виджеты']},
+            {icon:'fa-magic',t:'Красивый интерфейс',d:'Тёмная тема вдохновена KDE Plasma и Breeze Dark. Плавные анимации, настраиваемые виджеты, панели и рабочие столы.',b:['KDE-стиль','Тёмная тема','Виджеты']},
             {icon:'fa-tachometer-alt',t:'Высокая производительность',d:'Оптимизация под слабые и старые ПК. Минимальное потребление RAM от 512 МБ, быстрая загрузка. Core потребляет ещё меньше.',b:['Старые ПК','Оптимизация','Быстрая загрузка']},
             {icon:'fa-shield-alt',t:'Безопасность и приватность',d:'Без телеметрии и сбора данных. Регулярные обновления безопасности от Debian, встроенный файрвол. LUKS, AppArmor.',b:['Без телеметрии','Файрвол','LUKS','AppArmor']},
             {icon:'fa-code-branch',t:'Открытый исходный код',d:'Полностью открыт на GitHub. Прозрачная разработка, открытый баг-трекер, возможность контрибьютить.',b:['GitHub','Open Source','GPL','Community']}
@@ -1199,7 +1241,25 @@
 
     function openEditor(file){createWindow({title:file?file.name+' - Редактор':'Новый файл - Редактор',icon:'fa-file-alt',width:600,height:400,content:`<div class="app-toolbar"><button class="app-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fas fa-save"></i> Сохранить</button></div><textarea style="width:100%;height:calc(100% - 30px);background:#000;color:var(--purple-bright);border:none;padding:10px;font-family:Consolas,monospace;font-size:12px;resize:none;outline:none">${file?.content||''}</textarea>`});}
 
-    function openBrowser(){createWindow({title:'Браузер',icon:'fa-globe',width:900,height:600,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()"><i class="fas fa-redo"></i></button><input class="app-input" style="flex:1" value="https://www.google.com" id="browserUrl"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i></button></div><iframe src="https://www.google.com/webhp?igu=1" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`});}
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ БРАУЗЕРА (без Google)
+    function openBrowser(){
+        createWindow({
+            title:'Браузер',
+            icon:'fa-globe',
+            width:900,
+            height:600,
+            content:`<div class="app-toolbar">
+                <button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()">
+                    <i class="fas fa-redo"></i>
+                </button>
+                <input class="app-input" style="flex:1" value="https://yandex.ru" id="browserUrl">
+                <button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <iframe src="https://yandex.ru" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`
+        });
+    }
 
     function openSettings(){
         let c='<div style="padding:15px"><h3 style="color:var(--purple-bright);margin-bottom:15px">Настройки</h3><h4 style="color:var(--purple-glow);margin-bottom:10px">Обои</h4><div class="settings-grid">';
@@ -1291,7 +1351,7 @@
     function open2048(){
         const winId=createWindow({title:'2048',icon:'fa-th-large',width:350,height:420,content:''});let grid,score;
         function init(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];score=0;addTile();addTile();}
-        function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}}
+        function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}
         function getColor(v){return v?`hsl(${270-Math.log2(v)*15},60%,${30+Math.log2(v)*5}%)`:'#1a1a1a';}
         function render(){const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:15px;background:#000;height:100%"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--purple-glow)">Счёт: ${score}</span><button class="app-btn" onclick="window.__start2048()"><i class="fas fa-redo"></i></button></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--bg-dark);padding:5px;border:2px inset var(--border-light)">${grid.flat().map(v=>`<div style="height:60px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};font-size:20px;font-weight:bold;color:${v>4?'#fff':'var(--purple-bright)'}">${v||''}</div>`).join('')}</div></div>`;}
         function move(dir){let moved=false;const rotate=(g)=>g[0].map((_,i)=>g.map(r=>r[i]).reverse());for(let i=0;i<dir;i++)grid=rotate(grid);for(let y=0;y<4;y++){let row=grid[y].filter(v=>v);for(let i=0;i<row.length-1;i++)if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}while(row.length<4)row.push(0);if(row.join(',')!==grid[y].join(','))moved=true;grid[y]=row;}for(let i=0;i<(4-dir)%4;i++)grid=rotate(grid);if(moved)addTile();render();}
@@ -1342,8 +1402,6 @@
     async function triggerKernelPanic(filename){
         const kp=document.getElementById('kernelPanic');
         kp.style.display='block';kp.innerHTML='';
-
-        // Phase 1: loading lines (no sounds yet)
         const loadingLines=[
             {text:'',delay:200},
             {text:'Initializing '+filename+'...',cls:'kp-white',delay:400},
@@ -1371,8 +1429,6 @@
             {text:'[oneshot] Reading save file: game_save/oneshot-save.sun',cls:'kp-dim',delay:300},
             {text:'',delay:150},
         ];
-
-        // Phase 2: error lines (sounds play here)
         const errorLines=[
             {text:'[oneshot] WARNING: Save file contains anomalous data',cls:'kp-yellow',delay:400},
             {text:'[oneshot] WARNING: Entity "Niko" state: UNSTABLE',cls:'kp-yellow',delay:300},
@@ -1444,8 +1500,6 @@
             {text:'',delay:200},
             {text:'  --- end Kernel panic - not syncing: Fatal exception ---',cls:'kp-dim',delay:500},
         ];
-
-        // Render loading lines (no sounds)
         for(const line of loadingLines){
             const div=document.createElement('div');
             div.className='kp-line '+(line.cls||'kp-white');
@@ -1454,11 +1508,7 @@
             kp.scrollTop=kp.scrollHeight;
             await new Promise(r=>setTimeout(r,line.delay||50));
         }
-
-        // Start chaotic sounds when errors begin
         startKpSounds();
-
-        // Render error lines (sounds playing)
         for(const line of errorLines){
             const div=document.createElement('div');
             div.className='kp-line '+(line.cls||'kp-white');
@@ -1467,12 +1517,8 @@
             kp.scrollTop=kp.scrollHeight;
             await new Promise(r=>setTimeout(r,line.delay||50));
         }
-
-        // All errors done — wait 5 seconds then stop sounds
         await new Promise(r=>setTimeout(r,5000));
         stopKpSounds();
-
-        // Block all interaction then redirect to 404
         document.body.style.pointerEvents='none';
         kp.style.pointerEvents='auto';
         kp.style.cursor='not-allowed';
@@ -1659,18 +1705,15 @@
             {text:'',delay:300},
             {text:'  --- end Kernel panic - not syncing: SYSTEM_DESTROYED ---',cls:'kp-dim',delay:500},
         ];
-        // Phase 1: loading lines
         for(var j=0;j<lines.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(lines[j].cls||'kp-white');div.textContent=lines[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,lines[j].delay||50);});
         }
-        // Phase 2: error flood with sounds
         startKpSounds();
         for(var j=0;j<errorFlood.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(errorFlood[j].cls||'kp-white');div.textContent=errorFlood[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorFlood[j].delay||50);});
         }
-        // Phase 3: final lines
         for(var j=0;j<finalLines.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(finalLines[j].cls||'kp-white');div.textContent=finalLines[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,finalLines[j].delay||50);});
@@ -1684,14 +1727,24 @@
     }
 
     // ==================== GTA 3 ====================
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ GTA3 (локальное видео)
     function launchGTA3(filename){
-        const winId=createWindow({title:'Grand Theft Auto III',icon:'fa-car',width:800,height:500,x:Math.floor((window.innerWidth-800)/2),y:Math.floor((window.innerHeight-532)/2),content:'<div id="gta3Screen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading GTA III...</div></div>'});
+        const winId=createWindow({
+            title:'Grand Theft Auto III',
+            icon:'fa-car',
+            width:800,
+            height:500,
+            x:Math.floor((window.innerWidth-800)/2),
+            y:Math.floor((window.innerHeight-532)/2),
+            content:'<div id="gta3Screen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading GTA III...</div></div>'
+        });
         setTimeout(function(){
             var screen=document.getElementById('gta3Screen');
             if(!screen)return;
-            screen.innerHTML='<video id="gta3Video" style="width:100%;height:100%;object-fit:contain" autoplay><source src="auto.mp4" type="video/mp4"></video>';
+            // ЛОКАЛЬНЫЙ ПУТЬ К ВИДЕО
+            screen.innerHTML='<video id="gta3Video" style="width:100%;height:100%;object-fit:contain" autoplay><source src="assets/video/auto.mp4" type="video/mp4"></video>';
             var video=document.getElementById('gta3Video');
-            video.onerror=function(){screen.innerHTML='<div style="color:#ff3333;font-size:14px;font-family:Consolas;text-align:center">ERROR: auto.mp4 not found<br><br><span style="color:#888;font-size:12px">Video file missing from root directory</span></div>';};
+            video.onerror=function(){screen.innerHTML='<div style="color:#ff3333;font-size:14px;font-family:Consolas;text-align:center">ERROR: auto.mp4 not found<br><br><span style="color:#888;font-size:12px">Video file missing from assets/video/ directory</span></div>';};
             video.onended=function(){triggerGPUCrash(winId);};
         },1500);
     }
