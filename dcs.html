@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCS-recovery</title>
-    <!-- Иконки Font Awesome 4.7.0 с Яндекс CDN (импортозамещение) -->
-    <link rel="stylesheet" href="https://yastatic.net/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Иконки Font Awesome 5.15.4 с Яндекс.Статика (российский CDN) -->
+    <link rel="stylesheet" href="https://yastatic.net/font-awesome/5.15.4/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://yastatic.net/font-awesome/5.15.4/css/solid.min.css">
+    <link rel="stylesheet" href="https://yastatic.net/font-awesome/5.15.4/css/brands.min.css">
     <style>
         /* ====== ЭФФЕКТЫ ЭЛТ-МОНИТОРА ====== */
         .crt::before {
@@ -42,7 +44,6 @@
             100% { background-position: 0 4px, 6px 0; }
         }
 
-        /* Мерцание экрана */
         @keyframes flicker {
             0% { opacity: 0.98; }
             50% { opacity: 1; }
@@ -53,12 +54,7 @@
             animation: flicker 0.15s infinite;
         }
 
-        /* Свечение текста */
-        .glow {
-            text-shadow: 0 0 2px rgba(139, 92, 246, 0.5);
-        }
-
-        @font-face { font-family: 'MS Sans Serif'; src: local('Tahoma'), local('Arial'); }
+        /* Шрифты: только системные, без внешних загрузок */
         * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
         :root {
             --bg-black:#0a0a0a; --bg-dark:#121212; --bg-medium:#1a1a1a; --bg-light:#252525;
@@ -68,7 +64,7 @@
             --border-dark:#0a0a0a; --border-light:#3a3a3a;
         }
         body { 
-            font-family:'Tahoma','Arial',sans-serif; 
+            font-family: 'Tahoma', 'Arial', 'Helvetica', sans-serif; 
             font-size:11px; 
             background:var(--bg-black); 
             color:var(--text-primary); 
@@ -90,7 +86,7 @@
             background:#000; 
             z-index:10000; 
             padding:20px; 
-            font-family:'Consolas','Courier New',monospace; 
+            font-family:'Consolas', 'Courier New', monospace; 
             font-size:14px; 
             overflow:hidden;
             text-shadow: 0 0 3px #8b5cf6;
@@ -134,13 +130,13 @@
             color:var(--purple-bright); 
             text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark), 0 0 60px rgba(139,92,246,0.5);
             margin-bottom:40px; 
-            font-family:'Consolas',monospace; 
+            font-family:'Consolas', monospace; 
         }
         #clickToStart .click-text { 
             font-size:24px; 
             color:var(--purple-glow); 
             animation:pulse 2s infinite; 
-            font-family:'Consolas',monospace;
+            font-family:'Consolas', monospace;
             text-shadow: 0 0 10px #a78bfa;
         }
         #clickToStart .subtitle { 
@@ -177,7 +173,7 @@
         .taskbar-btn:active { border-style:inset; }
         .taskbar-btn:hover { background:var(--purple-dark); }
         .taskbar-btn i { text-shadow: 0 0 3px var(--purple-bright); }
-        #clockArea { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-dark) 0%,#000 100%); border:2px inset var(--border-light); color:var(--purple-glow); font-size:11px; font-weight:bold; display:flex; align-items:center; font-family:'Consolas',monospace; text-shadow: 0 0 5px #a78bfa; }
+        #clockArea { height:24px; padding:0 8px; background:linear-gradient(180deg,var(--bg-dark) 0%,#000 100%); border:2px inset var(--border-light); color:var(--purple-glow); font-size:11px; font-weight:bold; display:flex; align-items:center; font-family:'Consolas', monospace; text-shadow: 0 0 5px #a78bfa; }
 
         /* Windows */
         .window { position:absolute; background:var(--bg-medium); border:2px outset var(--border-light); display:flex; flex-direction:column; min-width:300px; min-height:200px; }
@@ -294,7 +290,7 @@
         /* Splash Screen */
         #splashScreen { position:fixed; inset:0; background:linear-gradient(135deg,#0a0a0a 0%,#1a0a2e 25%,#2d1b4e 50%,#1a0a2e 75%,#0a0a0a 100%); z-index:10002; display:none; align-items:center; justify-content:center; flex-direction:column; }
         .splash-content { text-align:center; }
-        .splash-logo { font-size:72px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark),0 0 60px var(--purple-dark); font-family:'Tahoma',sans-serif; letter-spacing:4px; }
+        .splash-logo { font-size:72px; font-weight:bold; color:var(--purple-bright); text-shadow:0 0 20px var(--purple-medium),0 0 40px var(--purple-dark),0 0 60px var(--purple-dark); font-family:'Tahoma', 'Arial', sans-serif; letter-spacing:4px; }
         .splash-subtitle { font-size:28px; color:var(--purple-glow); margin-top:10px; letter-spacing:15px; text-transform:uppercase; text-shadow: 0 0 10px var(--purple-glow); }
 
         #pixelTransition { position:fixed; inset:0; z-index:10003; display:none; pointer-events:none; }
@@ -431,7 +427,7 @@
     <div id="taskbar" style="display:none;">
         <div id="taskbarWindows"></div>
         <div id="taskbarRight">
-            <button class="taskbar-btn" onclick="toggleAllWindows()" title="Свернуть/Развернуть все"><i class="fa fa-th"></i></button>
+            <button class="taskbar-btn" onclick="toggleAllWindows()" title="Свернуть/Развернуть все"><i class="fas fa-layer-group"></i></button>
             <div id="clockArea">00:00</div>
         </div>
     </div>
@@ -464,7 +460,7 @@
     <div id="dcsMessageDialog">
         <div class="dcs-msg-box">
             <div class="dcs-msg-header"><span id="dcsMessageTitle">DCS</span><button class="window-btn" onclick="closeDcsMessage()">×</button></div>
-            <div class="dcs-msg-body"><div class="dcs-msg-icon" id="dcsMessageIcon"><i class="fa fa-info-circle"></i></div><div class="dcs-msg-text" id="dcsMessageText"></div></div>
+            <div class="dcs-msg-body"><div class="dcs-msg-icon" id="dcsMessageIcon"><i class="fas fa-info-circle"></i></div><div class="dcs-msg-text" id="dcsMessageText"></div></div>
             <div class="dcs-msg-footer"><button class="dcs-msg-btn" onclick="closeDcsMessage()">OK</button></div>
         </div>
     </div>
@@ -565,7 +561,7 @@
     const apps = [
         {id:'files',name:'Файлы',icon:'fa-folder'},
         {id:'terminal',name:'Терминал',icon:'fa-terminal'},
-        {id:'editor',name:'Редактор',icon:'fa-file-text'},
+        {id:'editor',name:'Редактор',icon:'fa-file-alt'},
         {id:'browser',name:'Браузер',icon:'fa-globe'},
         {id:'settings',name:'Настройки',icon:'fa-cog'},
         {id:'about',name:'О системе',icon:'fa-info-circle'},
@@ -573,7 +569,7 @@
         {id:'screenshot',name:'Скриншот',icon:'fa-camera'},
         {id:'paint',name:'Рисование',icon:'fa-paint-brush'},
         {id:'notes',name:'Заметки',icon:'fa-sticky-note'},
-        {id:'clock',name:'Часы',icon:'fa-clock-o'},
+        {id:'clock',name:'Часы',icon:'fa-clock'},
         {id:'snake',name:'Змейка',icon:'fa-gamepad'},
         {id:'tetris',name:'Тетрис',icon:'fa-th'},
         {id:'pong',name:'Понг',icon:'fa-table-tennis'},
@@ -768,7 +764,7 @@
             {name:'Разное',icon:'fa-folder',action:()=>openMiscFolder()},
             {name:'Терминал',icon:'fa-terminal',action:()=>openApp('terminal')},
             {name:'Файлы',icon:'fa-folder-open',action:()=>openApp('files')},
-            {name:'Пиратские\nигры',icon:'fa-skull',action:()=>openGamesFolder()},
+            {name:'Пиратские\nигры',icon:'fa-skull-crossbones',action:()=>openGamesFolder()},
             {name:'DGC',icon:'fa-gamepad',action:()=>openDGC()},
             {name:'Telegram',icon:'fa-telegram',action:()=>openTelegramFolder()},
             {name:'Каналы',icon:'fa-play-circle',action:()=>openChannelsFolder()},
@@ -779,7 +775,7 @@
         ];
         icons.forEach(icon=>{
             const el=document.createElement('div');el.className='desktop-icon';
-            el.innerHTML=`<div class="desktop-icon-img"><i class="fa ${icon.icon}"></i></div><div class="desktop-icon-name">${icon.name}</div>`;
+            el.innerHTML=`<div class="desktop-icon-img"><i class="${icon.icon.startsWith('fa-telegram')||icon.icon.startsWith('fa-github')?'fab':'fas'} ${icon.icon}"></i></div><div class="desktop-icon-name">${icon.name}</div>`;
             el.ondblclick=icon.action;c.appendChild(el);
         });
     }
@@ -791,17 +787,17 @@
     function showContextMenu(x,y){
         const m=document.getElementById('contextMenu');
         m.innerHTML=`
-            <div class="context-item" onclick="openRungetViewer()"><i class="fa fa-laptop"></i> Runget OS</div>
+            <div class="context-item" onclick="openRungetViewer()"><i class="fas fa-laptop"></i> Runget OS</div>
             <div class="context-separator"></div>
-            <div class="context-item" onclick="openApp('terminal')"><i class="fa fa-terminal"></i> Терминал</div>
-            <div class="context-item" onclick="openApp('files')"><i class="fa fa-folder"></i> Файлы</div>
+            <div class="context-item" onclick="openApp('terminal')"><i class="fas fa-terminal"></i> Терминал</div>
+            <div class="context-item" onclick="openApp('files')"><i class="fas fa-folder"></i> Файлы</div>
             <div class="context-separator"></div>
-            <div class="context-item" onclick="openApp('screenshot')"><i class="fa fa-camera"></i> Скриншот</div>
+            <div class="context-item" onclick="openApp('screenshot')"><i class="fas fa-camera"></i> Скриншот</div>
             <div class="context-separator"></div>
-            <div class="context-item" onclick="openApp('settings')"><i class="fa fa-cog"></i> Настройки</div>
-            <div class="context-item" onclick="openApp('about')"><i class="fa fa-info-circle"></i> О системе</div>
+            <div class="context-item" onclick="openApp('settings')"><i class="fas fa-cog"></i> Настройки</div>
+            <div class="context-item" onclick="openApp('about')"><i class="fas fa-info-circle"></i> О системе</div>
             <div class="context-separator"></div>
-            <div class="context-item" onclick="window.location.href='index.html'"><i class="fa fa-arrow-left"></i> Назад на сайт</div>
+            <div class="context-item" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Назад на сайт</div>
         `;
         m.style.left=Math.min(x,window.innerWidth-200)+'px';
         m.style.top=Math.min(y,window.innerHeight-300)+'px';
@@ -812,7 +808,7 @@
         const c=document.getElementById('taskbarWindows');c.innerHTML='';
         DCS.windows.forEach((w,id)=>{
             const el=document.createElement('div');el.className='taskbar-item'+(id===DCS.activeWindow?' active':'');
-            el.innerHTML=`<i class="fa ${w.icon}"></i> ${w.title}`;
+            el.innerHTML=`<i class="${w.icon.startsWith('fa-telegram')||w.icon.startsWith('fa-github')?'fab':'fas'} ${w.icon}"></i> ${w.title}`;
             el.onclick=()=>{const we=document.getElementById(`window-${id}`);if(we.style.display==='none')we.style.display='flex';focusWindow(id);};
             c.appendChild(el);
         });
@@ -827,7 +823,8 @@
     function renderWindow(w){
         const el=document.createElement('div');el.id=`window-${w.id}`;el.className='window';
         el.style.cssText=`left:${w.x}px;top:${w.y}px;width:${w.width}px;height:${w.height}px;z-index:${100+DCS.windowOrder.indexOf(w.id)}`;
-        el.innerHTML=`<div class="window-header" data-window="${w.id}"><span class="window-icon"><i class="fa ${w.icon}"></i></span><span class="window-title">${w.title}</span><div class="window-controls"><button class="window-btn" onclick="minimizeWindow(${w.id})">_</button><button class="window-btn" onclick="maximizeWindow(${w.id})">☐</button><button class="window-btn" onclick="closeWindow(${w.id})">×</button></div></div><div class="window-content">${w.content}</div><div class="window-resize" data-window="${w.id}"></div>`;
+        const iconClass = (w.icon.startsWith('fa-telegram')||w.icon.startsWith('fa-github')) ? 'fab' : 'fas';
+        el.innerHTML=`<div class="window-header" data-window="${w.id}"><span class="window-icon"><i class="${iconClass} ${w.icon}"></i></span><span class="window-title">${w.title}</span><div class="window-controls"><button class="window-btn" onclick="minimizeWindow(${w.id})">_</button><button class="window-btn" onclick="maximizeWindow(${w.id})">☐</button><button class="window-btn" onclick="closeWindow(${w.id})">×</button></div></div><div class="window-content">${w.content}</div><div class="window-resize" data-window="${w.id}"></div>`;
         document.getElementById('windowsContainer').appendChild(el);
         const h=el.querySelector('.window-header');
         h.onmousedown=(e)=>{if(e.target.closest('.window-controls'))return;focusWindow(w.id);const ww=DCS.windows.get(w.id);DCS.dragState={id:w.id,startX:e.clientX-ww.x,startY:e.clientY-ww.y};};
@@ -881,15 +878,15 @@
 
     function renderOverview(){
         return `
-            <h1 class="rg-h1"><i class="fa fa-linux"></i> Runget OS</h1>
+            <h1 class="rg-h1"><i class="fab fa-linux"></i> Runget OS</h1>
             <p class="rg-p" style="font-size:13px;color:var(--purple-glow);">Легкая, быстрая, простая и красивая Debian-based ОС</p>
             <p class="rg-p">Runget основан на Debian и Linux-ядре и сочетает стабильность Debian-семейства с расширенной совместимостью с Windows, Linux и Android-приложениями, включая подсистему Andryemu для Android. Система оптимизирована для работы на широком спектре оборудования — от старых ПК с минимальными характеристиками до современных игровых станций и серверов.</p>
             <h2 class="rg-h2">Ключевые показатели</h2>
             <div class="rg-grid-sm">
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-cubes"></i> 3 платформы</div><div class="rg-card-text">Linux, Windows, Android приложения</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-layer-group"></i> 2 редакции</div><div class="rg-card-text">Runget 1.0 и Runget 1.0 Core</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-devices"></i> 5+ устройств</div><div class="rg-card-text">ПК, ноутбуки, серверы, VM, телефоны</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-infinity"></i> ∞ пакетов</div><div class="rg-card-text">Через APT, Flatpak, AppImage</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-cubes"></i> 3 платформы</div><div class="rg-card-text">Linux, Windows, Android приложения</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-layer-group"></i> 2 редакции</div><div class="rg-card-text">Runget 1.0 и Runget 1.0 Core</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-devices"></i> 5+ устройств</div><div class="rg-card-text">ПК, ноутбуки, серверы, VM, телефоны</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-infinity"></i> ∞ пакетов</div><div class="rg-card-text">Через APT, Flatpak, AppImage</div></div>
             </div>
             <h2 class="rg-h2">Характеристики</h2>
             <ul class="rg-list">
@@ -902,8 +899,8 @@
                 <li>Работает на старом оборудовании (от 1 ГБ RAM)</li>
             </ul>
             <div style="margin-top:12px">
-                <a class="rg-dl-btn" href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank"><i class="fa fa-github"></i> GitHub</a>
-                <a class="rg-dl-btn" href="https://t.me/runget_rt" target="_blank"><i class="fa fa-telegram"></i> Telegram</a>
+                <a class="rg-dl-btn" href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a class="rg-dl-btn" href="https://t.me/runget_rt" target="_blank"><i class="fab fa-telegram"></i> Telegram</a>
             </div>
         `;
     }
@@ -911,47 +908,47 @@
     function renderFeatures(){
         const features=[
             {icon:'fa-linux',t:'На базе Debian',d:'Стабильная платформа Debian с предсказуемыми обновлениями, безопасностью и совместимостью с огромным количеством пакетов. Debian — один из старейших и наиболее проверенных Linux-дистрибутивов.',b:['Debian','APT','Stable','dpkg','systemd']},
-            {icon:'fa-windows',t:'Поддержка Windows-приложений',d:'Запускайте Windows-программы и игры через Wine/Proton. Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других приложений.',b:['Игры','Офис','Wine','Proton','.exe']},
-            {icon:'fa-android',t:'Android-приложения (Andryemu)',d:'Andryemu — Android-эмулятор и подсистема для Runget. Устанавливайте APK-файлы, используйте мобильные приложения и игры с аппаратным ускорением.',b:['Andryemu','APK','Google Play','ARM-трансляция']},
+            {icon:'fa-windows',t:'Поддержка Windows-приложений',d:'Запускайте Windows-программы и игры через Wine/Proton. Поддерживаются офисные пакеты, графические редакторы, мессенджеры и тысячи других приложений.',b:['Игры','Офис','Wine','Proton','.exe'],fab:true},
+            {icon:'fa-android',t:'Android-приложения (Andryemu)',d:'Andryemu — Android-эмулятор и подсистема для Runget. Устанавливайте APK-файлы, используйте мобильные приложения и игры с аппаратным ускорением.',b:['Andryemu','APK','Google Play','ARM-трансляция'],fab:true},
             {icon:'fa-random',t:'Приложения других дистрибутивов',d:'Запуск приложений для Debian, Ubuntu, Fedora, Arch и других. Flatpak и AppImage из коробки, Snap дополнительно.',b:['.deb','Flatpak','AppImage','Snap']},
             {icon:'fa-gamepad',t:'Игровая платформа',d:'Steam, Proton и другие лаунчеры. Тысячи игр нативно или через Proton. Vulkan и OpenGL обеспечивают высокую производительность.',b:['Steam','Proton','Lutris','Vulkan']},
             {icon:'fa-magic',t:'Красивый интерфейс',d:'Тёмная тема вдохновлена KDE Plasma и Breeze Dark. Плавные анимации, настраиваемые виджеты, панели и рабочие столы.',b:['KDE-стиль','Тёмная тема','Виджеты']},
-            {icon:'fa-tachometer',t:'Высокая производительность',d:'Оптимизация под слабые и старые ПК. Минимальное потребление RAM от 512 МБ, быстрая загрузка. Core потребляет ещё меньше.',b:['Старые ПК','Оптимизация','Быстрая загрузка']},
-            {icon:'fa-shield',t:'Безопасность и приватность',d:'Без телеметрии и сбора данных. Регулярные обновления безопасности от Debian, встроенный файрвол. LUKS, AppArmor.',b:['Без телеметрии','Файрвол','LUKS','AppArmor']},
-            {icon:'fa-code-fork',t:'Открытый исходный код',d:'Полностью открыт на GitHub. Прозрачная разработка, открытый баг-трекер, возможность контрибьютить.',b:['GitHub','Open Source','GPL','Community']}
+            {icon:'fa-tachometer-alt',t:'Высокая производительность',d:'Оптимизация под слабые и старые ПК. Минимальное потребление RAM от 512 МБ, быстрая загрузка. Core потребляет ещё меньше.',b:['Старые ПК','Оптимизация','Быстрая загрузка']},
+            {icon:'fa-shield-alt',t:'Безопасность и приватность',d:'Без телеметрии и сбора данных. Регулярные обновления безопасности от Debian, встроенный файрвол. LUKS, AppArmor.',b:['Без телеметрии','Файрвол','LUKS','AppArmor']},
+            {icon:'fa-code-branch',t:'Открытый исходный код',d:'Полностью открыт на GitHub. Прозрачная разработка, открытый баг-трекер, возможность контрибьютить.',b:['GitHub','Open Source','GPL','Community']}
         ];
         let html='<h1 class="rg-h1">Почему именно Runget?</h1><p class="rg-p">Современный интерфейс, запуск Windows и Android-приложений, поддержка приложений разных дистрибутивов и высокая производительность.</p><div class="rg-grid">';
         features.forEach(f=>{
-            html+=`<div class="rg-card"><div class="rg-card-title"><i class="fa ${f.icon}"></i> ${f.t}</div><div class="rg-card-text">${f.d}</div><div style="margin-top:4px">${f.b.map(b=>`<span class="rg-badge">${b}</span>`).join('')}</div></div>`;
+            html+=`<div class="rg-card"><div class="rg-card-title"><i class="${f.fab?'fab':'fas'} ${f.icon}"></i> ${f.t}</div><div class="rg-card-text">${f.d}</div><div style="margin-top:4px">${f.b.map(b=>`<span class="rg-badge">${b}</span>`).join('')}</div></div>`;
         });
         return html+'</div>';
     }
 
     function renderRunget2(){
         const items=[
-            {icon:'fa-shield',t:'Улучшенная стабильность',list:['Обновлённое ядро Linux','Улучшенное управление памятью','Автоматическое восстановление после сбоев','Оптимизированный планировщик задач','Поддержка Btrfs, ZFS, ext4']},
-            {icon:'fa-windows',t:'Улучшенная поддержка Windows',list:['Автоопределение Windows-приложений','Профили для популярных программ','DirectX 11/12 через DXVK/VKD3D','Интеграция .exe в файловый менеджер','.NET Framework и Visual C++ Runtime']},
-            {icon:'fa-android',t:'Улучшенная поддержка Android',list:['Andryemu 2.0','Улучшенная трансляция ARM → x86','Уведомления в системном трее','Общий буфер обмена','GPU-ускорение для мобильных игр']},
+            {icon:'fa-shield-alt',t:'Улучшенная стабильность',list:['Обновлённое ядро Linux','Улучшенное управление памятью','Автоматическое восстановление после сбоев','Оптимизированный планировщик задач','Поддержка Btrfs, ZFS, ext4']},
+            {icon:'fa-windows',t:'Улучшенная поддержка Windows',list:['Автоопределение Windows-приложений','Профили для популярных программ','DirectX 11/12 через DXVK/VKD3D','Интеграция .exe в файловый менеджер','.NET Framework и Visual C++ Runtime'],fab:true},
+            {icon:'fa-android',t:'Улучшенная поддержка Android',list:['Andryemu 2.0','Улучшенная трансляция ARM → x86','Уведомления в системном трее','Общий буфер обмена','GPU-ускорение для мобильных игр'],fab:true},
             {icon:'fa-lock',t:'Secure Boot и TPM 2.0',list:['Подписанный загрузчик UEFI','Интеграция с TPM 2.0','Поддержка fTPM (AMD/Intel)','Верификация ядра при загрузке','Корпоративные политики']},
-            {icon:'fa-paint-brush',t:'Обновлённый интерфейс',list:['Новые темы и иконки','Улучшенный центр уведомлений','Переработанное меню приложений','Динамические обои','HiDPI и мульти-мониторы']},
-            {icon:'fa-hdd-o',t:'Улучшенный установщик',list:['Пошаговый графический мастер','Автоматическая разметка диска','Определение драйверов','Выбор пакетов и конфигураций','NVMe, SSD, HDD, USB']}
+            {icon:'fa-palette',t:'Обновлённый интерфейс',list:['Новые темы и иконки','Улучшенный центр уведомлений','Переработанное меню приложений','Динамические обои','HiDPI и мульти-мониторы']},
+            {icon:'fa-hdd',t:'Улучшенный установщик',list:['Пошаговый графический мастер','Автоматическая разметка диска','Определение драйверов','Выбор пакетов и конфигураций','NVMe, SSD, HDD, USB']}
         ];
-        let html='<h1 class="rg-h1"><i class="fa fa-rocket"></i> Runget 2.0 Big Brain</h1><div style="display:inline-block;padding:3px 10px;background:rgba(139,92,246,0.2);border:1px solid var(--purple-medium);color:var(--purple-glow);font-size:10px;margin-bottom:10px;">🚀 В разработке</div><p class="rg-p">Следующее поколение Runget с улучшенной безопасностью, стабильностью и расширенной совместимостью.</p><div class="rg-grid">';
+        let html='<h1 class="rg-h1"><i class="fas fa-rocket"></i> Runget 2.0 Big Brain</h1><div style="display:inline-block;padding:3px 10px;background:rgba(139,92,246,0.2);border:1px solid var(--purple-medium);color:var(--purple-glow);font-size:10px;margin-bottom:10px;">🚀 В разработке</div><p class="rg-p">Следующее поколение Runget с улучшенной безопасностью, стабильностью и расширенной совместимостью.</p><div class="rg-grid">';
         items.forEach(it=>{
-            html+=`<div class="rg-card rg-highlight"><div class="rg-card-title"><i class="fa ${it.icon}"></i> ${it.t}</div><ul class="rg-list">${it.list.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
+            html+=`<div class="rg-card rg-highlight"><div class="rg-card-title"><i class="${it.fab?'fab':'fas'} ${it.icon}"></i> ${it.t}</div><ul class="rg-list">${it.list.map(l=>`<li>${l}</li>`).join('')}</ul></div>`;
         });
-        html+='</div><div class="rg-card" style="margin-top:12px;border-color:var(--purple-medium);"><div class="rg-card-text"><i class="fa fa-info-circle" style="color:var(--purple-bright)"></i> Это не полный список нововведений. Многие доработки будут опубликованы позже. Следите за обновлениями в <a href="https://t.me/runget_rt" target="_blank" style="color:var(--purple-bright)">@runget_rt</a>.</div></div>';
+        html+='</div><div class="rg-card" style="margin-top:12px;border-color:var(--purple-medium);"><div class="rg-card-text"><i class="fas fa-info-circle" style="color:var(--purple-bright)"></i> Это не полный список нововведений. Многие доработки будут опубликованы позже. Следите за обновлениями в <a href="https://t.me/runget_rt" target="_blank" style="color:var(--purple-bright)">@runget_rt</a>.</div></div>';
         return html;
     }
 
     function renderARM(){
         return `
-            <h1 class="rg-h1" style="color:#666;"><i class="fa fa-snowflake-o"></i> Runget для Raspberry Pi и Orange Pi</h1>
-            <div class="rg-warning"><i class="fa fa-snowflake-o"></i> Разработка заморожена</div>
+            <h1 class="rg-h1" style="color:#666;"><i class="fas fa-snowflake"></i> Runget для Raspberry Pi и Orange Pi</h1>
+            <div class="rg-warning"><i class="fas fa-snowflake"></i> Разработка заморожена</div>
             <p class="rg-p" style="color:#777;">Специальные сборки для одноплатных компьютеров на ARM-архитектуре. Разработка временно приостановлена. Дата возобновления неизвестна.</p>
             <div class="rg-grid rg-frozen">
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-linux"></i> Raspberry Pi</div>
+                    <div class="rg-card-title"><i class="fab fa-raspberry-pi"></i> Raspberry Pi</div>
                     <div class="rg-card-text">Модели (планировалось):</div>
                     <ul class="rg-list">
                         <li>Raspberry Pi 5 (8GB/4GB) — рекомендуемая</li>
@@ -964,7 +961,7 @@
                     <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Broadcom</span><span class="rg-badge">GPIO</span><span class="rg-badge">Заморожено</span></div>
                 </div>
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-cog"></i> Orange Pi</div>
+                    <div class="rg-card-title"><i class="fas fa-microchip"></i> Orange Pi</div>
                     <div class="rg-card-text">Модели (планировалось):</div>
                     <ul class="rg-list">
                         <li>Orange Pi 5 Plus (RK3588) — до 32GB RAM</li>
@@ -978,34 +975,34 @@
             </div>
             <h2 class="rg-h2" style="color:#666;">Сценарии использования (планировалось)</h2>
             <div class="rg-grid-sm rg-frozen">
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-home"></i> Умный дом</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-film"></i> Медиа-центр</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-sitemap"></i> Сетевые сервисы</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-android"></i> Робототехника</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-graduation-cap"></i> Образование</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-gamepad"></i> Ретро-игры</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-cloud"></i> Edge Computing</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-bolt"></i> Энергоэффективность</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-video-camera"></i> Видеонаблюдение</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-print"></i> 3D-печать</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-home"></i> Умный дом</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-photo-video"></i> Медиа-центр</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-network-wired"></i> Сетевые сервисы</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-robot"></i> Робототехника</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-graduation-cap"></i> Образование</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-gamepad"></i> Ретро-игры</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-cloud"></i> Edge Computing</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-bolt"></i> Энергоэффективность</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-video"></i> Видеонаблюдение</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-print"></i> 3D-печать</div></div>
             </div>
         `;
     }
 
     function renderAdvantages(){
         const advs=[
-            {icon:'fa-shield',t:'Стабильность и безопасность',d:'Debian-based дистрибутивы известны стабильностью. Обновления безопасности — обычно в течение 48 часов.'},
-            {icon:'fa-archive',t:'Огромный выбор пакетов',d:'APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений. Более 59 000 пакетов в репозиториях Debian.'},
-            {icon:'fa-refresh',t:'Простые обновления',d:'sudo apt update && sudo apt upgrade — и система обновлена.'},
-            {icon:'fa-sitemap',t:'Восстановление систем',d:'Runget может использоваться для восстановления Debian/Ubuntu-систем. GRUB, fstab, сброс пароля root.'},
-            {icon:'fa-group',t:'Сообщество',d:'Большое сообщество Debian и формирующаяся база Runget. Инструкции для Debian/Ubuntu применимы напрямую.'},
-            {icon:'fa-heart',t:'Удобство для новичков',d:'Дружественный интерфейс и подсказки. Панель задач, меню «Пуск» — как в Windows.'},
+            {icon:'fa-shield-alt',t:'Стабильность и безопасность',d:'Debian-based дистрибутивы известны стабильностью. Обновления безопасности — обычно в течение 48 часов.'},
+            {icon:'fa-box-open',t:'Огромный выбор пакетов',d:'APT, Flatpak и AppImage обеспечивают доступ к тысячам приложений. Более 59 000 пакетов в репозиториях Debian.'},
+            {icon:'fa-sync-alt',t:'Простые обновления',d:'sudo apt update && sudo apt upgrade — и система обновлена.'},
+            {icon:'fa-project-diagram',t:'Восстановление систем',d:'Runget может использоваться для восстановления Debian/Ubuntu-систем. GRUB, fstab, сброс пароля root.'},
+            {icon:'fa-users',t:'Сообщество',d:'Большое сообщество Debian и формирующаяся база Runget. Инструкции для Debian/Ubuntu применимы напрямую.'},
+            {icon:'fa-life-ring',t:'Удобство для новичков',d:'Дружественный интерфейс и подсказки. Панель задач, меню «Пуск» — как в Windows.'},
             {icon:'fa-puzzle-piece',t:'Универсальная совместимость',d:'Три экосистемы: Linux, Windows и Android. LibreOffice + 1С через Wine + Telegram через Andryemu.'},
-            {icon:'fa-feather',t:'Лёгкость и скорость',d:'1GB RAM и 10GB диска vs 4GB RAM и 64GB для Windows 11. Потребляет меньше ресурсов.'}
+            {icon:'fa-feather-alt',t:'Лёгкость и скорость',d:'1GB RAM и 10GB диска vs 4GB RAM и 64GB для Windows 11. Потребляет меньше ресурсов.'}
         ];
         let html='<h1 class="rg-h1">Плюсы Runget и Debian-based систем</h1><p class="rg-p">Runget наследует сильные стороны Debian-семейства и добавляет акцент на совместимость и восстановление систем.</p><div class="rg-grid">';
         advs.forEach(a=>{
-            html+=`<div class="rg-card"><div class="rg-card-title"><i class="fa ${a.icon}"></i> ${a.t}</div><div class="rg-card-text">${a.d}</div></div>`;
+            html+=`<div class="rg-card"><div class="rg-card-title"><i class="fas ${a.icon}"></i> ${a.t}</div><div class="rg-card-text">${a.d}</div></div>`;
         });
         return html+'</div>';
     }
@@ -1015,7 +1012,7 @@
             <h1 class="rg-h1">Системные требования</h1>
             <div class="rg-grid">
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-desktop"></i> Runget 1.0</div>
+                    <div class="rg-card-title"><i class="fas fa-desktop"></i> Runget 1.0</div>
                     <table class="rg-table">
                         <tr><td>Процессор</td><td>x86_64, 1 ГГц+ (2 ядра рекоменд.)</td></tr>
                         <tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr>
@@ -1026,7 +1023,7 @@
                     </table>
                 </div>
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-server"></i> Runget 1.0 Core</div>
+                    <div class="rg-card-title"><i class="fas fa-server"></i> Runget 1.0 Core</div>
                     <table class="rg-table">
                         <tr><td>Процессор</td><td>x86_64, 500 МГц+</td></tr>
                         <tr><td>ОЗУ</td><td>Мин. 256 МБ / Рекоменд. 512+ МБ</td></tr>
@@ -1037,7 +1034,7 @@
                     </table>
                 </div>
                 <div class="rg-card rg-frozen">
-                    <div class="rg-card-title"><i class="fa fa-snowflake-o"></i> ARM (заморожено)</div>
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> ARM (заморожено)</div>
                     <table class="rg-table">
                         <tr><td>Процессор</td><td>ARM64, 1 ГГц+</td></tr>
                         <tr><td>ОЗУ</td><td>Мин. 1 ГБ / Рекоменд. 2+ ГБ</td></tr>
@@ -1067,7 +1064,7 @@
             let cls='rg-news-item';
             if(n.highlight)cls+=' rg-highlight';
             if(n.frozen)cls+=' rg-frozen';
-            html+=`<div class="${cls}"><div class="rg-news-date">${n.frozen?'<i class="fa fa-snowflake-o"></i> ':n.highlight?'<i class="fa fa-rocket"></i> ':''}[${n.date}]</div><div class="rg-news-text">${n.text}</div>${n.detail?`<div style="color:#666;font-size:9px;font-style:italic;margin-top:2px">${n.detail}</div>`:''}</div>`;
+            html+=`<div class="${cls}"><div class="rg-news-date">${n.frozen?'<i class="fas fa-snowflake"></i> ':n.highlight?'<i class="fas fa-rocket"></i> ':''}[${n.date}]</div><div class="rg-news-text">${n.text}</div>${n.detail?`<div style="color:#666;font-size:9px;font-style:italic;margin-top:2px">${n.detail}</div>`:''}</div>`;
         });
         return html;
     }
@@ -1077,14 +1074,14 @@
             {icon:'fa-desktop',t:'Компьютеры',d:'Полноценная замена Windows. NVIDIA, AMD, Intel GPU.',s:'Intel/AMD x86_64 • 1+ ГБ RAM'},
             {icon:'fa-laptop',t:'Ноутбуки',d:'Оптимизация питания и драйверов. Гибернация и спящий режим.',s:'TLP • Wi-Fi/BT • Тачпад'},
             {icon:'fa-server',t:'Серверы',d:'Runget Core для серверов. Docker и KVM из коробки.',s:'SSH • Docker • KVM/QEMU'},
-            {icon:'fa-mobile',t:'Телефоны',d:'Экспериментальная поддержка смартфонов и планшетов.',s:'Экспериментально • Сенсорный UI'},
-            {icon:'fa-hdd-o',t:'Виртуальные машины',d:'QEMU/KVM, VirtualBox и VMware.',s:'QEMU • VirtualBox • VMware'},
-            {icon:'fa-linux',t:'Raspberry Pi (заморожено)',d:'Специальная сборка для одноплатных компьютеров.',s:'ARM64 • Broadcom • GPIO',frozen:true},
-            {icon:'fa-cog',t:'Orange Pi (заморожено)',d:'Сборки для Orange Pi 3/4/5 с NPU.',s:'ARM64 • Rockchip • Allwinner',frozen:true}
+            {icon:'fa-mobile-alt',t:'Телефоны',d:'Экспериментальная поддержка смартфонов и планшетов.',s:'Экспериментально • Сенсорный UI'},
+            {icon:'fa-hdd',t:'Виртуальные машины',d:'QEMU/KVM, VirtualBox и VMware.',s:'QEMU • VirtualBox • VMware'},
+            {icon:'fa-raspberry-pi',t:'Raspberry Pi (заморожено)',d:'Специальная сборка для одноплатных компьютеров.',s:'ARM64 • Broadcom • GPIO',frozen:true,fab:true},
+            {icon:'fa-microchip',t:'Orange Pi (заморожено)',d:'Сборки для Orange Pi 3/4/5 с NPU.',s:'ARM64 • Rockchip • Allwinner',frozen:true}
         ];
         let html='<h1 class="rg-h1">Runget на любом устройстве</h1><div class="rg-grid">';
         devs.forEach(d=>{
-            html+=`<div class="rg-card ${d.frozen?'rg-frozen':''}"><div class="rg-card-title"><i class="fa ${d.icon}"></i> ${d.t}</div><div class="rg-card-text">${d.d}</div><div style="color:#555;font-size:9px;margin-top:4px">${d.s}</div></div>`;
+            html+=`<div class="rg-card ${d.frozen?'rg-frozen':''}"><div class="rg-card-title"><i class="${d.fab?'fab':'fas'} ${d.icon}"></i> ${d.t}</div><div class="rg-card-text">${d.d}</div><div style="color:#555;font-size:9px;margin-top:4px">${d.s}</div></div>`;
         });
         return html+'</div>';
     }
@@ -1095,28 +1092,28 @@
             <p class="rg-p">Все образы бесплатны и с открытым исходным кодом.</p>
             <div class="rg-grid">
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-desktop"></i> Runget 1.0</div>
+                    <div class="rg-card-title"><i class="fas fa-desktop"></i> Runget 1.0</div>
                     <div class="rg-card-text">Полная настольная версия с графическим интерфейсом. KDE Plasma, Wine, Andryemu, мультимедиа-кодеки.</div>
                     <div style="margin-top:4px"><span class="rg-badge">x86_64</span><span class="rg-badge">ISO</span><span class="rg-badge">UEFI+BIOS</span></div>
-                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" target="_blank"><i class="fa fa-download"></i> Скачать ISO</a>
+                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" target="_blank"><i class="fas fa-download"></i> Скачать ISO</a>
                 </div>
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-server"></i> Runget 1.0 Core</div>
+                    <div class="rg-card-title"><i class="fas fa-server"></i> Runget 1.0 Core</div>
                     <div class="rg-card-text">Облегченная версия для серверов. CLI-установка, SSH, Docker, опциональный рабочий стол.</div>
                     <div style="margin-top:4px"><span class="rg-badge">CLI</span><span class="rg-badge">x86_64</span><span class="rg-badge">UEFI+BIOS</span></div>
-                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" target="_blank"><i class="fa fa-download"></i> Скачать ISO</a>
+                    <a class="rg-dl-btn" href="https://drive.google.com/file/d/1qkSEGjF2jDhtO2TqSy53rBtyOa2SmB4t/view?usp=drivesdk" target="_blank"><i class="fas fa-download"></i> Скачать ISO</a>
                 </div>
                 <div class="rg-card rg-frozen">
-                    <div class="rg-card-title"><i class="fa fa-snowflake-o"></i> Raspberry Pi (заморожено)</div>
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> Raspberry Pi (заморожено)</div>
                     <div class="rg-card-text">Образ для microSD. Разработка приостановлена.</div>
                     <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Заморожено</span></div>
-                    <span class="rg-dl-btn frozen"><i class="fa fa-snowflake-o"></i> Заморожено</span>
+                    <span class="rg-dl-btn frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
                 </div>
                 <div class="rg-card rg-frozen">
-                    <div class="rg-card-title"><i class="fa fa-snowflake-o"></i> Orange Pi (заморожено)</div>
+                    <div class="rg-card-title"><i class="fas fa-snowflake"></i> Orange Pi (заморожено)</div>
                     <div class="rg-card-text">Образ для microSD/eMMC. Разработка приостановлена.</div>
                     <div style="margin-top:4px"><span class="rg-badge">ARM64</span><span class="rg-badge">Заморожено</span></div>
-                    <span class="rg-dl-btn frozen"><i class="fa fa-snowflake-o"></i> Заморожено</span>
+                    <span class="rg-dl-btn frozen"><i class="fas fa-snowflake"></i> Заморожено</span>
                 </div>
             </div>
         `;
@@ -1145,26 +1142,26 @@
             <h1 class="rg-h1">Сообщество и поддержка</h1>
             <div class="rg-grid">
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-telegram"></i> Telegram</div>
+                    <div class="rg-card-title"><i class="fab fa-telegram"></i> Telegram</div>
                     <div class="rg-card-text">Официальный канал — <a href="https://t.me/runget_rt" target="_blank" style="color:var(--purple-bright)">@runget_rt</a></div>
                     <div class="rg-card-text" style="margin-top:4px">Поддержка — <a href="https://t.me/kirilldual" target="_blank" style="color:var(--purple-bright)">@kirilldual</a></div>
                 </div>
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-github"></i> GitHub</div>
+                    <div class="rg-card-title"><i class="fab fa-github"></i> GitHub</div>
                     <div class="rg-card-text"><a href="https://github.com/Kolyadual/Runget-next_generating_operating_system" target="_blank" style="color:var(--purple-bright)">Исходный код Runget</a></div>
                     <div class="rg-card-text" style="margin-top:4px"><a href="https://github.com/Kolyadual/Andryemu" target="_blank" style="color:var(--purple-bright)">Andryemu</a></div>
                 </div>
                 <div class="rg-card">
-                    <div class="rg-card-title"><i class="fa fa-envelope"></i> Email</div>
+                    <div class="rg-card-title"><i class="fas fa-envelope"></i> Email</div>
                     <div class="rg-card-text"><a href="mailto:runget.feedback.kirilldual@gmail.com" style="color:var(--purple-bright)">runget.feedback.kirilldual@gmail.com</a></div>
                 </div>
             </div>
             <h2 class="rg-h2">Команда</h2>
             <div class="rg-grid-sm">
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-user"></i> Kolyadual</div><div class="rg-card-text">Основатель, Архитектор</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-user"></i> Kirilldual</div><div class="rg-card-text">Дизайнер, Тестировщик</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-user"></i> Seregaosm</div><div class="rg-card-text">Дизайнер №2, UI/UX</div></div>
-                <div class="rg-card"><div class="rg-card-title"><i class="fa fa-user"></i> Neeby</div><div class="rg-card-text">Создатель ПО</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Kolyadual</div><div class="rg-card-text">Основатель, Архитектор</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Kirilldual</div><div class="rg-card-text">Дизайнер, Тестировщик</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Seregaosm</div><div class="rg-card-text">Дизайнер №2, UI/UX</div></div>
+                <div class="rg-card"><div class="rg-card-title"><i class="fas fa-user"></i> Neeby</div><div class="rg-card-text">Создатель ПО</div></div>
             </div>
             <h2 class="rg-h2">Версии</h2>
             <div class="rg-card">
@@ -1181,61 +1178,61 @@
     // ==================== PIRATE GAMES ====================
     const pirateGames=[
         {name:'OneShot WME',icon:'fa-sun',url:'https://drive.usercontent.google.com/download?id=1peNBgKyVIhAImJlOe-6prZD-Zsmv9UjS&export=download&confirm=t',size:'~500 MB'},
-        {name:'Schedule 1',icon:'fa-calendar',url:'https://drive.usercontent.google.com/download?id=1MdVl40loEy9ToHuz442c830J4w9Isy7m&export=download&confirm=t',size:'~2 GB'},
+        {name:'Schedule 1',icon:'fa-calendar-alt',url:'https://drive.usercontent.google.com/download?id=1MdVl40loEy9ToHuz442c830J4w9Isy7m&export=download&confirm=t',size:'~2 GB'},
         {name:'КЛЕТЬ (KLETKA)',icon:'fa-cube',url:'https://drive.usercontent.google.com/download?id=1RegCu8zToWbv-u81w9GGpg9ZdXigO98F&export=download&confirm=t',size:'~1 GB'},
         {name:'Zompiercer',icon:'fa-train',url:'https://drive.usercontent.google.com/download?id=10cQ66HhzJg1eM2y00Gc-iVcjS-HZfLyv&export=download&confirm=t',size:'~3 GB'},
-        {name:'Hello Neighbor',icon:'fa-home',url:'https://drive.usercontent.google.com/download?id=1xcCodWG3bE4dfkKkp2gHyaOetrchITbt&export=download&confirm=t',size:'~2 GB'},
+        {name:'Hello Neighbor',icon:'fa-house-user',url:'https://drive.usercontent.google.com/download?id=1xcCodWG3bE4dfkKkp2gHyaOetrchITbt&export=download&confirm=t',size:'~2 GB'},
         {name:'FNAF: Into The Pit',icon:'fa-ghost',url:'https://drive.usercontent.google.com/download?id=1nwvnx_yNRVWTlWVqfeELZj8L1t5y0MKA&export=download&confirm=t',size:'~1.5 GB'},
         {name:'Tin Can',icon:'fa-rocket',url:'https://drive.usercontent.google.com/download?id=12SXweGlCSfJNrX7s4pSgET52TuqQpWAp&export=download&confirm=t',size:'~500 MB'},
         {name:'My Summer Car',icon:'fa-car',url:'https://drive.usercontent.google.com/download?id=1caiQuBgdDwYfs1EBTwpX1jDOi7d8cHmf&export=download&confirm=t',size:'~800 MB'},
-        {name:'Exit 8',icon:'fa-sign-out',url:'https://drive.usercontent.google.com/download?id=1pesmN_NXzsUlH1Z2Lts5vDtxM4zicPvE&export=download&confirm=t',size:'~2 GB'},
-        {name:'R.E.P.O.',icon:'fa-group',url:'https://disk.yandex.ru/d/OOnUlKtk7SPI4g',size:'~1.5 GB'},
-        {name:'GTA 3 (HD)',icon:'fa-building',url:'https://drive.usercontent.google.com/download?id=1byT3J2ArNqLelLmdhwJGnq1pmIg-QRi0&export=download&confirm=t',size:'~4 GB'},
-        {name:'Stray',icon:'fa-paw',url:'https://drive.usercontent.google.com/download?id=1wYKlItqPwG70wvJH8DujOZl2SomDPQZ5&export=download&confirm=t',size:'~7 GB'},
+        {name:'Exit 8',icon:'fa-door-open',url:'https://drive.usercontent.google.com/download?id=1pesmN_NXzsUlH1Z2Lts5vDtxM4zicPvE&export=download&confirm=t',size:'~2 GB'},
+        {name:'R.E.P.O.',icon:'fa-users',url:'https://disk.yandex.ru/d/OOnUlKtk7SPI4g',size:'~1.5 GB'},
+        {name:'GTA 3 (HD)',icon:'fa-city',url:'https://drive.usercontent.google.com/download?id=1byT3J2ArNqLelLmdhwJGnq1pmIg-QRi0&export=download&confirm=t',size:'~4 GB'},
+        {name:'Stray',icon:'fa-cat',url:'https://drive.usercontent.google.com/download?id=1wYKlItqPwG70wvJH8DujOZl2SomDPQZ5&export=download&confirm=t',size:'~7 GB'},
         {name:'Drive Beyond Horizons',icon:'fa-road',url:'https://drive.usercontent.google.com/download?id=1o9JqdNuafFYkEsuejuFtPf3UK_nVHx-F&export=download&confirm=t',size:'~3 GB'},
-        {name:'FNAF 1-2-3-4 + Halloween',icon:'fa-eye',url:'https://drive.usercontent.google.com/download?id=1hX-JhDaT4i_Ap4iXJaHSQNXt7L4f17lf&export=download&confirm=t',size:'~500 MB'}
+        {name:'FNAF 1-2-3-4 + Halloween',icon:'fa-mask',url:'https://drive.usercontent.google.com/download?id=1hX-JhDaT4i_Ap4iXJaHSQNXt7L4f17lf&export=download&confirm=t',size:'~500 MB'}
     ];
 
     function openGamesFolder(){
-        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fa fa-skull"></i> Пиратские игры</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">';
-        pirateGames.forEach(g=>{c+=`<div class="game-download-item" onclick="downloadGame('${g.url}','${g.name}')"><div class="game-download-icon"><i class="fa ${g.icon}"></i></div><div class="game-download-name">${g.name}</div><div class="game-download-size">${g.size}</div></div>`;});
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fas fa-skull-crossbones"></i> Пиратские игры</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">';
+        pirateGames.forEach(g=>{c+=`<div class="game-download-item" onclick="downloadGame('${g.url}','${g.name}')"><div class="game-download-icon"><i class="fas ${g.icon}"></i></div><div class="game-download-name">${g.name}</div><div class="game-download-size">${g.size}</div></div>`;});
         c+='</div></div>';
-        createWindow({title:'Пиратские игры',icon:'fa-skull',width:500,height:400,content:c});
+        createWindow({title:'Пиратские игры',icon:'fa-skull-crossbones',width:500,height:400,content:c});
     }
 
     function downloadGame(url,name){
         const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);
         const n=document.createElement('div');n.style.cssText='position:fixed;bottom:50px;right:10px;background:var(--bg-medium);border:2px outset var(--border-light);padding:10px 15px;color:var(--purple-glow);font-size:11px;z-index:9999;';
-        n.innerHTML=`<i class="fa fa-download"></i> Загрузка "${name}" начата...`;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);
+        n.innerHTML=`<i class="fas fa-download"></i> Загрузка "${name}" начата...`;document.body.appendChild(n);setTimeout(()=>n.remove(),3000);
     }
 
-    function openDGC(){createWindow({title:'DGC - Dual Gaming Centre',icon:'fa-gamepad',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fa fa-refresh"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kolyadual.github.io/dualgamingcentre/new.html','_blank')"><i class="fa fa-external-link"></i> Открыть в браузере</button></div><iframe src="https://kolyadual.github.io/dualgamingcentre/new.html" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
+    function openDGC(){createWindow({title:'DGC - Dual Gaming Centre',icon:'fa-gamepad',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-sync"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kolyadual.github.io/dualgamingcentre/new.html','_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button></div><iframe src="https://kolyadual.github.io/dualgamingcentre/new.html" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
 
     function openTelegramFolder(){
         const ch=[{name:'DGC Official',icon:'fa-gamepad',url:'https://t.me/DGC_off'},{name:'Runget OS',icon:'fa-laptop',url:'https://t.me/runget_rt'}];
-        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fa fa-telegram"></i> Telegram каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
-        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fa ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fab fa-telegram"></i> Telegram каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fas ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
         c+='</div></div>';createWindow({title:'Telegram каналы',icon:'fa-telegram',width:400,height:300,content:c});
     }
 
     function openChannelsFolder(){
         const ch=[{name:'Dzen - Binary',icon:'fa-newspaper',url:'https://dzen.ru/binary'},{name:'YouTube',icon:'fa-youtube',url:'https://www.youtube.com/channel/UChevVs3tuWf8a_mvpd2i_ng'}];
-        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fa fa-play-circle"></i> Наши каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
-        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fa ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fas fa-play-circle"></i> Наши каналы</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        ch.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fab ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
         c+='</div></div>';createWindow({title:'Наши каналы',icon:'fa-play-circle',width:400,height:300,content:c});
     }
 
-    function openKirilldualDev(){createWindow({title:'kirilldual0987 - Developer',icon:'fa-code',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fa fa-refresh"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kirilldual0987.github.io/kirilldual/','_blank')"><i class="fa fa-external-link"></i> Открыть в браузере</button></div><iframe src="https://kirilldual0987.github.io/kirilldual/" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
+    function openKirilldualDev(){createWindow({title:'kirilldual0987 - Developer',icon:'fa-code',width:1000,height:650,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=this.closest('.window-content').querySelector('iframe').src"><i class="fas fa-sync"></i> Обновить</button><button class="app-btn" onclick="window.open('https://kirilldual0987.github.io/kirilldual/','_blank')"><i class="fas fa-external-link-alt"></i> Открыть в браузере</button></div><iframe src="https://kirilldual0987.github.io/kirilldual/" style="width:100%;height:calc(100% - 30px);border:none;background:#000"></iframe>`});}
 
     function openGitHubFolder(){
         const r=[{name:'Kolyadual',icon:'fa-user',url:'https://github.com/Kolyadual'},{name:'kirilldual0987',icon:'fa-user',url:'https://github.com/kirilldual0987'}];
-        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fa fa-github"></i> Наши GitHub</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
-        r.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fa ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
+        let c='<div style="padding:15px;background:var(--bg-dark);height:100%"><div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--purple-dark)"><div style="color:var(--purple-glow);font-size:14px;font-weight:bold"><i class="fab fa-github"></i> Наши GitHub</div></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px">';
+        r.forEach(x=>{c+=`<div class="game-download-item" onclick="window.open('${x.url}','_blank')"><div class="game-download-icon"><i class="fas ${x.icon}"></i></div><div class="game-download-name">${x.name}</div></div>`;});
         c+='</div></div>';createWindow({title:'Наши GitHub',icon:'fa-github',width:400,height:300,content:c});
     }
 
     function openMiscFolder(){
-        let c='<div class="folder-grid">';apps.forEach(a=>{c+=`<div class="folder-app" ondblclick="openApp('${a.id}')"><div class="folder-app-icon"><i class="fa ${a.icon}"></i></div><div class="folder-app-name">${a.name}</div></div>`;});c+='</div>';
+        let c='<div class="folder-grid">';apps.forEach(a=>{c+=`<div class="folder-app" ondblclick="openApp('${a.id}')"><div class="folder-app-icon"><i class="fas ${a.icon}"></i></div><div class="folder-app-name">${a.name}</div></div>`;});c+='</div>';
         createWindow({title:'Разное',icon:'fa-folder',width:500,height:400,content:c});
     }
 
@@ -1253,10 +1250,10 @@
             if(name.endsWith('.exe'))return'fa-cog" style="color:#ff5555';
             if(name.endsWith('.dll'))return'fa-puzzle-piece" style="color:#888';
             if(name.endsWith('.sun'))return'fa-sun" style="color:#ffaa00';
-            return'fa-file-text';
+            return'fa-file-alt';
         }
         var selectedFile=null;
-        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fa fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fa fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly><button class="app-btn" onclick="this.closest('.window-content').__del()" title="Удалить выбранный файл"><i class="fa fa-trash"></i> Удалить</button></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fa fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fa fa-file-text"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fa fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/games')"><i class="fa fa-gamepad"></i> Игры</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fa fa-hdd-o"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" onclick="this.closest('.window-content').__sel('${name}',this)" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fa ${getFileIcon(name,item)}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
+        function render(){const f=getFolder(cwd);const items=f.children||{};return `<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').__nav('..')"><i class="fas fa-arrow-left"></i></button><button class="app-btn" onclick="this.closest('.window-content').__nav('/')"><i class="fas fa-home"></i></button><input class="app-input" style="flex:1" value="${cwd}" readonly><button class="app-btn" onclick="this.closest('.window-content').__del()" title="Удалить выбранный файл"><i class="fas fa-trash"></i> Удалить</button></div><div style="display:flex;height:calc(100% - 30px)"><div class="fm-sidebar"><div class="fm-section-title">Места</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user')"><i class="fas fa-home"></i> Домой</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Documents')"><i class="fas fa-file-alt"></i> Документы</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/Downloads')"><i class="fas fa-download"></i> Загрузки</div><div class="fm-item" onclick="this.closest('.window-content').__go('/home/user/games')"><i class="fas fa-gamepad"></i> Игры</div><div class="fm-item" onclick="this.closest('.window-content').__go('/')"><i class="fas fa-hdd"></i> Корень</div></div><div class="fm-content">${Object.entries(items).map(([name,item])=>`<div class="fm-file" onclick="this.closest('.window-content').__sel('${name}',this)" ondblclick="this.closest('.window-content').__open('${name}','${item.type}')"><div class="fm-file-icon"><i class="fas ${getFileIcon(name,item)}"></i></div><div class="fm-file-name">${name}</div></div>`).join('')||'<div style="padding:20px;color:var(--text-secondary)">Папка пуста</div>'}</div></div>`;}
         const winId=createWindow({title:'Файлы - '+cwd,icon:'fa-folder',width:700,height:450,content:render()});
         const ce=document.querySelector(`#window-${winId} .window-content`);
         ce.__nav=(d)=>{if(d==='..'){const p=cwd.split('/').filter(Boolean);p.pop();cwd='/'+p.join('/');}else cwd=d;ce.innerHTML=render();document.querySelector(`#window-${winId} .window-title`).textContent='Файлы - '+cwd;};
@@ -1273,7 +1270,7 @@
             }else{
                 if(item.special==='exe_crash'){var sf;try{sf=DCS.fileSystem['/'].children.home.children.user.children.games.children.oneshot.children.game_save;}catch(e){sf={children:{}};}if(sf.children&&sf.children['oneshot-save.sun']){triggerKernelPanic(n);}else{launchOneShotNoSave();}return;}
                 if(item.special==='gta3_exe'){launchGTA3(n);return;}
-                if(item.special==='save_file'){showDcsMessage('Информация о файле','<b>'+n+'</b><br><br><i class="fa fa-sun" style="color:#ffaa00;font-size:18px"></i><br><br>Файл сохранения игры OneShot.<br><br><span style="color:#ff5555;font-weight:bold">НЕ удаляйте, если не хотите потерять свой прогресс.</span><br><br><span style="color:var(--text-secondary);font-size:10px">Тип: OneShot Save Data (.sun)<br>Размер: 4.2 KB<br>Изменён: '+new Date().toLocaleDateString('ru-RU')+'</span>','info');return;}
+                if(item.special==='save_file'){showDcsMessage('Информация о файле','<b>'+n+'</b><br><br><i class="fas fa-sun" style="color:#ffaa00;font-size:18px"></i><br><br>Файл сохранения игры OneShot.<br><br><span style="color:#ff5555;font-weight:bold">НЕ удаляйте, если не хотите потерять свой прогресс.</span><br><br><span style="color:var(--text-secondary);font-size:10px">Тип: OneShot Save Data (.sun)<br>Размер: 4.2 KB<br>Изменён: '+new Date().toLocaleDateString('ru-RU')+'</span>','info');return;}
                 openApp('editor',{file:{name:n,content:item.content}});
             }
         };
@@ -1318,9 +1315,9 @@
         setTimeout(()=>input.focus(),100);
     }
 
-    function openEditor(file){createWindow({title:file?file.name+' - Редактор':'Новый файл - Редактор',icon:'fa-file-text',width:600,height:400,content:`<div class="app-toolbar"><button class="app-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fa fa-save"></i> Сохранить</button></div><textarea style="width:100%;height:calc(100% - 30px);background:#000;color:var(--purple-bright);border:none;padding:10px;font-family:Consolas,monospace;font-size:12px;resize:none;outline:none">${file?.content||''}</textarea>`});}
+    function openEditor(file){createWindow({title:file?file.name+' - Редактор':'Новый файл - Редактор',icon:'fa-file-alt',width:600,height:400,content:`<div class="app-toolbar"><button class="app-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fas fa-save"></i> Сохранить</button></div><textarea style="width:100%;height:calc(100% - 30px);background:#000;color:var(--purple-bright);border:none;padding:10px;font-family:Consolas,monospace;font-size:12px;resize:none;outline:none">${file?.content||''}</textarea>`});}
 
-    function openBrowser(){createWindow({title:'Браузер',icon:'fa-globe',width:900,height:600,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()"><i class="fa fa-refresh"></i></button><input class="app-input" style="flex:1" value="https://www.google.com" id="browserUrl"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value"><i class="fa fa-arrow-right"></i></button></div><iframe src="https://www.google.com/webhp?igu=1" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`});}
+    function openBrowser(){createWindow({title:'Браузер',icon:'fa-globe',width:900,height:600,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()"><i class="fas fa-redo"></i></button><input class="app-input" style="flex:1" value="https://www.google.com" id="browserUrl"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i></button></div><iframe src="https://www.google.com/webhp?igu=1" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`});}
 
     function openSettings(){
         let c='<div style="padding:15px"><h3 style="color:var(--purple-bright);margin-bottom:15px">Настройки</h3><h4 style="color:var(--purple-glow);margin-bottom:10px">Обои</h4><div class="settings-grid">';
@@ -1349,11 +1346,12 @@
     }
 
     async function takeScreenshot(){
+        // Функция скриншота удалена, так как html2canvas был внешней зависимостью
         showDcsMessage('Скриншот', 'Функция скриншота недоступна. Библиотека html2canvas была удалена как внешняя зависимость.', 'warning');
     }
 
     function openPaint(){
-        const winId=createWindow({title:'Рисование',icon:'fa-paint-brush',width:650,height:450,content:`<div class="app-toolbar"><input type="color" id="paintColor" value="#8b5cf6" style="border:2px inset var(--border-light)"><input type="range" id="paintSize" min="1" max="30" value="3" style="width:80px"><button class="app-btn" onclick="window.__clearPaint()"><i class="fa fa-trash"></i> Очистить</button><button class="app-btn" onclick="window.__savePaint()"><i class="fa fa-save"></i> Сохранить</button></div><canvas id="paintCanvas" style="cursor:crosshair"></canvas>`});
+        const winId=createWindow({title:'Рисование',icon:'fa-paint-brush',width:650,height:450,content:`<div class="app-toolbar"><input type="color" id="paintColor" value="#8b5cf6" style="border:2px inset var(--border-light)"><input type="range" id="paintSize" min="1" max="30" value="3" style="width:80px"><button class="app-btn" onclick="window.__clearPaint()"><i class="fas fa-trash"></i> Очистить</button><button class="app-btn" onclick="window.__savePaint()"><i class="fas fa-save"></i> Сохранить</button></div><canvas id="paintCanvas" style="cursor:crosshair"></canvas>`});
         setTimeout(()=>{
             const canvas=document.getElementById('paintCanvas'),ctx=canvas.getContext('2d');canvas.width=644;canvas.height=380;ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
             let drawing=false,lastX,lastY;
@@ -1368,14 +1366,14 @@
     function openNotes(){const n=localStorage.getItem('dcs-notes')||'';createWindow({title:'Заметки',icon:'fa-sticky-note',width:350,height:300,content:`<textarea style="width:100%;height:100%;background:#000;color:var(--purple-bright);border:none;padding:10px;resize:none;outline:none;font-size:12px" oninput="localStorage.setItem('dcs-notes',this.value)">${n}</textarea>`});}
 
     function openClock(){
-        const winId=createWindow({title:'Часы',icon:'fa-clock-o',width:250,height:300,content:''});
+        const winId=createWindow({title:'Часы',icon:'fa-clock',width:250,height:300,content:''});
         function update(){const now=new Date();const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:20px;text-align:center;background:#000;height:100%"><div style="font-size:40px;color:var(--purple-glow);font-family:Consolas">${now.toLocaleTimeString('ru-RU')}</div><div style="color:var(--text-secondary);margin-top:10px">${now.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}</div></div>`;}
         update();setInterval(update,1000);
     }
 
     // ==================== GAMES ====================
     function openSnake(){
-        const winId=createWindow({title:'Змейка',icon:'fa-gamepad',width:420,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="snakeScore">0</span></span><button class="app-btn" onclick="window.__startSnake()"><i class="fa fa-play"></i> Старт</button></div><canvas id="snakeCanvas" class="game-canvas" width="400" height="400"></canvas></div>`});
+        const winId=createWindow({title:'Змейка',icon:'fa-gamepad',width:420,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="snakeScore">0</span></span><button class="app-btn" onclick="window.__startSnake()"><i class="fas fa-play"></i> Старт</button></div><canvas id="snakeCanvas" class="game-canvas" width="400" height="400"></canvas></div>`});
         const canvas=document.getElementById('snakeCanvas'),ctx=canvas.getContext('2d');let snake,food,dir,score,loop;
         function init(){snake=[{x:10,y:10}];dir={x:1,y:0};score=0;placeFood();}
         function placeFood(){food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};}
@@ -1386,7 +1384,7 @@
     }
 
     function openTetris(){
-        createWindow({title:'Тетрис',icon:'fa-th',width:260,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="tetrisScore">0</span></span><button class="app-btn" onclick="window.__startTetris()"><i class="fa fa-play"></i></button></div><canvas id="tetrisCanvas" class="game-canvas" width="200" height="400"></canvas></div>`});
+        createWindow({title:'Тетрис',icon:'fa-th',width:260,height:480,content:`<div class="game-container"><div class="game-info"><span class="game-score">Счёт: <span id="tetrisScore">0</span></span><button class="app-btn" onclick="window.__startTetris()"><i class="fas fa-play"></i></button></div><canvas id="tetrisCanvas" class="game-canvas" width="200" height="400"></canvas></div>`});
         const canvas=document.getElementById('tetrisCanvas'),ctx=canvas.getContext('2d');
         const shapes=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]],[[1,1,0],[0,1,1]],[[0,1,1],[1,1,0]]];
         let board,piece,pieceX,pieceY,pieceType,score,loop;
@@ -1402,7 +1400,7 @@
     }
 
     function openPong(){
-        createWindow({title:'Понг',icon:'fa-table-tennis',width:520,height:400,content:`<div class="game-container"><div class="game-info"><span class="game-score"><span id="pongScore1">0</span> : <span id="pongScore2">0</span></span><button class="app-btn" onclick="window.__startPong()"><i class="fa fa-play"></i></button></div><canvas id="pongCanvas" class="game-canvas" width="480" height="320"></canvas></div>`});
+        createWindow({title:'Понг',icon:'fa-table-tennis',width:520,height:400,content:`<div class="game-container"><div class="game-info"><span class="game-score"><span id="pongScore1">0</span> : <span id="pongScore2">0</span></span><button class="app-btn" onclick="window.__startPong()"><i class="fas fa-play"></i></button></div><canvas id="pongCanvas" class="game-canvas" width="480" height="320"></canvas></div>`});
         const canvas=document.getElementById('pongCanvas'),ctx=canvas.getContext('2d');let ball,p1,p2,score1,score2,loop;
         function init(){ball={x:240,y:160,vx:4,vy:2};p1=p2=130;score1=score2=0;}
         function draw(){ctx.fillStyle='#000';ctx.fillRect(0,0,480,320);ctx.fillStyle='#6b3fa0';ctx.fillRect(10,p1,10,60);ctx.fillRect(460,p2,10,60);ctx.fillStyle='#8b5cf6';ctx.beginPath();ctx.arc(ball.x,ball.y,8,0,Math.PI*2);ctx.fill();}
@@ -1416,7 +1414,7 @@
         function init(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];score=0;addTile();addTile();}
         function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}}
         function getColor(v){return v?`hsl(${270-Math.log2(v)*15},60%,${30+Math.log2(v)*5}%)`:'#1a1a1a';}
-        function render(){const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:15px;background:#000;height:100%"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--purple-glow)">Счёт: ${score}</span><button class="app-btn" onclick="window.__start2048()"><i class="fa fa-repeat"></i></button></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--bg-dark);padding:5px;border:2px inset var(--border-light)">${grid.flat().map(v=>`<div style="height:60px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};font-size:20px;font-weight:bold;color:${v>4?'#fff':'var(--purple-bright)'}">${v||''}</div>`).join('')}</div></div>`;}
+        function render(){const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:15px;background:#000;height:100%"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--purple-glow)">Счёт: ${score}</span><button class="app-btn" onclick="window.__start2048()"><i class="fas fa-redo"></i></button></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--bg-dark);padding:5px;border:2px inset var(--border-light)">${grid.flat().map(v=>`<div style="height:60px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};font-size:20px;font-weight:bold;color:${v>4?'#fff':'var(--purple-bright)'}">${v||''}</div>`).join('')}</div></div>`;}
         function move(dir){let moved=false;const rotate=(g)=>g[0].map((_,i)=>g.map(r=>r[i]).reverse());for(let i=0;i<dir;i++)grid=rotate(grid);for(let y=0;y<4;y++){let row=grid[y].filter(v=>v);for(let i=0;i<row.length-1;i++)if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}while(row.length<4)row.push(0);if(row.join(',')!==grid[y].join(','))moved=true;grid[y]=row;}for(let i=0;i<(4-dir)%4;i++)grid=rotate(grid);if(moved)addTile();render();}
         document.addEventListener('keydown',(e)=>{const d={ArrowLeft:0,ArrowUp:1,ArrowRight:2,ArrowDown:3};if(d[e.key]!==undefined){e.preventDefault();move(d[e.key]);}});
         window.__start2048=()=>{init();render();};init();render();
@@ -1428,9 +1426,9 @@
         document.getElementById('dcsMessageText').innerHTML=text;
         const iconEl=document.getElementById('dcsMessageIcon');
         iconEl.className='dcs-msg-icon '+(type||'info');
-        if(type==='error')iconEl.innerHTML='<i class="fa fa-times-circle"></i>';
-        else if(type==='warning')iconEl.innerHTML='<i class="fa fa-exclamation-triangle"></i>';
-        else iconEl.innerHTML='<i class="fa fa-info-circle"></i>';
+        if(type==='error')iconEl.innerHTML='<i class="fas fa-times-circle"></i>';
+        else if(type==='warning')iconEl.innerHTML='<i class="fas fa-exclamation-triangle"></i>';
+        else iconEl.innerHTML='<i class="fas fa-info-circle"></i>';
         document.getElementById('dcsMessageDialog').style.display='flex';
     }
     function closeDcsMessage(){document.getElementById('dcsMessageDialog').style.display='none';}
@@ -1465,6 +1463,8 @@
     async function triggerKernelPanic(filename){
         const kp=document.getElementById('kernelPanic');
         kp.style.display='block';kp.innerHTML='';
+
+        // Phase 1: loading lines (no sounds yet)
         const loadingLines=[
             {text:'',delay:200},
             {text:'Initializing '+filename+'...',cls:'kp-white',delay:400},
@@ -1492,6 +1492,8 @@
             {text:'[oneshot] Reading save file: game_save/oneshot-save.sun',cls:'kp-dim',delay:300},
             {text:'',delay:150},
         ];
+
+        // Phase 2: error lines (sounds play here)
         const errorLines=[
             {text:'[oneshot] WARNING: Save file contains anomalous data',cls:'kp-yellow',delay:400},
             {text:'[oneshot] WARNING: Entity "Niko" state: UNSTABLE',cls:'kp-yellow',delay:300},
@@ -1563,6 +1565,8 @@
             {text:'',delay:200},
             {text:'  --- end Kernel panic - not syncing: Fatal exception ---',cls:'kp-dim',delay:500},
         ];
+
+        // Render loading lines (no sounds)
         for(const line of loadingLines){
             const div=document.createElement('div');
             div.className='kp-line '+(line.cls||'kp-white');
@@ -1571,7 +1575,11 @@
             kp.scrollTop=kp.scrollHeight;
             await new Promise(r=>setTimeout(r,line.delay||50));
         }
+
+        // Start chaotic sounds when errors begin
         startKpSounds();
+
+        // Render error lines (sounds playing)
         for(const line of errorLines){
             const div=document.createElement('div');
             div.className='kp-line '+(line.cls||'kp-white');
@@ -1580,8 +1588,12 @@
             kp.scrollTop=kp.scrollHeight;
             await new Promise(r=>setTimeout(r,line.delay||50));
         }
+
+        // All errors done — wait 5 seconds then stop sounds
         await new Promise(r=>setTimeout(r,5000));
         stopKpSounds();
+
+        // Block all interaction then redirect to 404
         document.body.style.pointerEvents='none';
         kp.style.pointerEvents='auto';
         kp.style.cursor='not-allowed';
@@ -1768,15 +1780,18 @@
             {text:'',delay:300},
             {text:'  --- end Kernel panic - not syncing: SYSTEM_DESTROYED ---',cls:'kp-dim',delay:500},
         ];
+        // Phase 1: loading lines
         for(var j=0;j<lines.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(lines[j].cls||'kp-white');div.textContent=lines[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,lines[j].delay||50);});
         }
+        // Phase 2: error flood with sounds
         startKpSounds();
         for(var j=0;j<errorFlood.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(errorFlood[j].cls||'kp-white');div.textContent=errorFlood[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,errorFlood[j].delay||50);});
         }
+        // Phase 3: final lines
         for(var j=0;j<finalLines.length;j++){
             var div=document.createElement('div');div.className='kp-line '+(finalLines[j].cls||'kp-white');div.textContent=finalLines[j].text;
             kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(function(r){setTimeout(r,finalLines[j].delay||50);});
