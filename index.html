@@ -12,28 +12,28 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-primary: #232629;
-            --bg-secondary: #2a2e32;
-            --bg-card: #31363b;
-            --bg-hover: #3a3f44;
-            --text-primary: #eff0f1;
-            --text-secondary: #bdc3c7;
-            --accent-primary: #3daee9;
-            --accent-secondary: #16a085;
-            --accent-purple: #9b59b6;
-            --accent-orange: #e67e22;
-            --accent-raspberry: #c51a4a;
-            --success: #2ecc71;
-            --warning: #f67400;
-            --danger: #da4453;
-            --border-radius: 8px;
-            --transition: all 0.3s ease;
+        :root{
+            --bg-primary:#232629;
+            --bg-secondary:#2a2e32;
+            --bg-card:#31363b;
+            --bg-hover:#3a3f44;
+            --text-primary:#eff0f1;
+            --text-secondary:#bdc3c7;
+            --accent-primary:#3daee9;
+            --accent-secondary:#16a085;
+            --accent-purple:#9b59b6;
+            --accent-orange:#e67e22;
+            --accent-raspberry:#c51a4a;
+            --success:#2ecc71;
+            --warning:#f67400;
+            --danger:#da4453;
+            --border-radius:8px;
+            --transition:all .3s ease;
         }
-        * {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-        html {scroll-behavior:smooth;}
-        body {background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;}
-        a {color:var(--accent-primary);text-decoration:none;}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+        html{scroll-behavior:smooth;}
+        body{background-color:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;}
+        a{color:var(--accent-primary);text-decoration:none;}
         /* ==== VERSION SELECTOR ==== */
         .version-selector{
             position:fixed;inset:0;z-index:99999;
@@ -448,6 +448,12 @@
             background-color:#555!important;box-shadow:none!important;
             cursor:default!important;pointer-events:none;opacity:.5;
         }
+        /* ==== QUIET NOTICE (RUNGET 1.0) ==== */
+        .quiet-notice{
+            font-size:.85rem;color:var(--text-secondary);opacity:.8;margin-top:.5rem;
+        }
+        .quiet-notice strong{color:var(--accent-primary);}
+        .quiet-notice em{font-style:italic;}
         /* ==== GALLERY ==== */
         .gallery{max-width:1200px;margin:0 auto;text-align:center;}
         .gallery-grid{
@@ -1204,6 +1210,8 @@
                         <div class="download-requirements"><h4>Включает:</h4><ul><li>KDE Plasma с тёмной темой</li><li>Браузер, файловый менеджер, терминал</li><li>Wine для Windows‑приложений</li><li>Andryemu для Android</li><li>Мультимедиа‑кодеки</li></ul></div>
                         <div class="download-meta"><span class="download-chip">x86_64</span><span class="download-chip">ISO</span><span class="download-chip">UEFI+BIOS</span></div>
                         <a href="https://drive.google.com/file/d/1AojkzRfheu0-cI5q1ZW_8ISjkYRk9ocZ/view?usp=drivesdk" class="btn btn-download" target="_blank" rel="noopener">Скачать (ISO)</a>
+                        <!-- Тихое предупреждение про Discover -->
+                        <p class="quiet-notice"><strong>Важно:</strong> Если в программе <em>Discover</em> вам предлагается установить <strong>Runget 9</strong>, то в любом случае <strong>не устанавливайте</strong> это обновление. Это баг <em>Discover</em>, а <strong>Runget 9</strong> не существует.</p>
                     </div>
                     <div class="download-card">
                         <h3>Runget 1.0 Core</h3>
@@ -1274,118 +1282,107 @@
     <button class="back-to-top" id="backToTop" title="Наверх"><i class="fas fa-arrow-up"></i></button>
 
     <script>
-    (function() {
+    (function(){
         const selector = document.getElementById('versionSelector');
         const body = document.body;
         const backToTopBtn = document.getElementById('backToTop');
 
-        // Desktop choice
-        document.getElementById('vsDesktop').addEventListener('click', function() {
-            activateMode('mode-desktop');
-        });
+        // Выбор режима
+        document.getElementById('vsDesktop').addEventListener('click',()=>activateMode('mode-desktop'));
+        document.getElementById('vsMobile').addEventListener('click',()=>activateMode('mode-mobile'));
 
-        // Mobile choice
-        document.getElementById('vsMobile').addEventListener('click', function() {
-            activateMode('mode-mobile');
-        });
-
-        function activateMode(mode) {
-            body.classList.remove('mode-desktop', 'mode-mobile');
+        function activateMode(mode){
+            body.classList.remove('mode-desktop','mode-mobile');
             body.classList.add(mode);
             selector.classList.add('hidden');
-            setTimeout(function() { selector.style.display = 'none'; }, 500);
+            setTimeout(()=>{selector.style.display='none';},500);
         }
 
-        // Switch mode button (mobile top‑bar)
-        document.getElementById('switchToDesktop').addEventListener('click', function() {
+        // Кнопка возврата к десктопу из мобильного режима
+        document.getElementById('switchToDesktop').addEventListener('click',()=>{
             body.classList.remove('mode-mobile');
             body.classList.add('mode-desktop');
         });
 
-        // Back to top visibility
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 500) backToTopBtn.classList.add('visible');
+        // Back‑to‑top visibility
+        window.addEventListener('scroll',()=> {
+            if (window.scrollY>500) backToTopBtn.classList.add('visible');
             else backToTopBtn.classList.remove('visible');
         });
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        backToTopBtn.addEventListener('click',()=> {
+            window.scrollTo({top:0,behavior:'smooth'});
         });
 
-        // Smooth scroll for internal links only
-        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-            anchor.addEventListener('click', function(e) {
-                var href = this.getAttribute('href');
-                if (href && href !== '#' && href.startsWith('#')) {
+        // Smooth scroll for internal anchors only
+        document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
+            anchor.addEventListener('click',e=>{
+                const href = anchor.getAttribute('href');
+                if (href && href!=='#' && href.startsWith('#')){
                     e.preventDefault();
-                    var target = document.querySelector(href);
-                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    const target = document.querySelector(href);
+                    if (target) target.scrollIntoView({behavior:'smooth'});
                 }
             });
         });
 
         // Mobile bottom nav active state
-        var mobileNavLinks = document.querySelectorAll('.mobile-bottom-nav a');
-        mobileNavLinks.forEach(function(link) {
-            link.addEventListener('click', function() {
-                mobileNavLinks.forEach(function(l) { l.classList.remove('active'); });
-                this.classList.add('active');
+        const mobileNavLinks = document.querySelectorAll('.mobile-bottom-nav a');
+        mobileNavLinks.forEach(link=> {
+            link.addEventListener('click',()=> {
+                mobileNavLinks.forEach(l=>l.classList.remove('active'));
+                link.classList.add('active');
             });
         });
 
-        // Scroll spy for mobile nav
-        var sections = ['top', 'features', 'download', 'news', 'community'];
-        window.addEventListener('scroll', function() {
+        // Scroll‑spy для мобильной навигации
+        const sections = ['top','features','download','news','community'];
+        window.addEventListener('scroll',()=> {
             if (!body.classList.contains('mode-mobile')) return;
-            var scrollPos = window.scrollY + 100;
-            sections.forEach(function(id) {
-                var el = document.getElementById(id);
-                if (el && el.offsetTop <= scrollPos && (el.offsetTop + el.offsetHeight) > scrollPos) {
-                    mobileNavLinks.forEach(function(l) {
+            const scrollPos = window.scrollY + 100;
+            sections.forEach(id=>{
+                const el = document.getElementById(id);
+                if (el && el.offsetTop<=scrollPos && (el.offsetTop+el.offsetHeight)>scrollPos){
+                    mobileNavLinks.forEach(l=> {
                         l.classList.remove('active');
-                        if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+                        if (l.getAttribute('href')===`#${id}`) l.classList.add('active');
                     });
                 }
             });
         });
 
-        // DCS Easter Egg – Shift+D, Shift+C, Shift+S on version selector
-        (function() {
-            var dcsSeq = '';
-            var dcsTimer = null;
-            document.addEventListener('keydown', function(e) {
-                if (selector.classList.contains('hidden') || selector.style.display === 'none') return;
-                if (!e.shiftKey) { dcsSeq = ''; clearTimeout(dcsTimer); return; }
-                var k = e.key.toLowerCase();
-                if (k === 'd' && dcsSeq === '') {
-                    dcsSeq = 'd'; clearTimeout(dcsTimer);
-                    dcsTimer = setTimeout(function(){ dcsSeq=''; }, 2000);
-                } else if (k === 'c' && dcsSeq === 'd') {
-                    dcsSeq = 'dc';
-                } else if (k === 's' && dcsSeq === 'dc') {
-                    dcsSeq = ''; clearTimeout(dcsTimer);
-                    window.location.href = 'dcs.html';
-                } else {
-                    dcsSeq = ''; clearTimeout(dcsTimer);
+        // DCS Easter Egg (Shift+D, Shift+C, Shift+S) on selector
+        (function(){
+            let dcsSeq=''; let timer=null;
+            document.addEventListener('keydown',e=>{
+                if (selector.classList.contains('hidden')||selector.style.display==='none') return;
+                if (!e.shiftKey){ dcsSeq=''; clearTimeout(timer); return; }
+                const k=e.key.toLowerCase();
+                if (k==='d' && dcsSeq===''){
+                    dcsSeq='d'; clearTimeout(timer);
+                    timer=setTimeout(()=>{dcsSeq='';},2000);
+                }else if (k==='c' && dcsSeq==='d'){
+                    dcsSeq='dc';
+                }else if (k==='s' && dcsSeq==='dc'){
+                    dcsSeq=''; clearTimeout(timer);
+                    window.location.href='dcs.html';
+                }else{
+                    dcsSeq=''; clearTimeout(timer);
                 }
             });
         })();
 
-        // Animate on scroll with IntersectionObserver
-        var observer = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
+        // Animate on scroll
+        const observer = new IntersectionObserver(entries=>{
+            entries.forEach(entry=>{
                 if (entry.isIntersecting) entry.target.classList.add('visible');
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        },{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
 
-        document.querySelectorAll('.feature-card,.runget2-card,.arm-card,.arm-feature,.adv-card,.device-card,.download-card,.news-item,.sysreq-card').forEach(function(el) {
-            el.classList.add('animate-on-scroll');
-            observer.observe(el);
-        });
+        document.querySelectorAll('.feature-card,.runget2-card,.arm-card,.arm-feature,.adv-card,.device-card,.download-card,.news-item,.sysreq-card')
+                .forEach(el=>{ el.classList.add('animate-on-scroll'); observer.observe(el); });
 
-        // Force page to start at top on load (no saved scroll position)
-        window.addEventListener('load', function() {
-            window.scrollTo(0, 0);
-        });
+        // При загрузке всегда прокручиваем к верху (без сохранения позиции)
+        window.addEventListener('load',()=>{ window.scrollTo(0,0); });
     })();
     </script>
 </body>
