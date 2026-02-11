@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCS-recovery</title>
+    <meta name="description" content="Dual Computers Systems - интерактивная операционная система">
     <!-- ВСЕ РЕСУРСЫ ЛОКАЛЬНЫЕ -->
     <style>
         @font-face { font-family: 'MS Sans Serif'; src: local('Tahoma'), local('Arial'); }
@@ -17,7 +18,7 @@
         }
         body { font-family:'Tahoma','Arial',sans-serif; font-size:11px; background:var(--bg-black); color:var(--text-primary); overflow:hidden; height:100vh; }
 
-        /* GLOBAL GLITCH TEXT EFFECT */
+        /* GLOBAL GLITCH TEXT EFFECT - ИСПРАВЛЕН */
         body *:not(.terminal-input):not(.app-input):not(.window-btn):not(.taskbar-btn):not(.shutdown-dialog-btn):not(.dcs-msg-btn):not(.rg-dl-btn):not(.game-download-item):not(.window-controls *):not(.game-container *):not(.game-canvas *):not(iframe):not(video):not(canvas):not(img) {
             position: relative;
             animation: text-glitch 8s infinite linear alternate-reverse;
@@ -343,26 +344,26 @@
 
     <div id="bootConsole" style="display:none;"></div>
 
-    <div id="desktop">
-        <div id="desktopIcons"></div>
-        <div id="windowsContainer"></div>
+    <main id="desktop">
+        <section id="desktopIcons"></section>
+        <section id="windowsContainer"></section>
         <div id="contextMenu"></div>
-    </div>
+    </main>
 
-    <div id="taskbar" style="display:none;">
+    <footer id="taskbar" style="display:none;">
         <div id="taskbarWindows"></div>
         <div id="taskbarRight">
             <button class="taskbar-btn" onclick="toggleAllWindows()" title="Свернуть/Развернуть все"><i class="fas fa-layer-group"></i></button>
             <div id="clockArea">00:00</div>
         </div>
-    </div>
+    </footer>
 
-    <div id="splashScreen">
+    <section id="splashScreen">
         <div class="splash-content">
             <div class="splash-logo">Dual-Computers</div>
             <div class="splash-subtitle">Systems</div>
         </div>
-    </div>
+    </section>
 
     <canvas id="pixelTransition"></canvas>
 
@@ -372,7 +373,7 @@
 
     <div id="gpuCrashOverlay"></div>
 
-    <div id="oneshotOneDialog">
+    <dialog id="oneshotOneDialog">
         <div class="oneshot-dialog-box">
             <div class="oneshot-dialog-header">One</div>
             <div class="oneshot-dialog-body">
@@ -380,17 +381,17 @@
                 <button class="oneshot-dialog-btn" onclick="onOneShotDialogClick()">...</button>
             </div>
         </div>
-    </div>
+    </dialog>
 
-    <div id="dcsMessageDialog">
+    <dialog id="dcsMessageDialog">
         <div class="dcs-msg-box">
             <div class="dcs-msg-header"><span id="dcsMessageTitle">DCS</span><button class="window-btn" onclick="closeDcsMessage()">×</button></div>
             <div class="dcs-msg-body"><div class="dcs-msg-icon" id="dcsMessageIcon"><i class="fas fa-info-circle"></i></div><div class="dcs-msg-text" id="dcsMessageText"></div></div>
             <div class="dcs-msg-footer"><button class="dcs-msg-btn" onclick="closeDcsMessage()">OK</button></div>
         </div>
-    </div>
+    </dialog>
 
-    <div id="shutdownDialog">
+    <dialog id="shutdownDialog">
         <div class="shutdown-dialog-box">
             <div class="shutdown-dialog-header">Dual Computers Systems</div>
             <div class="shutdown-dialog-content">
@@ -405,7 +406,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </dialog>
 
     <script>
     // ==================== DCS CORE ====================
@@ -1226,8 +1227,8 @@
                         clear:()=>{history=[];return'';},
                         date:()=>new Date().toLocaleString('ru-RU'),
                         whoami:()=>'user',
-                        runget:()=>'<span style="color:var(--purple-glow)">Runget OS v1.0 "Anythink Anywhere"\nDebased-based Linux OS\nhttps://github.com/Kolyadual/Runget-next_generating_operating_system</span>',
-                        neofetch:()=>`<span style="color:var(--purple-glow)">  DCS v1.0 "Dark Matter"</span>\n  <span style="color:var(--purple-bright)">OS:</span> Dual Computers Systems 1.0\n  <span style="color:var(--purple-bright)">Mode:</span> DCS-recovery\n  <span style="color:var(--purple-bright)">Kernel:</span> 6.2.0-dcs\n  <span style="color:var(--purple-bright)">Uptime:</span> ${Math.floor(performance.now()/60000)} mins\n  <span style="color:var(--purple-bright)">Shell:</span> dcs-shell\n  <span style="color:var(--purple-bright)">Resolution:</span> ${window.innerWidth}x${window.innerHeight}\n  <span style="color:var(--purple-bright)">CPU:</span> Virtual (${navigator.hardwareConcurrency} cores)\n  <span style="color:var(--purple-bright)">Memory:</span> 4096 MB / 16384 MB`
+                        runget:()=>'Runget OS v1.0 "Anythink Anywhere"\nDebased-based Linux OS\nhttps://github.com/Kolyadual/Runget-next_generating_operating_system',
+                        neofetch:()=>`DCS v1.0 "Dark Matter"\nOS: Dual Computers Systems 1.0\nMode: DCS-recovery\nKernel: 6.2.0-dcs\nUptime: ${Math.floor(performance.now()/60000)} mins\nShell: dcs-shell\nResolution: ${window.innerWidth}x${window.innerHeight}\nCPU: Virtual (${navigator.hardwareConcurrency} cores)\nMemory: 4096 MB / 16384 MB`
                     };
                     const result=commands[command]?commands[command]():`${command}: command not found`;
                     if(result)history.push(result);
@@ -1241,25 +1242,7 @@
 
     function openEditor(file){createWindow({title:file?file.name+' - Редактор':'Новый файл - Редактор',icon:'fa-file-alt',width:600,height:400,content:`<div class="app-toolbar"><button class="app-btn" onclick="const t=this.closest('.window-content').querySelector('textarea').value;const b=new Blob([t],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='document.txt';a.click()"><i class="fas fa-save"></i> Сохранить</button></div><textarea style="width:100%;height:calc(100% - 30px);background:#000;color:var(--purple-bright);border:none;padding:10px;font-family:Consolas,monospace;font-size:12px;resize:none;outline:none">${file?.content||''}</textarea>`});}
 
-    // ИСПРАВЛЕННАЯ ФУНКЦИЯ БРАУЗЕРА (без Google)
-    function openBrowser(){
-        createWindow({
-            title:'Браузер',
-            icon:'fa-globe',
-            width:900,
-            height:600,
-            content:`<div class="app-toolbar">
-                <button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()">
-                    <i class="fas fa-redo"></i>
-                </button>
-                <input class="app-input" style="flex:1" value="https://yandex.ru" id="browserUrl">
-                <button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value">
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-            <iframe src="https://yandex.ru" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`
-        });
-    }
+    function openBrowser(){createWindow({title:'Браузер',icon:'fa-globe',width:900,height:600,content:`<div class="app-toolbar"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').contentWindow.location.reload()"><i class="fas fa-redo"></i></button><input class="app-input" style="flex:1" value="https://yandex.ru" id="browserUrl"><button class="app-btn" onclick="this.closest('.window-content').querySelector('iframe').src=document.getElementById('browserUrl').value"><i class="fas fa-arrow-right"></i></button></div><iframe src="https://yandex.ru" style="width:100%;height:calc(100% - 30px);border:none"></iframe>`});}
 
     function openSettings(){
         let c='<div style="padding:15px"><h3 style="color:var(--purple-bright);margin-bottom:15px">Настройки</h3><h4 style="color:var(--purple-glow);margin-bottom:10px">Обои</h4><div class="settings-grid">';
@@ -1351,7 +1334,7 @@
     function open2048(){
         const winId=createWindow({title:'2048',icon:'fa-th-large',width:350,height:420,content:''});let grid,score;
         function init(){grid=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];score=0;addTile();addTile();}
-        function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}
+        function addTile(){const e=[];for(let y=0;y<4;y++)for(let x=0;x<4;x++)if(!grid[y][x])e.push({x,y});if(e.length){const{x,y}=e[Math.floor(Math.random()*e.length)];grid[y][x]=Math.random()<0.9?2:4;}}
         function getColor(v){return v?`hsl(${270-Math.log2(v)*15},60%,${30+Math.log2(v)*5}%)`:'#1a1a1a';}
         function render(){const el=document.querySelector(`#window-${winId} .window-content`);if(!el)return;el.innerHTML=`<div style="padding:15px;background:#000;height:100%"><div style="display:flex;justify-content:space-between;margin-bottom:10px"><span style="color:var(--purple-glow)">Счёт: ${score}</span><button class="app-btn" onclick="window.__start2048()"><i class="fas fa-redo"></i></button></div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--bg-dark);padding:5px;border:2px inset var(--border-light)">${grid.flat().map(v=>`<div style="height:60px;display:flex;align-items:center;justify-content:center;background:${getColor(v)};font-size:20px;font-weight:bold;color:${v>4?'#fff':'var(--purple-bright)'}">${v||''}</div>`).join('')}</div></div>`;}
         function move(dir){let moved=false;const rotate=(g)=>g[0].map((_,i)=>g.map(r=>r[i]).reverse());for(let i=0;i<dir;i++)grid=rotate(grid);for(let y=0;y<4;y++){let row=grid[y].filter(v=>v);for(let i=0;i<row.length-1;i++)if(row[i]===row[i+1]){row[i]*=2;score+=row[i];row.splice(i+1,1);}while(row.length<4)row.push(0);if(row.join(',')!==grid[y].join(','))moved=true;grid[y]=row;}for(let i=0;i<(4-dir)%4;i++)grid=rotate(grid);if(moved)addTile();render();}
@@ -1501,21 +1484,13 @@
             {text:'  --- end Kernel panic - not syncing: Fatal exception ---',cls:'kp-dim',delay:500},
         ];
         for(const line of loadingLines){
-            const div=document.createElement('div');
-            div.className='kp-line '+(line.cls||'kp-white');
-            div.textContent=line.text;
-            kp.appendChild(div);
-            kp.scrollTop=kp.scrollHeight;
-            await new Promise(r=>setTimeout(r,line.delay||50));
+            const div=document.createElement('div');div.className='kp-line '+(line.cls||'kp-white');div.textContent=line.text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(r=>setTimeout(r,line.delay||50));
         }
         startKpSounds();
         for(const line of errorLines){
-            const div=document.createElement('div');
-            div.className='kp-line '+(line.cls||'kp-white');
-            div.textContent=line.text;
-            kp.appendChild(div);
-            kp.scrollTop=kp.scrollHeight;
-            await new Promise(r=>setTimeout(r,line.delay||50));
+            const div=document.createElement('div');div.className='kp-line '+(line.cls||'kp-white');div.textContent=line.text;
+            kp.appendChild(div);kp.scrollTop=kp.scrollHeight;await new Promise(r=>setTimeout(r,line.delay||50));
         }
         await new Promise(r=>setTimeout(r,5000));
         stopKpSounds();
@@ -1588,6 +1563,10 @@
         errorLines.push({text:'',delay:80});
         for(var i=0;i<20;i++)errorLines.push({text:'only1try only1try only1try only1try only1try',cls:'kp-bright-red',delay:12+Math.floor(Math.random()*20)});
         errorLines.push({text:'',delay:60});
+        for(var i=0;i<40;i++)errorLines.push({text:'['+subsystems[Math.floor(Math.random()*subsystems.length)]+'] only1try',cls:'kp-red',delay:10+Math.floor(Math.random()*18)});
+        errorLines.push({text:'',delay:50});
+        for(var i=0;i<30;i++)errorLines.push({text:'only1try',cls:'kp-red',delay:8+Math.floor(Math.random()*12)});
+        errorLines.push({text:'',delay:100});
         errorLines.push({text:'[ONESHOT] You cannot undo what has been done',cls:'kp-bright-red',delay:200});
         errorLines.push({text:'[ONESHOT] The sun has been shattered',cls:'kp-bright-red',delay:200});
         errorLines.push({text:'[ONESHOT] Niko is gone',cls:'kp-bright-red',delay:300});
@@ -1600,10 +1579,10 @@
         errorLines.push({text:'',delay:30});
         errorLines.push({text:'   ██████╗ ███╗   ██╗██╗  ██╗   ██╗ ██╗████████╗██████╗ ██╗   ██╗',cls:'kp-bright-red',delay:25});
         errorLines.push({text:'  ██╔═══██╗████╗  ██║██║  ╚██╗ ██╔╝███║╚══██╔══╝██╔══██╗╚██╗ ██╔╝',cls:'kp-bright-red',delay:25});
-        errorLines.push({text:'  ██║   ██║██╔██╗ ██║██║   ╚████╔╝ ╚██║   ██║   ██████╔╝ ╚████╔╝',cls:'kp-bright-red',delay:25});
-        errorLines.push({text:'  ██║   ██║██║╚██╗██║██║    ╚██╔╝   ██║   ██║   ██╔══██╗  ╚██╔╝',cls:'kp-bright-red',delay:25});
-        errorLines.push({text:'  ╚██████╔╝██║ ╚████║███████╗██║    ██║   ██║   ██║  ██║   ██║',cls:'kp-bright-red',delay:25});
-        errorLines.push({text:'   ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚═╝    ╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██████╔╝███████║██╔██╗ ██║██║╚██╗██║██║     ██║   ██████╔╝ ╚████╔╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██╔═══╝ ██╔══██║██║╚██╗██║██║ ╚████║██║     ██║   ██╔══██╗  ╚██╔╝',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ██║     ██║  ██║██║ ╚████║██║  ╚████║███████╗██║  ██║   ██║',cls:'kp-bright-red',delay:25});
+        errorLines.push({text:'  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝',cls:'kp-bright-red',delay:25});
         errorLines.push({text:'',delay:30});
         errorLines.push({text:'════════════════════════════════════════════════════════════════════',cls:'kp-bright-red',delay:80});
         errorLines.push({text:'',delay:100});
@@ -1727,22 +1706,13 @@
     }
 
     // ==================== GTA 3 ====================
-    // ИСПРАВЛЕННАЯ ФУНКЦИЯ GTA3 (локальное видео)
     function launchGTA3(filename){
-        const winId=createWindow({
-            title:'Grand Theft Auto III',
-            icon:'fa-car',
-            width:800,
-            height:500,
-            x:Math.floor((window.innerWidth-800)/2),
-            y:Math.floor((window.innerHeight-532)/2),
-            content:'<div id="gta3Screen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading GTA III...</div></div>'
-        });
+        const winId=createWindow({title:'Grand Theft Auto III',icon:'fa-car',width:800,height:500,x:Math.floor((window.innerWidth-800)/2),y:Math.floor((window.innerHeight-532)/2),content:'<div id="gta3Screen" style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="color:#ffaa00;font-size:14px;font-family:Consolas">Loading GTA III...</div></div>'});
         setTimeout(function(){
             var screen=document.getElementById('gta3Screen');
             if(!screen)return;
-            // ЛОКАЛЬНЫЙ ПУТЬ К ВИДЕО
-            screen.innerHTML='<video id="gta3Video" style="width:100%;height:100%;object-fit:contain" autoplay><source src="assets/video/auto.mp4" type="video/mp4"></video>';
+            // Локальный путь к видео
+            screen.innerHTML='<video id="gta3Video" style="width:100%;height:100%;object-fit:contain" autoplay><source src="assets/video/auto.mp4" type="video/mp4">Ваш браузер не поддерживает видео.</video>';
             var video=document.getElementById('gta3Video');
             video.onerror=function(){screen.innerHTML='<div style="color:#ff3333;font-size:14px;font-family:Consolas;text-align:center">ERROR: auto.mp4 not found<br><br><span style="color:#888;font-size:12px">Video file missing from assets/video/ directory</span></div>';};
             video.onended=function(){triggerGPUCrash(winId);};
